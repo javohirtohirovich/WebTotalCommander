@@ -18,6 +18,7 @@ namespace WebTotalCommander.Server.Controllers
         [HttpPost("create")]
         public bool CreateFolder(FolderViewModel folderViewModel)
         {
+            //
             _service.CreateFolder(folderViewModel);
             return true;
         }
