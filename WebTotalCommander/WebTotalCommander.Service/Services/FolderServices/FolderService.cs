@@ -1,4 +1,5 @@
-﻿using WebTotalCommander.FileAccess.Models;
+﻿using WebTotalCommander.Core.Errors;
+using WebTotalCommander.FileAccess.Models;
 using WebTotalCommander.Repository.Folders;
 using WebTotalCommander.Service.ViewModels;
 
@@ -20,9 +21,24 @@ public class FolderService : IFolderService
             FolderPath = folderViewModel.FolderPath,
         };
 
-        _repository.CreateFolder(folder);
+        bool result=_repository.CreateFolder(folder);
 
-        return true;
+        return result;
         
+    }
+
+    public bool DeleteFolder(FolderViewModel folderViewModel)
+    {
+        Folder folder = new Folder()
+        {
+            FolderName = folderViewModel.FolderName,
+            FolderPath = folderViewModel.FolderPath,
+        };
+
+        bool result=_repository.DeleteFolder(folder);
+
+        if(!result) { throw new EntryNotFoundException("Directory not found!"); }
+
+        return result;
     }
 }

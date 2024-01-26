@@ -20,4 +20,15 @@ public class FolderRepository : IFolderRepository
             return false;
         }   
     }
+
+    public bool DeleteFolder(Folder folder)
+    {
+        try
+        {
+            string path = Path.Combine(ROOTPATH, folder.FolderPath, folder.FolderName);
+            Directory.Delete(path,true);
+            return true;
+        }
+        catch { return false; }
+    }
 }

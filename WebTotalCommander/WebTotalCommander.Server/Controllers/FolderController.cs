@@ -14,11 +14,17 @@ public class FolderController : ControllerBase
     {
         this._service = fileService;
     }
+
     [HttpPost("create")]
     public bool CreateFolder(FolderViewModel folderViewModel)
     {
-        //
-        _service.CreateFolder(folderViewModel);
-        return true;
+        bool result=_service.CreateFolder(folderViewModel);
+        return result;
+    }
+    [HttpDelete("delete")]
+    public bool DeleteFolder(FolderViewModel folderViewModel)
+    {
+        bool result=_service.DeleteFolder(folderViewModel);
+        return result;
     }
 }

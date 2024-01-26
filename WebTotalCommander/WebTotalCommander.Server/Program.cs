@@ -1,5 +1,6 @@
 
 using WebTotalCommander.Repository.Folders;
+using WebTotalCommander.Server.ActionHelpers;
 using WebTotalCommander.Service.Services.FolderServices;
 
 namespace WebTotalCommander.Server;
@@ -12,7 +13,7 @@ public class Program
 
         // Add services to the container.
 
-        builder.Services.AddControllers();
+        builder.Services.AddControllers(options => options.Filters.Add<ApiExceptionFilterAttribute>());
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
