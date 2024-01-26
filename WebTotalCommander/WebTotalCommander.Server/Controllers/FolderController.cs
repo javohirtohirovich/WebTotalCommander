@@ -15,19 +15,19 @@ public class FolderController : ControllerBase
         this._service = fileService;
     }
 
-    [HttpPost("create")]
+    [HttpPost]
     public IActionResult CreateFolder(FolderViewModel folderViewModel)
     {
         bool result=_service.CreateFolder(folderViewModel);
         return Ok(new { result });
     }
-    [HttpDelete("delete")]
+    [HttpDelete]
     public IActionResult DeleteFolder(FolderViewModel folderViewModel)
     {
         bool result=_service.DeleteFolder(folderViewModel);
         return Ok(new { result });
     }
-    [HttpPut("rename")]
+    [HttpPut]
     public IActionResult RenameFolder(FolderRenameViewModel folderRenameViewModel)
     {
         bool result=_service.RenameFolder(folderRenameViewModel);

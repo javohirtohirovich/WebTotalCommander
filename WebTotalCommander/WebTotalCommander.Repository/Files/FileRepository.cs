@@ -1,4 +1,4 @@
-﻿using WebTotalCommander.FileAccess.Models;
+﻿using WebTotalCommander.FileAccess.Models.File;
 
 namespace WebTotalCommander.Repository.Files;
 
@@ -11,7 +11,6 @@ public class FileRepository : IFileRepository
         try
         {
             string path = Path.Combine(ROOTPATH, file.FilePath, file.FileSource.FileName);
-            if (File.Exists(path)) { return false; }
             Stream stream = new FileStream(path, FileMode.Create);
             await file.FileSource.CopyToAsync(stream);
             stream.Close();
@@ -22,5 +21,15 @@ public class FileRepository : IFileRepository
             return false;
         }
        
+    }
+
+    public async Task<bool> DeleteFile(FileDeleteModel file)
+    {
+        string path = Path.Combine(ROOTPATH, file.FilePath, file.FileName);
+        await Task.Run(async () =>
+        {
+            File.Delete(path);
+        });
+        return true;
     }
 }

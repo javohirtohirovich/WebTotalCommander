@@ -1,5 +1,4 @@
-﻿
-using WebTotalCommander.FileAccess.Models;
+﻿using WebTotalCommander.FileAccess.Models.Folder;
 
 namespace WebTotalCommander.Repository.Folders;
 
