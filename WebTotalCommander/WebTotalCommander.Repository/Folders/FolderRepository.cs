@@ -12,6 +12,7 @@ public class FolderRepository : IFolderRepository
         try
         {
             string path = Path.Combine(ROOTPATH, folder.FolderPath, folder.FolderName);
+            if(Directory.Exists(path)) { return false; }
             var  result = Directory.CreateDirectory(path);
             return true;
         }

@@ -3,9 +3,9 @@
 namespace WebTotalCommander.FileAccess.Models;
 
 
-public class File
+public class FileModel
 {
-    public string FileName { get; set; } = String.Empty;
+    public string FilePath { get; set; } = String.Empty;
     public IFormFile FileSource { get; set; } = default!;
 }
 

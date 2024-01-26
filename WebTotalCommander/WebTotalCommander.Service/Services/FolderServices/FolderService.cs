@@ -22,9 +22,14 @@ public class FolderService : IFolderService
         };
 
         bool result=_repository.CreateFolder(folder);
-
-        return result;
-        
+        if(result)
+        {
+            return result;
+        }
+        else
+        {
+            throw new AlreadeExsistException("Folder alreade exsist!");
+        }        
     }
 
     public bool DeleteFolder(FolderViewModel folderViewModel)
@@ -37,9 +42,14 @@ public class FolderService : IFolderService
 
         bool result=_repository.DeleteFolder(folder);
 
-        if(!result) { throw new EntryNotFoundException("Folder not found!"); }
-
-        return result;
+        if(result)
+        {
+            return result;
+        }
+        else
+        {
+            throw new EntryNotFoundException("Folder not found!");
+        }
     }
 
     public bool RenameFolder(FolderRenameViewModel folderRenameViewModel)
@@ -51,7 +61,13 @@ public class FolderService : IFolderService
             FolderOldName = folderRenameViewModel.FolderOldName
         };
         bool result=_repository.RenameFolder(folderRename);
-        if(!result) { throw new EntryNotFoundException("Folder not found!"); }
-        return result;
+        if(result)
+        {
+            return result;
+        }
+        else
+        {
+            throw new EntryNotFoundException("Folder not found!");
+        }
     }
 }

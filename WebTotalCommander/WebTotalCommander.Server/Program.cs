@@ -1,6 +1,8 @@
 
+using WebTotalCommander.Repository.Files;
 using WebTotalCommander.Repository.Folders;
 using WebTotalCommander.Server.ActionHelpers;
+using WebTotalCommander.Service.Services.FileServices;
 using WebTotalCommander.Service.Services.FolderServices;
 
 namespace WebTotalCommander.Server;
@@ -20,7 +22,10 @@ public class Program
 
         //====================
         builder.Services.AddScoped<IFolderRepository, FolderRepository>();
+        builder.Services.AddScoped<IFileRepository, FileRepository>();
+
         builder.Services.AddScoped<IFolderService, FolderService>();
+        builder.Services.AddScoped<IFileService, FileService>();
 
         var app = builder.Build();
 

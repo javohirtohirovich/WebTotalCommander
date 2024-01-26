@@ -16,21 +16,21 @@ public class FolderController : ControllerBase
     }
 
     [HttpPost("create")]
-    public bool CreateFolder(FolderViewModel folderViewModel)
+    public IActionResult CreateFolder(FolderViewModel folderViewModel)
     {
         bool result=_service.CreateFolder(folderViewModel);
-        return result;
+        return Ok(new { result });
     }
     [HttpDelete("delete")]
-    public bool DeleteFolder(FolderViewModel folderViewModel)
+    public IActionResult DeleteFolder(FolderViewModel folderViewModel)
     {
         bool result=_service.DeleteFolder(folderViewModel);
-        return result;
+        return Ok(new { result });
     }
     [HttpPut("rename")]
-    public bool RenameFolder(FolderRenameViewModel folderRenameViewModel)
+    public IActionResult RenameFolder(FolderRenameViewModel folderRenameViewModel)
     {
         bool result=_service.RenameFolder(folderRenameViewModel);
-        return result;
+        return Ok(new { result });
     }
 }
