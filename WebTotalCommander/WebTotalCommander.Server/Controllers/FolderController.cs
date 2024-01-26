@@ -1,26 +1,24 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using WebTotalCommander.Service.Services.FolderServices;
 using WebTotalCommander.Service.ViewModels;
 
-namespace WebTotalCommander.Server.Controllers
-{
-    [Route("api/folder")]
-    [ApiController]
-    public class FolderController : ControllerBase
-    {
-        private IFolderService _service;
+namespace WebTotalCommander.Server.Controllers;
 
-        public FolderController(IFolderService fileService) 
-        {
-            this._service = fileService;
-        }
-        [HttpPost("create")]
-        public bool CreateFolder(FolderViewModel folderViewModel)
-        {
-            //
-            _service.CreateFolder(folderViewModel);
-            return true;
-        }
+[Route("api/folder")]
+[ApiController]
+public class FolderController : ControllerBase
+{
+    private IFolderService _service;
+
+    public FolderController(IFolderService fileService)
+    {
+        this._service = fileService;
+    }
+    [HttpPost("create")]
+    public bool CreateFolder(FolderViewModel folderViewModel)
+    {
+        //
+        _service.CreateFolder(folderViewModel);
+        return true;
     }
 }

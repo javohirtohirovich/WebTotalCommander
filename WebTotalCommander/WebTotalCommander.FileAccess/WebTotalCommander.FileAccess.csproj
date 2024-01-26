@@ -10,9 +10,4 @@
     <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="5.0.17" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\WebTotalCommander.Core\WebTotalCommander.Core.csproj" />
-    <ProjectReference Include="..\WebTotalCommander.Repository\WebTotalCommander.Repository.csproj" />
-  </ItemGroup>
-
 </Project>
