@@ -31,4 +31,16 @@ public class FolderRepository : IFolderRepository
         }
         catch { return false; }
     }
+    public bool RenameFolder(FolderRename folderRename)
+    {
+        try
+        {
+            string oldPath = Path.Combine(ROOTPATH, folderRename.FolderPath, folderRename.FolderOldName);
+            string newPath = Path.Combine(ROOTPATH, folderRename.FolderPath, folderRename.FolderNewName);
+            Directory.Move(oldPath,newPath);
+            return true;
+        }
+        catch 
+        { return false; }
+    }
 }

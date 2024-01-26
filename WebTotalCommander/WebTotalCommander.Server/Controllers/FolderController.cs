@@ -27,4 +27,10 @@ public class FolderController : ControllerBase
         bool result=_service.DeleteFolder(folderViewModel);
         return result;
     }
+    [HttpPut("rename")]
+    public bool RenameFolder(FolderRenameViewModel folderRenameViewModel)
+    {
+        bool result=_service.RenameFolder(folderRenameViewModel);
+        return result;
+    }
 }

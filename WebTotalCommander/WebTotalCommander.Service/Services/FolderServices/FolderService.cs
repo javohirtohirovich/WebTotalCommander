@@ -37,8 +37,21 @@ public class FolderService : IFolderService
 
         bool result=_repository.DeleteFolder(folder);
 
-        if(!result) { throw new EntryNotFoundException("Directory not found!"); }
+        if(!result) { throw new EntryNotFoundException("Folder not found!"); }
 
+        return result;
+    }
+
+    public bool RenameFolder(FolderRenameViewModel folderRenameViewModel)
+    {
+        FolderRename folderRename = new FolderRename()
+        {
+            FolderPath = folderRenameViewModel.FolderPath,
+            FolderNewName = folderRenameViewModel.FolderNewName,
+            FolderOldName = folderRenameViewModel.FolderOldName
+        };
+        bool result=_repository.RenameFolder(folderRename);
+        if(!result) { throw new EntryNotFoundException("Folder not found!"); }
         return result;
     }
 }
