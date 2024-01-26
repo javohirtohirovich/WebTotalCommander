@@ -5,7 +5,7 @@ namespace WebTotalCommander.Repository.Folders;
 
 public class FolderRepository : IFolderRepository
 {
-    private string ROOTPATH = "WebTotalCommander\\WebTotalCommander.DataAccess\\Databse";
+    private string ROOTPATH = "DataFolder";
 
     public bool CreateFolder(Folder folder)
     {

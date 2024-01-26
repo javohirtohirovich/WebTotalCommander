@@ -25,8 +25,4 @@
     <ProjectReference Include="..\WebTotalCommander.Service\WebTotalCommander.Service.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="DataFolder\" />
-  </ItemGroup>
-
 </Project>
