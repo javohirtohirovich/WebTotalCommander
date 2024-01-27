@@ -45,6 +45,23 @@ public class FolderService : IFolderService
         return result;
     }
 
+    public async Task<FolderGetAllModel> FolderGetAllAsync(string folder_path, string folder_name)
+    {
+        string path = Path.Combine(ROOTPATH, folder_path, folder_name);
+        if (!Directory.Exists(path)) { throw new EntryNotFoundException("Folder not found!"); }
+
+        Folder folder = new Folder()
+        {
+            FolderName = folder_name,
+            FolderPath = folder_path,
+        };
+
+        FolderGetAllModel result = await _repository.GetAll(folder);
+        return result;
+
+
+    }
+
     public bool RenameFolder(FolderRenameViewModel folderRenameViewModel)
     {
         string path = Path.Combine(ROOTPATH, folderRenameViewModel.FolderPath, folderRenameViewModel.FolderOldName);

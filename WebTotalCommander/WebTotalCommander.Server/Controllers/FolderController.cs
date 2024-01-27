@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using WebTotalCommander.FileAccess.Models.Folder;
 using WebTotalCommander.Service.Services.FolderServices;
 using WebTotalCommander.Service.ViewModels;
 
@@ -13,6 +14,12 @@ public class FolderController : ControllerBase
     public FolderController(IFolderService fileService)
     {
         this._service = fileService;
+    }
+    [HttpGet]
+    public async Task<IActionResult> GetAllAsync([FromQuery]string folder_path="",[FromQuery] string folder_name = "")
+    {
+        FolderGetAllModel folderGetAll=await _service.FolderGetAllAsync(folder_path,folder_name);
+        return Ok(folderGetAll );
     }
 
     [HttpPost]

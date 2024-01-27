@@ -28,4 +28,5 @@ public class FileController : ControllerBase
         var result=await _service.DeleteFile(fileDeleteView);
         return Ok(new { result });
     }
+    
 }

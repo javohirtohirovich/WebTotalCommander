@@ -1,4 +1,5 @@
 
+using Microsoft.Extensions.FileProviders;
 using WebTotalCommander.Repository.Files;
 using WebTotalCommander.Repository.Folders;
 using WebTotalCommander.Server.ActionHelpers;
@@ -40,8 +41,11 @@ public class Program
         }
 
         app.UseHttpsRedirection();
-
-        app.UseAuthorization();
+        app.UseStaticFiles(new StaticFileOptions
+        {
+            FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "DataFolder")),
+            RequestPath = "/DataFolder"
+        }); app.UseAuthorization();
 
 
         app.MapControllers();

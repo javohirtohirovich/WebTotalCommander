@@ -6,6 +6,19 @@ public class FolderRepository : IFolderRepository
 {
     private string ROOTPATH = "DataFolder";
 
+    public async Task<FolderGetAllModel> GetAll(Folder folder)
+    {
+        string path = Path.Combine(ROOTPATH, folder.FolderPath, folder.FolderName);
+        FolderGetAllModel model = new FolderGetAllModel();
+        await Task.Run(() =>
+        {
+            model.Files = Directory.GetFiles(path);
+            model.FolderNames = Directory.GetDirectories(path);
+        });
+       
+        return model;  
+    }
+    
     public bool CreateFolder(Folder folder)
     {
         try
@@ -30,6 +43,7 @@ public class FolderRepository : IFolderRepository
         }
         catch { return false; }
     }
+
     public bool RenameFolder(FolderRename folderRename)
     {
         try
