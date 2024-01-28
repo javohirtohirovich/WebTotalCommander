@@ -47,6 +47,7 @@
     "@progress/kendo-theme-bootstrap": "^7.2.0",
     "@progress/kendo-theme-default": "^7.2.0",
     "@progress/kendo-theme-material": "^7.2.0",
+    "bootstrap": "^5.3.2",
     "jest-editor-support": "*",
     "run-script-os": "*",
     "rxjs": "~7.8.0",

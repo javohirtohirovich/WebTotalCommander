@@ -1,1 +1,7 @@
-<h1>home works!</h1>
+<kendo-grid [kendoGridBinding]="gridData" [pageable]="true" [pageSize]="10" [sortable]="true" [filterable]="true"
+    [groupable]="true">
+    <kendo-grid-column field="Id" title="ID"></kendo-grid-column>
+    <kendo-grid-column field="ContactName" title="Name"></kendo-grid-column>
+    <kendo-grid-column field="City" title="City"></kendo-grid-column>
+    <kendo-grid-column field="ContactTitle" title="Job Title"></kendo-grid-column>
+</kendo-grid>
