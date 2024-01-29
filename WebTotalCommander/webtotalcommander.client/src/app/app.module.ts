@@ -10,6 +10,8 @@ import { FooterComponent } from './components/footer/footer.component';
 import { HomeComponent } from './components/home/home.component';
 import { HeaderComponent } from './components/header/header.component';
 import { LayoutComponent } from './components/layout/layout.component';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -21,7 +23,7 @@ import { LayoutComponent } from './components/layout/layout.component';
   ],
   imports: [
     BrowserModule, HttpClientModule,
-    AppRoutingModule,GridModule, BrowserAnimationsModule
+    AppRoutingModule,GridModule, BrowserAnimationsModule,FormsModule,CommonModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -1,7 +1,17 @@
-<kendo-grid [kendoGridBinding]="gridData" [pageable]="true" [pageSize]="10" [sortable]="true" [filterable]="true"
-    [groupable]="true">
-    <kendo-grid-column field="Id" title="ID"></kendo-grid-column>
-    <kendo-grid-column field="ContactName" title="Name"></kendo-grid-column>
-    <kendo-grid-column field="City" title="City"></kendo-grid-column>
-    <kendo-grid-column field="ContactTitle" title="Job Title"></kendo-grid-column>
-</kendo-grid>
+<div>
+    <div class="d-flex flex-wrap align-items-center justify-content-center py-3 mb-4">
+        <button type="button" (click)="saveAddChanges()" class="btn btn-primary btn-lg m-1">Add Folder</button>
+        <div class="me-2">
+            <div class="input-group input-group-lg">
+                <span class="input-group-text" id="inputGroup-sizing-lg">Folder Name</span>
+                <input [(ngModel)]="folderName" type="text" class="form-control" aria-label="Sizing example input"
+                    aria-describedby="inputGroup-sizing-lg">
+            </div>
+        </div>
+
+        <button type="button" (click)="saveFileChanges()" class="btn btn-secondary btn-lg ms-3 me-1">Upload File</button>
+        <div>
+            <input [(ngModel)]="fileSource" class="form-control form-control-lg" id="formFileLg" type="file">
+        </div>
+    </div>
+</div>

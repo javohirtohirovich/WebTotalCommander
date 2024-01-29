@@ -16,7 +16,7 @@ public class FileController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateFile(FileViewModel fileViewModel)
+    public async Task<IActionResult> CreateFile([FromForm] FileViewModel fileViewModel)
     {
         var result = await _service.CreateFile(fileViewModel);
 
