@@ -2,6 +2,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { GridModule } from '@progress/kendo-angular-grid';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -20,7 +21,7 @@ import { LayoutComponent } from './components/layout/layout.component';
   ],
   imports: [
     BrowserModule, HttpClientModule,
-    AppRoutingModule,GridModule
+    AppRoutingModule,GridModule, BrowserAnimationsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
