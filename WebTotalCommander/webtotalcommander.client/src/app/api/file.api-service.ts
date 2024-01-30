@@ -13,6 +13,6 @@ export class FileApiService{
         const formData: FormData = new FormData();
         formData.append("FilePath",file.filePath);
         formData.append("File",file.file!);
-        return this.client.post(this.url,formData)
+        return this.client.post(this.url,formData);
     }
 }

@@ -18,6 +18,10 @@ public class FileService : IFileService
 
     public async Task<bool> CreateFile(FileViewModel fileView)
     {
+        if (String.IsNullOrEmpty(fileView.FilePath))
+        {
+            fileView.FilePath = "";
+        }
         string path = Path.Combine(ROOTPATH, fileView.FilePath, fileView.File.FileName);
         if (File.Exists(path)) 
         { 

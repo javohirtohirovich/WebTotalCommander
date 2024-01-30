@@ -13,66 +13,76 @@ export class HomeComponent implements OnInit {
 
     //Inject FolderService
     private _serviceFolder: FolderService = inject(FolderService);
-    private _serviceFile:FileService=inject(FileService);
+    private _serviceFile: FileService = inject(FileService);
 
     //Modal error folder name
     public folderNameError: string = '';
-    public fileSourceError:string='';
+    public fileSourceError: string = '';
 
     //Variable folder name
     public folderName: string = '';
-    public fileSource:File|null=null;
+    public fileSource: File | null = null;
 
     ngOnInit(): void {
         this.getAll();
     }
 
 
+    onChange(event: any) {
+        debugger;
+
+        if (event.target.files.length > 0) {
+            const file:File = event.target.files[0];
+            this.fileSource=file;
+        }
+    }
+
     //GetAll Folders and Files
     public getAll(): void {
-        this._serviceFolder.getFolder().subscribe(
-            (response) => {
-                console.log(response);
-            },
-            (error) => {
-                console.log(error);
-            }
-        );
+      this._serviceFolder.getFolder().subscribe({
+        next: (response) => {
+          console.log("Success");
+        },
+        error: (err) => {
+          console.log("Error");
+
+        },
+      });
     }
 
     //Add Folder
     public saveAddChanges(): void {
-        if(this.fileSource){
-            const folderViewCreateModel =new FolderCreateViewModel();
-            folderViewCreateModel.folderName=this.folderName;
-            folderViewCreateModel.folderPath="";
+        if (this.fileSource) {
+            const folderViewCreateModel = new FolderCreateViewModel();
+            folderViewCreateModel.folderName = this.folderName;
+            folderViewCreateModel.folderPath = "javo";
             this._serviceFolder.addFolder(folderViewCreateModel).subscribe({
                 next: (response) => {
-                   console.log("Success");
+                    console.log("Success");
                 },
                 error: (err) => {
-                   console.log("Error");
-                   
+                    console.log("Error");
+
                 },
             });
         }
-       
+
     }
 
     //Upload File
     public saveFileChanges(): void {
-        debugger;
-        const fileViewCreateModel=new FileViewCreateModel();
-        fileViewCreateModel.file=this.fileSource;
-        fileViewCreateModel.filePath="";
-        this._serviceFile.addFile(fileViewCreateModel).subscribe(
-            response => {
-              console.log('File uploaded successfully:', response);
+        const fileViewCreateModel = new FileViewCreateModel();
+        fileViewCreateModel.file = this.fileSource;
+        fileViewCreateModel.filePath = "javo";
+        this._serviceFile.addFile(fileViewCreateModel).subscribe({
+            next: (response) => {
+                console.log("Success");
             },
-            error => {
-              console.error('Error uploading file:', error);
-            }
-          );
+            error: (err) => {
+                console.log("Error");
+
+            },
+        });
     }
 
 }

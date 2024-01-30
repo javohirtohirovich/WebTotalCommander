@@ -11,7 +11,7 @@
 
         <button type="button" (click)="saveFileChanges()" class="btn btn-secondary btn-lg ms-3 me-1">Upload File</button>
         <div>
-            <input [(ngModel)]="fileSource" class="form-control form-control-lg" id="formFileLg" type="file">
+            <input class="form-control form-control-lg" id="formFileLg" type="file"  (change)="onChange($event)">
         </div>
     </div>
 </div>

@@ -15,7 +15,7 @@ public class ApiExceptionFilterAttribute : ExceptionFilterAttribute
         }
         if(actionExecutedContext.Exception is AlreadeExsistException)
         {
-            code = 400;
+            code = 409;
         }
 
         actionExecutedContext.HttpContext.Response.StatusCode = code;
