@@ -13,6 +13,11 @@ import { LayoutComponent } from './components/layout/layout.component';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
+////////////
+import { ToastrModule} from 'ngx-toastr';
+import { provideAnimations } from '@angular/platform-browser/animations';
+import { provideToastr } from 'ngx-toastr';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -23,7 +28,12 @@ import { CommonModule } from '@angular/common';
   ],
   imports: [
     BrowserModule, HttpClientModule,
-    AppRoutingModule,GridModule, BrowserAnimationsModule,FormsModule,CommonModule
+    AppRoutingModule,GridModule, FormsModule,CommonModule, 
+    ToastrModule.forRoot({
+      timeOut: 2000,
+    positionClass: 'toast-top-right',
+    preventDuplicates: true,
+    }),BrowserAnimationsModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

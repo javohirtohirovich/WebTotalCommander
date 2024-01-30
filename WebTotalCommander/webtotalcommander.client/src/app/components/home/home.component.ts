@@ -3,6 +3,8 @@ import { FolderService } from '../../services/folder.service';
 import { FolderCreateViewModel } from '../../services/models/folder/folder.view-create.model';
 import { FileViewCreateModel } from '../../services/models/file/file.view-create.model';
 import { FileService } from '../../services/file.service';
+import { ToastrService } from 'ngx-toastr';
+
 
 @Component({
     selector: 'app-home',
@@ -10,6 +12,7 @@ import { FileService } from '../../services/file.service';
     styleUrl: './home.component.css'
 })
 export class HomeComponent implements OnInit {
+    constructor(private toastr: ToastrService) {}
 
     //Inject FolderService
     private _serviceFolder: FolderService = inject(FolderService);
@@ -29,8 +32,6 @@ export class HomeComponent implements OnInit {
 
 
     onChange(event: any) {
-        debugger;
-
         if (event.target.files.length > 0) {
             const file:File = event.target.files[0];
             this.fileSource=file;
@@ -55,31 +56,43 @@ export class HomeComponent implements OnInit {
         if (this.fileSource) {
             const folderViewCreateModel = new FolderCreateViewModel();
             folderViewCreateModel.folderName = this.folderName;
-            folderViewCreateModel.folderPath = "javo";
+            folderViewCreateModel.folderPath = "";
             this._serviceFolder.addFolder(folderViewCreateModel).subscribe({
                 next: (response) => {
-                    console.log("Success");
+                    this.toastr.success('Folder success created!');
                 },
                 error: (err) => {
-                    console.log("Error");
+                    if (err.status == 409) {
+                        this.toastr.warning('Folder already exists!');
+                    }else if(err.status==404){
+                        this.toastr.warning('Folder path not found!');
+                    } else {
+                        this.toastr.warning('Error during folder create!');
+                    }
 
                 },
             });
         }
 
     }
-
+ 
     //Upload File
     public saveFileChanges(): void {
         const fileViewCreateModel = new FileViewCreateModel();
         fileViewCreateModel.file = this.fileSource;
-        fileViewCreateModel.filePath = "javo";
+        fileViewCreateModel.filePath = "";
         this._serviceFile.addFile(fileViewCreateModel).subscribe({
             next: (response) => {
-                console.log("Success");
+                this.toastr.success('File success upload!');
             },
             error: (err) => {
-                console.log("Error");
+                if (err.status == 409) {
+                    this.toastr.warning('File already exists!');
+                }else if(err.status==404){
+                    this.toastr.warning('Folder not found!');
+                } else {
+                    this.toastr.warning('Error during file upload!');
+                };
 
             },
         });
