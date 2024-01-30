@@ -12,72 +12,70 @@ import { ToastrService } from 'ngx-toastr';
     styleUrl: './home.component.css'
 })
 export class HomeComponent implements OnInit {
-    constructor(private toastr: ToastrService) {}
+
+    //Konstruktor
+    constructor(private toastr: ToastrService) { }
 
     //Inject FolderService
     private _serviceFolder: FolderService = inject(FolderService);
     private _serviceFile: FileService = inject(FileService);
 
-    //Modal error folder name
-    public folderNameError: string = '';
-    public fileSourceError: string = '';
-
-    //Variable folder name
+    //Variables folder name
     public folderName: string = '';
     public fileSource: File | null = null;
 
+    //Variables Modal error folder name
+    public folderNameError: string = '';
+    public fileSourceError: string = '';
+
+    //Function NgOnit
     ngOnInit(): void {
         this.getAll();
     }
 
-
-    onChange(event: any) {
+    //Function Get select file in fileSource
+    public onChange(event: any) {
         if (event.target.files.length > 0) {
-            const file:File = event.target.files[0];
-            this.fileSource=file;
+            const file: File = event.target.files[0];
+            this.fileSource = file;
         }
     }
 
-    //GetAll Folders and Files
+    //Function (ngOnInit) GetAll Folders and Files
     public getAll(): void {
-      this._serviceFolder.getFolder().subscribe({
-        next: (response) => {
-          console.log("Success");
-        },
-        error: (err) => {
-          console.log("Error");
-
-        },
-      });
+        this._serviceFolder.getFolder().subscribe({
+            next: (response) => {
+                console.log("Success");
+            },
+            error: (err) => {
+                console.log("Error");
+            },
+        });
     }
 
-    //Add Folder
-    public saveAddChanges(): void {
-        if (this.fileSource) {
-            const folderViewCreateModel = new FolderCreateViewModel();
-            folderViewCreateModel.folderName = this.folderName;
-            folderViewCreateModel.folderPath = "";
-            this._serviceFolder.addFolder(folderViewCreateModel).subscribe({
-                next: (response) => {
-                    this.toastr.success('Folder success created!');
-                },
-                error: (err) => {
-                    if (err.status == 409) {
-                        this.toastr.warning('Folder already exists!');
-                    }else if(err.status==404){
-                        this.toastr.warning('Folder path not found!');
-                    } else {
-                        this.toastr.warning('Error during folder create!');
-                    }
-
-                },
-            });
-        }
-
+    //Function (Button) Create Folder
+    public saveAddFolder(): void {
+        const folderViewCreateModel = new FolderCreateViewModel();
+        folderViewCreateModel.folderName = this.folderName;
+        folderViewCreateModel.folderPath = "";
+        this._serviceFolder.addFolder(folderViewCreateModel).subscribe({
+            next: (response) => {
+                this.toastr.success('Folder success created!');
+            },
+            error: (err) => {
+                if (err.status == 409) {
+                    this.toastr.warning('Folder already exists!');
+                } else if (err.status == 404) {
+                    this.toastr.warning('Folder path not found!');
+                } else {
+                    this.toastr.warning('Error during folder create!');
+                }
+            },
+        });
     }
- 
-    //Upload File
-    public saveFileChanges(): void {
+
+    //Function (Button) Upload file
+    public saveUploadFile(): void {
         const fileViewCreateModel = new FileViewCreateModel();
         fileViewCreateModel.file = this.fileSource;
         fileViewCreateModel.filePath = "";
@@ -88,7 +86,7 @@ export class HomeComponent implements OnInit {
             error: (err) => {
                 if (err.status == 409) {
                     this.toastr.warning('File already exists!');
-                }else if(err.status==404){
+                } else if (err.status == 404) {
                     this.toastr.warning('Folder not found!');
                 } else {
                     this.toastr.warning('Error during file upload!');
@@ -97,5 +95,8 @@ export class HomeComponent implements OnInit {
             },
         });
     }
+
+    //Kendo Ui Grid
+    
 
 }
