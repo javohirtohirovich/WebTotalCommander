@@ -4,6 +4,10 @@ import { FolderCreateViewModel } from '../../services/models/folder/folder.view-
 import { FileViewCreateModel } from '../../services/models/file/file.view-create.model';
 import { FileService } from '../../services/file.service';
 import { ToastrService } from 'ngx-toastr';
+import { FileGetViewModel } from '../../services/models/common/getall.view/file.get.view-model';
+import { FolderPaginationViewModel } from '../../services/models/folder/folder.pagination.view-model';
+import { BreadCrumbItem } from "@progress/kendo-angular-navigation";
+
 
 
 @Component({
@@ -28,6 +32,8 @@ export class HomeComponent implements OnInit {
     public folderNameError: string = '';
     public fileSourceError: string = '';
 
+    public fileData:Array<FolderPaginationViewModel>=[];
+
     //Function NgOnit
     ngOnInit(): void {
         this.getAll();
@@ -45,10 +51,10 @@ export class HomeComponent implements OnInit {
     public getAll(): void {
         this._serviceFolder.getFolder().subscribe({
             next: (response) => {
-                console.log("Success");
+                this.fileData=response;
             },
             error: (err) => {
-                console.log("Error");
+                this.toastr.warning('Get all warning!');
             },
         });
     }

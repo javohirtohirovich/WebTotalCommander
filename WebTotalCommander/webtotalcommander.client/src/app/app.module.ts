@@ -15,6 +15,8 @@ import { CommonModule } from '@angular/common';
 
 ////////////
 import { ToastrModule} from 'ngx-toastr';
+import { NavigationModule } from "@progress/kendo-angular-navigation";
+
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideToastr } from 'ngx-toastr';
 
@@ -28,7 +30,7 @@ import { provideToastr } from 'ngx-toastr';
   ],
   imports: [
     BrowserModule, HttpClientModule,
-    AppRoutingModule,GridModule, FormsModule,CommonModule, 
+    AppRoutingModule,GridModule, FormsModule,CommonModule, NavigationModule,
     ToastrModule.forRoot({
       timeOut: 2000,
     positionClass: 'toast-top-right',

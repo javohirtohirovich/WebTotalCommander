@@ -87,6 +87,50 @@ public class FolderService : IFolderService
 
     }
 
+    public async Task<IList<FolderGetAllPaginationViewModel>> FolderGetAllPaginationAsync(string folder_path, string folder_name)
+    {
+        string path = Path.Combine(ROOTPATH, folder_path, folder_name);
+        if (!Directory.Exists(path)) { throw new EntryNotFoundException("Folder not found!"); }
+
+        Folder folder = new Folder()
+        {
+            FolderName = folder_name,
+            FolderPath = folder_path,
+        };
+
+        FolderGetAllModel folderGetAll = await _repository.GetAll(folder);
+
+        List<FolderGetAllPaginationViewModel> result = new List<FolderGetAllPaginationViewModel>();
+        for (int i = 0; i < folderGetAll.FolderNames.Count; i++)
+        {
+            DirectoryInfo directoryInfo = new DirectoryInfo(folderGetAll.FolderNames[i]);
+
+            FolderGetAllPaginationViewModel folderView = new FolderGetAllPaginationViewModel()
+            {
+                Name = directoryInfo.Name,
+                Path = folderGetAll.FolderNames[i],
+                Extension = "folder"
+            };
+            result.Add(folderView);
+        }
+        for (int i = 0; i < folderGetAll.Files.Count; i++)
+        {
+            FileInfo fileInfo = new FileInfo(folderGetAll.Files[i]);
+            FolderGetAllPaginationViewModel fileView = new FolderGetAllPaginationViewModel()
+            {
+                Name = fileInfo.Name,
+                Extension = fileInfo.Extension,
+                Path = folderGetAll.Files[i]
+            };
+            result.Add(fileView);
+        }
+        return result;
+        
+
+
+
+    }
+
     public bool RenameFolder(FolderRenameViewModel folderRenameViewModel)
     {
         string path = Path.Combine(ROOTPATH, folderRenameViewModel.FolderPath, folderRenameViewModel.FolderOldName);

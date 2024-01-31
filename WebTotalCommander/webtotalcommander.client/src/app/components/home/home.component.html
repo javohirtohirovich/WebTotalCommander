@@ -16,10 +16,15 @@
         </div>
 
         <div class="mt-4">
-            <kendo-grid>
-                <kendo-grid-column title="Name"> </kendo-grid-column>
-                <kendo-grid-column title="Type"> </kendo-grid-column>
+            <kendo-breadcrumb></kendo-breadcrumb>
+            <kendo-grid [data]="fileData">
+                <kendo-grid-column field="name" title="Name"> </kendo-grid-column>
+                <kendo-grid-column field="extension" title="Type"> </kendo-grid-column>
                 <kendo-grid-column title="Action">
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        <button kendoGridRemoveCommand class="me-4">Delete</button>
+                        <button kendoGridEditCommand class="me-4">Edit</button>
+                    </ng-template>
                 </kendo-grid-column>
             </kendo-grid>
         </div>
