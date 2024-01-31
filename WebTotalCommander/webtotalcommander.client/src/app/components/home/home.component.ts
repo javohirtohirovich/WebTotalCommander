@@ -96,7 +96,4 @@ export class HomeComponent implements OnInit {
         });
     }
 
-    //Kendo Ui Grid
-    
-
 }
