@@ -1,4 +1,4 @@
-<div>
+<div class="container">
     <div class="d-flex flex-wrap align-items-center justify-content-center py-3 mb-4">
         <button (click)="saveAddFolder()" type="button" class="btn btn-primary btn-lg m-1">Add Folder</button>
         <div class="me-2">
@@ -15,7 +15,7 @@
             <input (change)="onChange($event)" type="file" class="form-control form-control-lg">
         </div>
 
-        <div>
+        <div class="mt-4">
             <kendo-grid>
                 <kendo-grid-column title="Name"> </kendo-grid-column>
                 <kendo-grid-column title="Type"> </kendo-grid-column>
