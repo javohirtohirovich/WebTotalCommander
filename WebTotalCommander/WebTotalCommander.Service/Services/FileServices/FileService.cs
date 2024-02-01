@@ -1,7 +1,7 @@
 ﻿using WebTotalCommander.Core.Errors;
 using WebTotalCommander.FileAccess.Models.File;
 using WebTotalCommander.Repository.Files;
-using WebTotalCommander.Service.ViewModels;
+using WebTotalCommander.Service.ViewModels.File;
 
 namespace WebTotalCommander.Service.Services.FileServices;
 

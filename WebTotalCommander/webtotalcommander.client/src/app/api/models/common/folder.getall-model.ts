@@ -1,4 +1,4 @@
-export interface FolderPaginationModel{
+export interface  FolderGetAllMode{
     name:string;
     extension:string;
     path:string;

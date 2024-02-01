@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WebTotalCommander.Service.Services.FileServices;
-using WebTotalCommander.Service.ViewModels;
+using WebTotalCommander.Service.ViewModels.File;
 
 namespace WebTotalCommander.Server.Controllers;
 

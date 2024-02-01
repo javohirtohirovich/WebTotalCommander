@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.VisualBasic;
 using WebTotalCommander.Service.Services.FolderServices;
-using WebTotalCommander.Service.ViewModels;
-using WebTotalCommander.Service.ViewModels.GetAllViewModel;
+using WebTotalCommander.Service.ViewModels.Common;
+using WebTotalCommander.Service.ViewModels.Folder;
 
 namespace WebTotalCommander.Server.Controllers;
 
@@ -16,17 +15,12 @@ public class FolderController : ControllerBase
     {
         this._service = fileService;
     }
-   /* [HttpGet]
-    public async Task<IActionResult> GetAllAsync([FromQuery] string folder_path = "", [FromQuery] string folder_name = "")
-    {
-        FolderGetAllViewModel folderGetAllView = await _service.FolderGetAllAsync(folder_path, folder_name);
-        return Ok(folderGetAllView);
-    }*/
+
     [HttpGet]
-    public async Task<IActionResult> GetAllPagination([FromQuery] string folder_path = "", [FromQuery] string folder_name = "")
+    public async Task<IActionResult> FolderGetAllAsync(string folder_path = "", string folder_name = "")
     {
-        IList<FolderGetAllPaginationViewModel> folderGetAllPaginationView = await _service.FolderGetAllPaginationAsync(folder_path, folder_name);
-        return Ok(folderGetAllPaginationView);
+        IList<FolderGetAllViewModel> folderGetAllView = await _service.FolderGetAllAsync(folder_path, folder_name);
+        return Ok(folderGetAllView);
     }
 
     [HttpPost]

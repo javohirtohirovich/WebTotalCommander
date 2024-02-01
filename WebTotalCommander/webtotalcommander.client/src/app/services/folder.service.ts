@@ -2,26 +2,16 @@ import { Injectable, inject } from "@angular/core";
 import { FolderApiService } from "../api/folder.api-service";
 import { Observable, map } from "rxjs";
 import { FolderCreateViewModel } from "./models/folder/folder.view-create.model";
-import { FolderGetAllModel } from "../api/models/common/getall/folder.get-all.model";
-import { FolderGetAllViewModel } from "./models/common/getall.view/folder.getall.view-model";
-import { FileGetViewModel } from "./models/common/getall.view/file.get.view-model";
-import { FolderGetViewModel } from "./models/common/getall.view/folder.get.view-model";
-import { FolderPaginationViewModel } from "./models/folder/folder.pagination.view-model";
-import { FolderPaginationModel } from "../api/models/folder/folder.pagination-model";
+import { FolderGetAllViewModel } from "./models/common/folder.getall.view-model";
+import {  FolderGetAllMode } from "../api/models/common/folder.getall-model";
 
 @Injectable({ providedIn: "root" })
 export class FolderService {
     //Inject FolderApiService
     private folderApiService: FolderApiService = inject(FolderApiService)
 
-    //Function GetAll Folders and Files
-    // public getFolder(): Observable<FolderGetAllViewModel> {
-    //     return this.folderApiService.getAllFolder().pipe(
-    //         map(apiModel => this.toModel(apiModel))
-    //     );
-    // }
 
-    public getFolder(): Observable<Array<FolderPaginationViewModel>> {
+    public getFolder(): Observable<Array<FolderGetAllViewModel>> {
         return this.folderApiService.getAllFolder().pipe(
             map(apiModel => this.toModel(apiModel))
         );
@@ -32,38 +22,12 @@ export class FolderService {
         return this.folderApiService.addFolder(folder);
     }
 
-    //Function ToModel FolderModel to FolderViewModel
-    // private toModel(apiModel: FolderGetAllModel): FolderGetAllViewModel {
-    //     const result: FolderGetAllViewModel = new FolderGetAllViewModel();
-    //     if(apiModel.files){
-    //         for(let i=0;i<apiModel.files.length;i++){
-    //             const fileGet:FileGetViewModel= new FileGetViewModel();
-    //             fileGet.fileName=apiModel.files[i].fileName;
-    //             fileGet.fileExtension=apiModel.files[i].fileExtension;
-    //             fileGet.filePath=apiModel.files[i].filePath;
-    
-    //             result.files.push(fileGet);
-    //         }
-    //     }
-    //     if(apiModel.folders){
-    //         for(let i=0;i<apiModel.folders.length;i++){
-    //             const folderGet:FolderGetViewModel= new FolderGetViewModel();
-    //             folderGet.folderName=apiModel.folders[i].folderName;
-    //             folderGet.folderPath=apiModel.folders[i].folderPath;
-    
-    //             result.folders.push(folderGet);
-    //         }
-    //     }
+   
+    private toModel(apiModel: Array< FolderGetAllMode>): Array<FolderGetAllViewModel> {
        
-    //     console.log(result);
-        
-    //     return result;
-    // }
-    private toModel(apiModel: Array<FolderPaginationModel>): Array<FolderPaginationViewModel> {
-       
-        const result:Array<FolderPaginationViewModel>=[];
+        const result:Array<FolderGetAllViewModel>=[];
         for(let i=0;i<apiModel.length;i++){
-            const folderGet:FolderPaginationViewModel=new FolderPaginationViewModel();
+            const folderGet:FolderGetAllViewModel=new FolderGetAllViewModel();
             folderGet.name=apiModel[i].name;
             folderGet.extension=apiModel[i].extension;
             folderGet.path=apiModel[i].path;

@@ -1,4 +1,4 @@
-﻿namespace WebTotalCommander.Service.ViewModels;
+﻿namespace WebTotalCommander.Service.ViewModels.File;
 
 public class FileDeleteViewModel
 {

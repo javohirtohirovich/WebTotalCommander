@@ -1,4 +1,4 @@
-﻿using WebTotalCommander.Service.ViewModels;
+﻿using WebTotalCommander.Service.ViewModels.File;
 
 namespace WebTotalCommander.Service.Services.FileServices;
 

@@ -4,19 +4,54 @@ import { FolderCreateViewModel } from '../../services/models/folder/folder.view-
 import { FileViewCreateModel } from '../../services/models/file/file.view-create.model';
 import { FileService } from '../../services/file.service';
 import { ToastrService } from 'ngx-toastr';
-import { FileGetViewModel } from '../../services/models/common/getall.view/file.get.view-model';
-import { FolderPaginationViewModel } from '../../services/models/folder/folder.pagination.view-model';
+import { FolderGetAllViewModel } from '../../services/models/common/folder.getall.view-model';
 import { BreadCrumbItem } from "@progress/kendo-angular-navigation";
+import {
+    arrowRotateCcwIcon,
+    homeIcon,
+    SVGIcon,
+  } from "@progress/kendo-svg-icons";
 
-
-
+  const defaultItems: BreadCrumbItem[] = [
+    {
+      text: "Home",
+      title: "Home",
+      svgIcon: homeIcon,
+    },
+    {
+      text: "Products",
+      title: "Products",
+    },
+    {
+      text: "Computer peripherals",
+      title: "Computer peripherals",
+    },
+    {
+      text: "Keyboards",
+      title: "Keyboards",
+    },
+    {
+      text: "Gaming keyboards",
+      title: "Gaming keyboards",
+    },
+  ];
 @Component({
     selector: 'app-home',
     templateUrl: './home.component.html',
     styleUrl: './home.component.css'
 })
 export class HomeComponent implements OnInit {
-
+    public items: BreadCrumbItem[] = [...defaultItems];
+    public homeIcon: SVGIcon = homeIcon;
+    public rotateIcon: SVGIcon = arrowRotateCcwIcon;
+    public onItemClick(item: BreadCrumbItem): void {
+      const index = this.items.findIndex((e) => e.text === item.text);
+      this.items = this.items.slice(0, index + 1);
+    }
+  
+    public refreshBreadCrumb(): void {
+      this.items = [...defaultItems];
+    }
     //Konstruktor
     constructor(private toastr: ToastrService) { }
 
@@ -32,7 +67,7 @@ export class HomeComponent implements OnInit {
     public folderNameError: string = '';
     public fileSourceError: string = '';
 
-    public fileData:Array<FolderPaginationViewModel>=[];
+    public fileData:Array<FolderGetAllViewModel>=[];
 
     //Function NgOnit
     ngOnInit(): void {
