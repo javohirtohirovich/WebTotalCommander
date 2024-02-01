@@ -7,9 +7,9 @@ public class FolderRepository : IFolderRepository
 {
     private string ROOTPATH = "DataFolder";
 
-    public async Task<FolderGetAllModel> GetAll(Folder folder)
+    public async Task<FolderGetAllModel> GetAllFolder(string folderPath)
     {
-        string path = Path.Combine(ROOTPATH, folder.FolderPath, folder.FolderName);
+        string path = Path.Combine(ROOTPATH, folderPath);
         FolderGetAllModel model = new FolderGetAllModel();
         await Task.Run(() =>
         {

@@ -47,18 +47,13 @@ public class FolderService : IFolderService
         return result;
     }
 
-    public async Task<IList<FolderGetAllViewModel>> FolderGetAllAsync(string folder_path, string folder_name)
+    public async Task<IList<FolderGetAllViewModel>> FolderGetAllAsync(string folderPath)
     {
-        string path = Path.Combine(ROOTPATH, folder_path, folder_name);
+        string path = Path.Combine(ROOTPATH, folderPath);
         if (!Directory.Exists(path)) { throw new EntryNotFoundException("Folder not found!"); }
 
-        Folder folder = new Folder()
-        {
-            FolderName = folder_name,
-            FolderPath = folder_path,
-        };
 
-        FolderGetAllModel folderGetAll = await _repository.GetAll(folder);
+        FolderGetAllModel folderGetAll = await _repository.GetAllFolder(folderPath);
 
         List<FolderGetAllViewModel> result = new List<FolderGetAllViewModel>();
         for (int i = 0; i < folderGetAll.FolderNames.Count; i++)

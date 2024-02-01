@@ -11,8 +11,8 @@ export class FolderService {
     private folderApiService: FolderApiService = inject(FolderApiService)
 
 
-    public getFolder(): Observable<Array<FolderGetAllViewModel>> {
-        return this.folderApiService.getAllFolder().pipe(
+    public getFolder(folderPath:string): Observable<Array<FolderGetAllViewModel>> {
+        return this.folderApiService.getAllFolder(folderPath).pipe(
             map(apiModel => this.toModel(apiModel))
         );
     }

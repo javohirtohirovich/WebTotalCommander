@@ -68,7 +68,7 @@ export class HomeComponent implements OnInit {
     public fileSourceError: string = '';
 
     public fileData:Array<FolderGetAllViewModel>=[];
-
+    public path:string="";
     //Function NgOnit
     ngOnInit(): void {
         this.getAll();
@@ -84,7 +84,7 @@ export class HomeComponent implements OnInit {
 
     //Function (ngOnInit) GetAll Folders and Files
     public getAll(): void {
-        this._serviceFolder.getFolder().subscribe({
+        this._serviceFolder.getFolder(this.path).subscribe({
             next: (response) => {
                 this.fileData=response;
             },

@@ -17,9 +17,9 @@ public class FolderController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> FolderGetAllAsync(string folder_path = "", string folder_name = "")
+    public async Task<IActionResult> FolderGetAllAsync(string folder_path = "")
     {
-        IList<FolderGetAllViewModel> folderGetAllView = await _service.FolderGetAllAsync(folder_path, folder_name);
+        IList<FolderGetAllViewModel> folderGetAllView = await _service.FolderGetAllAsync(folder_path);
         return Ok(folderGetAllView);
     }
 
