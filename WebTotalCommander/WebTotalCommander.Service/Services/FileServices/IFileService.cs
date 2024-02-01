@@ -6,5 +6,6 @@ public interface IFileService
 {
     public Task<bool> CreateFile(FileViewModel fileView);
     public Task<bool> DeleteFile(FileDeleteViewModel fileView);
+    public Task<(MemoryStream memoryStream,  string filePath)> DownloadFileAsync(string filePath);
 
 }

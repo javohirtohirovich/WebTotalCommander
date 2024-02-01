@@ -6,4 +6,5 @@ public interface IFileRepository
 {
     public Task<bool> CreateFile(FileModel file);
     public Task<bool> DeleteFile(FileDeleteModel file);
+    public Task<MemoryStream> DownloadFileAsync(string filePath);
 }

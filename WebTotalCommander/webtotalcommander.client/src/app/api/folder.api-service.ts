@@ -1,6 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable, inject } from "@angular/core";
-import { Observable, catchError, isEmpty } from "rxjs";
+import { Observable, catchError } from "rxjs";
 import { FolderCreateModel } from "./models/folder/folder.create-model";
 import { FolderGetAllMode } from "./models/common/folder.getall-model";
 

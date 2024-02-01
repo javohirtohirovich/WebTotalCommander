@@ -51,4 +51,18 @@ public class FileService : IFileService
         var result=await _repository.DeleteFile(fileDeleteModel);
         return result;
     }
+
+    public async Task<(MemoryStream memoryStream, string filePath)> DownloadFileAsync(string filePath)
+    {
+        string path=Path.Combine(ROOTPATH, filePath);
+        if (!File.Exists(path)) 
+        {
+            throw new EntryNotFoundException("File not found!");
+        }
+
+        var memory =await _repository.DownloadFileAsync(filePath);
+
+        return (memory, path);
+    }
+  
 }

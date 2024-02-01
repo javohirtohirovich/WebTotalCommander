@@ -26,10 +26,24 @@ public class FileRepository : IFileRepository
     public async Task<bool> DeleteFile(FileDeleteModel file)
     {
         string path = Path.Combine(ROOTPATH, file.FilePath, file.FileName);
-        await Task.Run(async () =>
+        await Task.Run(() =>
         {
             File.Delete(path);
         });
         return true;
+    }
+
+    public async Task<MemoryStream> DownloadFileAsync(string filePath)
+    {
+        string path=Path.Combine(ROOTPATH, filePath);
+
+        var memory = new MemoryStream();
+        await using(var stream=new FileStream(path, FileMode.Open))
+        {
+           await stream.CopyToAsync(memory);
+        }
+        memory.Position = 0;
+
+        return memory;
     }
 }
