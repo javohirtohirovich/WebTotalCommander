@@ -6,52 +6,17 @@ import { FileService } from '../../services/file.service';
 import { ToastrService } from 'ngx-toastr';
 import { FolderGetAllViewModel } from '../../services/models/common/folder.getall.view-model';
 import { BreadCrumbItem } from "@progress/kendo-angular-navigation";
-import {
-    arrowRotateCcwIcon,
-    homeIcon,
-    SVGIcon,
-  } from "@progress/kendo-svg-icons";
+import {arrowRotateCcwIcon,homeIcon,SVGIcon} from "@progress/kendo-svg-icons";
+import { CellClickEvent } from '@progress/kendo-angular-grid';
+import { Title } from '@angular/platform-browser';
 
-  const defaultItems: BreadCrumbItem[] = [
-    {
-      text: "Home",
-      title: "Home",
-      svgIcon: homeIcon,
-    },
-    {
-      text: "Products",
-      title: "Products",
-    },
-    {
-      text: "Computer peripherals",
-      title: "Computer peripherals",
-    },
-    {
-      text: "Keyboards",
-      title: "Keyboards",
-    },
-    {
-      text: "Gaming keyboards",
-      title: "Gaming keyboards",
-    },
-  ];
+ 
 @Component({
     selector: 'app-home',
     templateUrl: './home.component.html',
     styleUrl: './home.component.css'
 })
 export class HomeComponent implements OnInit {
-    public items: BreadCrumbItem[] = [...defaultItems];
-    public homeIcon: SVGIcon = homeIcon;
-    public rotateIcon: SVGIcon = arrowRotateCcwIcon;
-    public onItemClick(item: BreadCrumbItem): void {
-      const index = this.items.findIndex((e) => e.text === item.text);
-      this.items = this.items.slice(0, index + 1);
-    }
-  
-    public refreshBreadCrumb(): void {
-      this.items = [...defaultItems];
-    }
     //Konstruktor
     constructor(private toastr: ToastrService) { }
 
@@ -67,11 +32,84 @@ export class HomeComponent implements OnInit {
     public folderNameError: string = '';
     public fileSourceError: string = '';
 
+    //Variables Array Folder GetALL
     public fileData:Array<FolderGetAllViewModel>=[];
     public path:string="";
+
+    //BreadCrumb+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++=
+    private defaultItems: BreadCrumbItem[] = [
+        {
+          text: "Home",
+          title: "Home",
+          svgIcon: homeIcon,
+        }       
+      ];
+
+    public items: BreadCrumbItem[] = [...this.defaultItems];
+    public homeIcon: SVGIcon = homeIcon;
+    public rotateIcon: SVGIcon = arrowRotateCcwIcon;
+    public onItemClick(item: BreadCrumbItem): void {
+      const index = this.items.findIndex((e) => e.text === item.text);
+      this.items = this.items.slice(0, index + 1);
+      this.defaultItems.pop();
+      this.getAll();
+    }
+  
+    public refreshBreadCrumb(): void {
+        this.path="";
+        this.getAll();
+      this.items = [...this.defaultItems];
+    }
+
+    public toFillBreadCrumb(folderName:string,folderPath:string):void{
+        for(let i=0;i<this.fileData.length;i++){
+            this.defaultItems.push({text:folderPath,title:folderName})
+        }
+    }
+    
+    
+  public cellClickHandler(args: CellClickEvent): void {
+    if( args.dataItem.extension === "folder" )
+    {
+      this.defaultItems.push({text:args.dataItem.name,title:args.dataItem.name})
+      this.refreshBreadCrumb();
+      this.getAll();
+    }
+    
+  }
+
+  public toCollectPath():string{
+    let result:string="";
+    if(this.defaultItems.length===1){
+        return result;
+    }
+    else{
+        for(let i=1;i<this.defaultItems.length;i++)
+        {
+            result+=`${this.defaultItems[i].text}/`
+        }
+        return result;
+    }
+  }
+    //BreadCrumb+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++=
+
+
     //Function NgOnit
     ngOnInit(): void {
         this.getAll();
+    }
+
+     //Function (ngOnInit) GetAll Folders and Files
+     public getAll(): void {
+        const path:string=this.toCollectPath();
+        this._serviceFolder.getFolder(path).subscribe({
+            next: (response) => {
+                this.fileData=response;
+            },
+            error: (err) => {
+                this.toastr.warning('Get all warning!');
+            },
+        });
     }
 
     //Function Get select file in fileSource
@@ -80,18 +118,6 @@ export class HomeComponent implements OnInit {
             const file: File = event.target.files[0];
             this.fileSource = file;
         }
-    }
-
-    //Function (ngOnInit) GetAll Folders and Files
-    public getAll(): void {
-        this._serviceFolder.getFolder(this.path).subscribe({
-            next: (response) => {
-                this.fileData=response;
-            },
-            error: (err) => {
-                this.toastr.warning('Get all warning!');
-            },
-        });
     }
 
     //Function (Button) Create Folder

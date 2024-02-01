@@ -18,12 +18,9 @@
         <div class="mt-4">
             <button kendoButton [svgIcon]="rotateIcon" (click)="refreshBreadCrumb()">
                 Refresh breadcrumb
-              </button>
-              <kendo-breadcrumb
-                [items]="items"
-                (itemClick)="onItemClick($event)"
-              ></kendo-breadcrumb>
-            <kendo-grid [data]="fileData">
+            </button>
+            <kendo-breadcrumb [items]="items" (itemClick)="onItemClick($event)"></kendo-breadcrumb>
+            <kendo-grid  (cellClick)="cellClickHandler($event)"  [data]="fileData">
                 <kendo-grid-column field="name" title="Name"> </kendo-grid-column>
                 <kendo-grid-column field="extension" title="Type"> </kendo-grid-column>
                 <kendo-grid-column title="Action">
