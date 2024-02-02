@@ -1,4 +1,4 @@
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpEvent } from "@angular/common/http";
 import { Injectable, inject } from "@angular/core";
 import { FileCreateModel } from "./models/file/file.create-model";
 import { Observable } from "rxjs";
@@ -14,5 +14,10 @@ export class FileApiService{
         formData.append("FilePath",file.filePath);
         formData.append("File",file.file!);
         return this.client.post(this.url,formData);
+    }
+    public  downloadFile(filePath:string):Observable<any>{
+        return this.client.get(`${this.url}?filePath=${filePath}`, {
+            responseType: 'blob'
+        });
     }
 }

@@ -8,7 +8,7 @@ import { FolderGetAllViewModel } from '../../services/models/common/folder.getal
 import { BreadCrumbItem } from "@progress/kendo-angular-navigation";
 import {arrowRotateCcwIcon,homeIcon,SVGIcon} from "@progress/kendo-svg-icons";
 import { CellClickEvent } from '@progress/kendo-angular-grid';
-import { Title } from '@angular/platform-browser';
+import { HttpResponse } from '@angular/common/http';
 
  
 @Component({
@@ -75,8 +75,13 @@ export class HomeComponent implements OnInit {
       this.refreshBreadCrumb();
       this.getAll();
     }
+    else{
+       const path:string=`${this.toCollectPath()}${args.dataItem.name}`
+       this.downloadFile(path);
+    }
     
   }
+  
 
   public toCollectPath():string{
     let result:string="";
@@ -162,5 +167,40 @@ export class HomeComponent implements OnInit {
             },
         });
     }
+
+    //Download
+    public downloadFile( filePath : string ) : void
+  {
+    this._serviceFile.downloadFile(filePath).subscribe(
+      (response: Blob) => {
+        console.log( "Download response + " + response );
+        const fileExtension = filePath.split('.').pop() || 'unknown';
+
+        // Create a Blob from the file data
+        const blob = new Blob([response], { type: `application/octet-stream` });
+
+        // Create a link element
+        const link = document.createElement('a');
+
+        // Set the download attribute and create a URL for the blob
+        link.download = `${"wwww"}.${fileExtension}`;
+        link.href = window.URL.createObjectURL(blob);
+
+        // Append the link to the body and trigger the click event
+        document.body.appendChild(link);
+        link.click();
+
+        // Clean up: remove the link and revoke the URL
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(link.href);
+
+      },
+      (error) => {
+        console.log( "Download error + " + error );
+      }
+    )
+  }
+
+   
 
 }
