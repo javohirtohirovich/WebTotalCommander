@@ -6,17 +6,16 @@ import { FileService } from '../../services/file.service';
 import { ToastrService } from 'ngx-toastr';
 import { FolderGetAllViewModel } from '../../services/models/common/folder.getall.view-model';
 import { BreadCrumbItem } from "@progress/kendo-angular-navigation";
-import {arrowRotateCcwIcon,homeIcon,SVGIcon} from "@progress/kendo-svg-icons";
+import { arrowRotateCcwIcon, homeIcon, SVGIcon } from "@progress/kendo-svg-icons";
 import { CellClickEvent } from '@progress/kendo-angular-grid';
-import { HttpResponse } from '@angular/common/http';
 
- 
 @Component({
     selector: 'app-home',
     templateUrl: './home.component.html',
     styleUrl: './home.component.css'
 })
 export class HomeComponent implements OnInit {
+
     //Konstruktor
     constructor(private toastr: ToastrService) { }
 
@@ -33,83 +32,34 @@ export class HomeComponent implements OnInit {
     public fileSourceError: string = '';
 
     //Variables Array Folder GetALL
-    public fileData:Array<FolderGetAllViewModel>=[];
-    public path:string="";
+    public fileData: Array<FolderGetAllViewModel> = [];
+    public path: string = "";
 
-    //BreadCrumb+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++=
+    //BreadCrumb
     private defaultItems: BreadCrumbItem[] = [
         {
-          text: "Home",
-          title: "Home",
-          svgIcon: homeIcon,
-        }       
-      ];
+            text: "Home",
+            title: "Home",
+            svgIcon: homeIcon,
+        }
+    ];
 
+    //
     public items: BreadCrumbItem[] = [...this.defaultItems];
     public homeIcon: SVGIcon = homeIcon;
     public rotateIcon: SVGIcon = arrowRotateCcwIcon;
-    public onItemClick(item: BreadCrumbItem): void {
-      const index = this.items.findIndex((e) => e.text === item.text);
-      this.items = this.items.slice(0, index + 1);
-      this.defaultItems.pop();
-      this.getAll();
-    }
-  
-    public refreshBreadCrumb(): void {
-        this.path="";
-        this.getAll();
-      this.items = [...this.defaultItems];
-    }
-
-    public toFillBreadCrumb(folderName:string,folderPath:string):void{
-        for(let i=0;i<this.fileData.length;i++){
-            this.defaultItems.push({text:folderPath,title:folderName})
-        }
-    }
-    
-    
-  public cellClickHandler(args: CellClickEvent): void {
-    if( args.dataItem.extension === "folder" )
-    {
-      this.defaultItems.push({text:args.dataItem.name,title:args.dataItem.name})
-      this.refreshBreadCrumb();
-      this.getAll();
-    }
-    else{
-       const path:string=`${this.toCollectPath()}${args.dataItem.name}`
-       this.downloadFile(path);
-    }
-    
-  }
-  
-
-  public toCollectPath():string{
-    let result:string="";
-    if(this.defaultItems.length===1){
-        return result;
-    }
-    else{
-        for(let i=1;i<this.defaultItems.length;i++)
-        {
-            result+=`${this.defaultItems[i].text}/`
-        }
-        return result;
-    }
-  }
-    //BreadCrumb+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++=
-
 
     //Function NgOnit
     ngOnInit(): void {
         this.getAll();
     }
 
-     //Function (ngOnInit) GetAll Folders and Files
-     public getAll(): void {
-        const path:string=this.toCollectPath();
+    //Function (ngOnInit) GetAll Folders and Files
+    public getAll(): void {
+        const path: string = this.toCollectPath();
         this._serviceFolder.getFolder(path).subscribe({
             next: (response) => {
-                this.fileData=response;
+                this.fileData = response;
             },
             error: (err) => {
                 this.toastr.warning('Get all warning!');
@@ -117,90 +67,151 @@ export class HomeComponent implements OnInit {
         });
     }
 
+    //Function BreadCrumb Item click
+    public onItemClick(item: BreadCrumbItem): void {
+        const index = this.items.findIndex((e) => e.text === item.text);
+        this.items = this.items.slice(0, index + 1);
+        this.defaultItems.pop();
+        this.getAll();
+    }
+
+    // Function (Button) Refresh button
+    public refreshBreadCrumb(): void {
+        this.path = "";
+        this.getAll();
+        this.items = [...this.defaultItems];
+    }
+
+    // Function to fill BreadCrumb (Click folder folder name add bread crumb)
+    public toFillBreadCrumb(folderName: string, folderPath: string): void {
+        for (let i = 0; i < this.fileData.length; i++) {
+            this.defaultItems.push({ text: folderPath, title: folderName })
+        }
+    }
+
+    //Function (Folder and File click)
+    public cellClickHandler(args: CellClickEvent): void {
+        if (args.dataItem.extension === "folder") {
+            this.defaultItems.push({ text: args.dataItem.name, title: args.dataItem.name })
+            this.refreshBreadCrumb();
+            this.getAll();
+        }
+        else {
+            const path: string = `${this.toCollectPath()}${args.dataItem.name}`
+            this.downloadFile(path,args.dataItem.name);
+        }
+
+    }
+
+    //Fuction make path
+    public toCollectPath(): string {
+        let result: string = "";
+        if (this.defaultItems.length === 1) {
+            return result;
+        }
+        else {
+            for (let i = 1; i < this.defaultItems.length; i++) {
+                result += `${this.defaultItems[i].text}/`
+            }
+            return result;
+        }
+    }
+
+
     //Function Get select file in fileSource
     public onChange(event: any) {
         if (event.target.files.length > 0) {
             const file: File = event.target.files[0];
             this.fileSource = file;
         }
+        else{
+            this.toastr.warning("Please select file!");
+        }
     }
 
     //Function (Button) Create Folder
     public saveAddFolder(): void {
-        const folderViewCreateModel = new FolderCreateViewModel();
-        folderViewCreateModel.folderName = this.folderName;
-        folderViewCreateModel.folderPath = "";
-        this._serviceFolder.addFolder(folderViewCreateModel).subscribe({
-            next: (response) => {
-                this.toastr.success('Folder success created!');
-            },
-            error: (err) => {
-                if (err.status == 409) {
-                    this.toastr.warning('Folder already exists!');
-                } else if (err.status == 404) {
-                    this.toastr.warning('Folder path not found!');
-                } else {
-                    this.toastr.warning('Error during folder create!');
-                }
-            },
-        });
+        if(this.folderName){
+            const folderViewCreateModel = new FolderCreateViewModel();
+            folderViewCreateModel.folderName = this.folderName;
+            folderViewCreateModel.folderPath = this.toCollectPath();
+            this._serviceFolder.addFolder(folderViewCreateModel).subscribe({
+                next: (response) => {
+                    this.toastr.success('Folder success created!');
+                    this.getAll();
+                },
+                error: (err) => {
+                    if (err.status == 409) {
+                        this.toastr.warning('Folder already exists!');
+                    } else if (err.status == 404) {
+                        this.toastr.warning('Folder path not found!');
+                    } else {
+                        this.toastr.warning('Error during folder create!');
+                    }
+                },
+            });
+        }
+        else{
+            this.toastr.warning("Please enter a folder name!");
+        }
+       
     }
 
     //Function (Button) Upload file
     public saveUploadFile(): void {
-        const fileViewCreateModel = new FileViewCreateModel();
-        fileViewCreateModel.file = this.fileSource;
-        fileViewCreateModel.filePath = "";
-        this._serviceFile.addFile(fileViewCreateModel).subscribe({
-            next: (response) => {
-                this.toastr.success('File success upload!');
-            },
-            error: (err) => {
-                if (err.status == 409) {
-                    this.toastr.warning('File already exists!');
-                } else if (err.status == 404) {
-                    this.toastr.warning('Folder not found!');
-                } else {
-                    this.toastr.warning('Error during file upload!');
-                };
-
-            },
-        });
+        if(this.fileSource){
+            const fileViewCreateModel = new FileViewCreateModel();
+            fileViewCreateModel.file = this.fileSource;
+            fileViewCreateModel.filePath = this.toCollectPath();
+            this._serviceFile.addFile(fileViewCreateModel).subscribe({
+                next: (response) => {
+                    this.toastr.success('File success upload!');
+                    this.getAll();
+                },
+                error: (err) => {
+                    if (err.status == 409) {
+                        this.toastr.warning('File already exists!');
+                    } else if (err.status == 404) {
+                        this.toastr.warning('Folder not found!');
+                    } else {
+                        this.toastr.warning('Error during file upload!');
+                    };
+    
+                },
+            });
+        }
+        else{
+            this.toastr.warning("Please select file!");
+        }
+        
     }
 
-    //Download
-    public downloadFile( filePath : string ) : void
-  {
-    this._serviceFile.downloadFile(filePath).subscribe(
-      (response: Blob) => {
-        console.log( "Download response + " + response );
-        const fileExtension = filePath.split('.').pop() || 'unknown';
+    //Function Download file
+    public downloadFile(filePath: string,fileName:string): void {
+        this._serviceFile.downloadFile(filePath).subscribe(
+            (response: Blob) => {
+                // Create a Blob from the file data
+                const blob = new Blob([response], { type: `application/octet-stream` });
 
-        // Create a Blob from the file data
-        const blob = new Blob([response], { type: `application/octet-stream` });
+                // Create a link element
+                const link = document.createElement('a');
 
-        // Create a link element
-        const link = document.createElement('a');
+                // Set the download attribute and create a URL for the blob
+                link.download = `${fileName}`;
+                link.href = window.URL.createObjectURL(blob);
 
-        // Set the download attribute and create a URL for the blob
-        link.download = `${"wwww"}.${fileExtension}`;
-        link.href = window.URL.createObjectURL(blob);
+                // Append the link to the body and trigger the click event
+                document.body.appendChild(link);
+                link.click();
 
-        // Append the link to the body and trigger the click event
-        document.body.appendChild(link);
-        link.click();
-
-        // Clean up: remove the link and revoke the URL
-        document.body.removeChild(link);
-        window.URL.revokeObjectURL(link.href);
-
-      },
-      (error) => {
-        console.log( "Download error + " + error );
-      }
-    )
-  }
-
-   
-
+                // Clean up: remove the link and revoke the URL
+                document.body.removeChild(link);
+                window.URL.revokeObjectURL(link.href);
+                this.toastr.success('File download successful!');
+            },
+            (error) => {
+                this.toastr.warning('File download error!');
+            }
+        );
+    }
 }
