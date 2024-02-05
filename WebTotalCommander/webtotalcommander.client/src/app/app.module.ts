@@ -17,6 +17,7 @@ import { CommonModule } from '@angular/common';
 import { ToastrModule} from 'ngx-toastr';
 import { NavigationModule } from "@progress/kendo-angular-navigation";
 import { ButtonsModule } from "@progress/kendo-angular-buttons";
+import { DialogsModule } from "@progress/kendo-angular-dialog";
 
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideToastr } from 'ngx-toastr';
@@ -37,7 +38,7 @@ import { SVGIconModule } from '@progress/kendo-angular-icons';
       timeOut: 2000,
     positionClass: 'toast-top-right',
     preventDuplicates: true,
-    }),BrowserAnimationsModule,ButtonsModule,SVGIconModule
+    }),BrowserAnimationsModule,ButtonsModule,SVGIconModule,DialogsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

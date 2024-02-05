@@ -79,7 +79,18 @@ export class HomeComponent implements OnInit {
         '.zip': fileZipIcon
 
     };
+    //Delete Modal
+    public opened = false;
 
+    public close(status: string): void {
+      console.log(`Dialog result: ${status}`);
+      this.opened = false;
+    }
+  
+    public open(): void {
+      this.opened = true;
+    }
+    //Delete Modal
 
 
     public getIconForExtension(extension: string): SVGIcon {
