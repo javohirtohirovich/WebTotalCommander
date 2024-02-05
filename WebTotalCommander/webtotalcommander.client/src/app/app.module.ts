@@ -20,6 +20,7 @@ import { ButtonsModule } from "@progress/kendo-angular-buttons";
 
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideToastr } from 'ngx-toastr';
+import { SVGIconModule } from '@progress/kendo-angular-icons';
 
 @NgModule({
   declarations: [
@@ -36,7 +37,7 @@ import { provideToastr } from 'ngx-toastr';
       timeOut: 2000,
     positionClass: 'toast-top-right',
     preventDuplicates: true,
-    }),BrowserAnimationsModule,ButtonsModule
+    }),BrowserAnimationsModule,ButtonsModule,SVGIconModule
   ],
   providers: [],
   bootstrap: [AppComponent]

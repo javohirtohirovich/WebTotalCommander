@@ -6,7 +6,9 @@ import { FileService } from '../../services/file.service';
 import { ToastrService } from 'ngx-toastr';
 import { FolderGetAllViewModel } from '../../services/models/common/folder.getall.view-model';
 import { BreadCrumbItem } from "@progress/kendo-angular-navigation";
-import { arrowRotateCcwIcon, homeIcon, SVGIcon } from "@progress/kendo-svg-icons";
+import { arrowRotateCcwIcon, homeIcon, SVGIcon,filePdfIcon,fileExcelIcon,fileWordIcon,
+    fileImageIcon,fileTxtIcon ,fileAudioIcon,fileTypescriptIcon,fileVideoIcon,filePptIcon,folderIcon,} from "@progress/kendo-svg-icons";
+
 import { CellClickEvent } from '@progress/kendo-angular-grid';
 
 @Component({
@@ -48,6 +50,27 @@ export class HomeComponent implements OnInit {
     public items: BreadCrumbItem[] = [...this.defaultItems];
     public homeIcon: SVGIcon = homeIcon;
     public rotateIcon: SVGIcon = arrowRotateCcwIcon;
+    
+
+    private fileIcons: { [key: string]: SVGIcon } = {
+        'default':fileTypescriptIcon,
+        'folder':folderIcon , // You can change 'folder' to any other extension if needed
+        '.pdf': filePdfIcon,
+        '.jpg': fileImageIcon,
+        '.jpeg': fileImageIcon,
+        '.png': fileImageIcon,
+        '.gif': fileImageIcon,
+        '.xlsx': fileExcelIcon,
+        '.xls': fileExcelIcon,
+        '.docx': fileWordIcon,
+        '.doc': fileWordIcon,
+        '.txt': fileTxtIcon,
+    };
+
+    public getIconForExtension(extension: string): SVGIcon {
+     // Check if the extension exists in the fileIcons object, if not, use the default icon        
+        return this.fileIcons[extension.toLowerCase()] || fileTypescriptIcon;
+    }
 
     //Function NgOnit
     ngOnInit(): void {

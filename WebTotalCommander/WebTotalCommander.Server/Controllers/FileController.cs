@@ -16,6 +16,8 @@ public class FileController : ControllerBase
     }
 
     [HttpPost]
+    [DisableRequestSizeLimit]
+
     public async Task<IActionResult> CreateFileAsync([FromForm] FileViewModel fileViewModel)
     {
         var result = await _service.CreateFile(fileViewModel);
