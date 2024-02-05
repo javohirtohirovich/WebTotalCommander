@@ -7,7 +7,7 @@ import { ToastrService } from 'ngx-toastr';
 import { FolderGetAllViewModel } from '../../services/models/common/folder.getall.view-model';
 import { BreadCrumbItem } from "@progress/kendo-angular-navigation";
 import {
-    arrowRotateCcwIcon, homeIcon, SVGIcon, filePdfIcon, fileExcelIcon, fileWordIcon,
+    arrowRotateCcwIcon, homeIcon, SVGIcon, filePdfIcon, fileExcelIcon, fileWordIcon,downloadIcon,trashIcon,pencilIcon,
     fileImageIcon, fileTxtIcon, fileAudioIcon, fileTypescriptIcon, fileVideoIcon, filePptIcon, folderIcon, exeIcon, fileProgrammingIcon, xIcon, fileZipIcon
 } from "@progress/kendo-svg-icons";
 
@@ -51,7 +51,10 @@ export class HomeComponent implements OnInit {
     //
     public items: BreadCrumbItem[] = [...this.defaultItems];
     public homeIcon: SVGIcon = homeIcon;
+    public downloadIcon:SVGIcon=downloadIcon;
     public rotateIcon: SVGIcon = arrowRotateCcwIcon;
+    public deleteIcon:SVGIcon=trashIcon;
+    public editIcon:SVGIcon=pencilIcon;
 
     //FileIcon Dictionary
     private fileIcons: { [key: string]: SVGIcon } = {
@@ -253,7 +256,6 @@ export class HomeComponent implements OnInit {
 
     //Download Folder Zip
     public downloadFolderZip(folderName: string): void {
-        debugger;
         const folderPath:string=this.toCollectPath();
         this._serviceFolder.downloadFolderZip(folderName, folderPath).subscribe(
             (response: Blob) => {
@@ -264,7 +266,7 @@ export class HomeComponent implements OnInit {
                 const link = document.createElement('a');
 
                 // Set the download attribute and create a URL for the blob
-                link.download = `${folderName+'.zip'}`;
+                link.download = `${folderName}.zip`;
                 link.href = window.URL.createObjectURL(blob);
 
                 // Append the link to the body and trigger the click event
