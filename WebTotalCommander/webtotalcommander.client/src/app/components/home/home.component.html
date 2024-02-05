@@ -21,7 +21,7 @@
             </button>
             <kendo-breadcrumb [items]="items" (itemClick)="onItemClick($event)"></kendo-breadcrumb>
             <kendo-grid  (cellClick)="cellClickHandler($event)"  [data]="fileData">
-                <kendo-grid-column  title="Name">
+                <kendo-grid-column   title="Name">
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <kendo-svgicon [icon]="getIconForExtension(dataItem.extension)" ></kendo-svgicon>
                         {{ dataItem.name }}

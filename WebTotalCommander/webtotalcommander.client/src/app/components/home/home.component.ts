@@ -7,7 +7,7 @@ import { ToastrService } from 'ngx-toastr';
 import { FolderGetAllViewModel } from '../../services/models/common/folder.getall.view-model';
 import { BreadCrumbItem } from "@progress/kendo-angular-navigation";
 import { arrowRotateCcwIcon, homeIcon, SVGIcon,filePdfIcon,fileExcelIcon,fileWordIcon,
-    fileImageIcon,fileTxtIcon ,fileAudioIcon,fileTypescriptIcon,fileVideoIcon,filePptIcon,folderIcon,} from "@progress/kendo-svg-icons";
+    fileImageIcon,fileTxtIcon ,fileAudioIcon,fileTypescriptIcon,fileVideoIcon,filePptIcon,folderIcon,exeIcon,fileProgrammingIcon,xIcon,fileZipIcon} from "@progress/kendo-svg-icons";
 
 import { CellClickEvent } from '@progress/kendo-angular-grid';
 
@@ -53,7 +53,7 @@ export class HomeComponent implements OnInit {
     
 
     private fileIcons: { [key: string]: SVGIcon } = {
-        'default':fileTypescriptIcon,
+        'default':xIcon,
         'folder':folderIcon , // You can change 'folder' to any other extension if needed
         '.pdf': filePdfIcon,
         '.jpg': fileImageIcon,
@@ -65,6 +65,14 @@ export class HomeComponent implements OnInit {
         '.docx': fileWordIcon,
         '.doc': fileWordIcon,
         '.txt': fileTxtIcon,
+        '.mp4':fileVideoIcon,
+        '.exe':exeIcon,
+        '.py':fileProgrammingIcon,
+        '.js':fileProgrammingIcon,
+        '.mp3':fileAudioIcon,
+        '.ts':fileTypescriptIcon,
+        '.zip':fileZipIcon
+        
     };
 
     public getIconForExtension(extension: string): SVGIcon {
