@@ -34,4 +34,17 @@ export class FolderApiService {
         return this.client.post(this.url, folder)
     }
 
+    public downloadFolderZip(folderPath:string,folderName:string):Observable<any>
+    {
+        if(folderPath.length===0){
+            return this.client.get(`${this.url}/zip?folderName=${folderName}`)
+        }
+        else{
+            return this.client.get(`${this.url}/zip?folderPath=${folderPath}&folderName=${folderName}`, {
+                responseType: 'blob'
+            });
+        }
+       
+    }
+
 }   

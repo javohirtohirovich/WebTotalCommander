@@ -1,4 +1,5 @@
-﻿using WebTotalCommander.FileAccess.Models.Common;
+﻿using System.IO.Compression;
+using WebTotalCommander.FileAccess.Models.Common;
 using WebTotalCommander.FileAccess.Models.Folder;
 
 namespace WebTotalCommander.Repository.Folders;
@@ -52,9 +53,29 @@ public class FolderRepository : IFolderRepository
             string oldPath = Path.Combine(ROOTPATH, folderRename.FolderPath, folderRename.FolderOldName);
             string newPath = Path.Combine(ROOTPATH, folderRename.FolderPath, folderRename.FolderNewName);
             Directory.Move(oldPath,newPath);
+            
             return true;
         }
         catch 
         { return false; }
+    }
+
+    public async Task<MemoryStream> DownloadFolderZipAsync(string folderPath,string folderName)
+    {
+        string zipPath =Path.Combine(ROOTPATH,folderPath,folderName+".zip");    
+        string path = Path.Combine(ROOTPATH, folderPath,folderName);
+        ZipFile.CreateFromDirectory(path, zipPath);
+
+        var memory = new MemoryStream();
+        await using (var stream = new FileStream(zipPath, FileMode.Open))
+        {
+            await stream.CopyToAsync(memory);
+        }
+        memory.Position = 0;
+        await Task.Run(() =>
+        {
+            File.Delete(zipPath);
+        });
+        return memory;
     }
 }

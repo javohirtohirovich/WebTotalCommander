@@ -22,6 +22,11 @@ export class FolderService {
         return this.folderApiService.addFolder(folder);
     }
 
+    //Function Download Folder Zip format
+    public downloadFolderZip(folderName:string,folderPath:string):Observable<any>{
+      return this.folderApiService.downloadFolderZip(folderPath,folderName);  
+    }
+
    
     private toModel(apiModel: Array< FolderGetAllMode>): Array<FolderGetAllViewModel> {
        

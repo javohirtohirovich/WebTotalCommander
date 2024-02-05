@@ -9,4 +9,5 @@ public interface IFolderService
     public bool CreateFolder(FolderViewModel folderViewModel);
     public bool DeleteFolder(FolderViewModel folderViewModel);
     public bool RenameFolder(FolderRenameViewModel folderRenameViewModel);
+    public Task<(MemoryStream memoryStream, string fileName)> DownloadFolderZipAsync(string folderPath,string folderName);
 }

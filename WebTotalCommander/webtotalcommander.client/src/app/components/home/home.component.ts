@@ -6,8 +6,10 @@ import { FileService } from '../../services/file.service';
 import { ToastrService } from 'ngx-toastr';
 import { FolderGetAllViewModel } from '../../services/models/common/folder.getall.view-model';
 import { BreadCrumbItem } from "@progress/kendo-angular-navigation";
-import { arrowRotateCcwIcon, homeIcon, SVGIcon,filePdfIcon,fileExcelIcon,fileWordIcon,
-    fileImageIcon,fileTxtIcon ,fileAudioIcon,fileTypescriptIcon,fileVideoIcon,filePptIcon,folderIcon,exeIcon,fileProgrammingIcon,xIcon,fileZipIcon} from "@progress/kendo-svg-icons";
+import {
+    arrowRotateCcwIcon, homeIcon, SVGIcon, filePdfIcon, fileExcelIcon, fileWordIcon,
+    fileImageIcon, fileTxtIcon, fileAudioIcon, fileTypescriptIcon, fileVideoIcon, filePptIcon, folderIcon, exeIcon, fileProgrammingIcon, xIcon, fileZipIcon
+} from "@progress/kendo-svg-icons";
 
 import { CellClickEvent } from '@progress/kendo-angular-grid';
 
@@ -50,11 +52,11 @@ export class HomeComponent implements OnInit {
     public items: BreadCrumbItem[] = [...this.defaultItems];
     public homeIcon: SVGIcon = homeIcon;
     public rotateIcon: SVGIcon = arrowRotateCcwIcon;
-    
 
+    //FileIcon Dictionary
     private fileIcons: { [key: string]: SVGIcon } = {
-        'default':xIcon,
-        'folder':folderIcon , // You can change 'folder' to any other extension if needed
+        'default': xIcon,
+        'folder': folderIcon, // You can change 'folder' to any other extension if needed
         '.pdf': filePdfIcon,
         '.jpg': fileImageIcon,
         '.jpeg': fileImageIcon,
@@ -65,20 +67,23 @@ export class HomeComponent implements OnInit {
         '.docx': fileWordIcon,
         '.doc': fileWordIcon,
         '.txt': fileTxtIcon,
-        '.mp4':fileVideoIcon,
-        '.exe':exeIcon,
-        '.py':fileProgrammingIcon,
-        '.js':fileProgrammingIcon,
-        '.mp3':fileAudioIcon,
-        '.ts':fileTypescriptIcon,
-        '.zip':fileZipIcon
-        
+        '.mp4': fileVideoIcon,
+        '.exe': exeIcon,
+        '.py': fileProgrammingIcon,
+        '.js': fileProgrammingIcon,
+        '.mp3': fileAudioIcon,
+        '.ts': fileTypescriptIcon,
+        '.zip': fileZipIcon
+
     };
 
+
+
     public getIconForExtension(extension: string): SVGIcon {
-     // Check if the extension exists in the fileIcons object, if not, use the default icon        
+        // Check if the extension exists in the fileIcons object, if not, use the default icon        
         return this.fileIcons[extension.toLowerCase()] || fileTypescriptIcon;
     }
+
 
     //Function NgOnit
     ngOnInit(): void {
@@ -129,7 +134,7 @@ export class HomeComponent implements OnInit {
         }
         else {
             const path: string = `${this.toCollectPath()}${args.dataItem.name}`
-            this.downloadFile(path,args.dataItem.name);
+            this.downloadFile(path, args.dataItem.name);
         }
 
     }
@@ -155,14 +160,14 @@ export class HomeComponent implements OnInit {
             const file: File = event.target.files[0];
             this.fileSource = file;
         }
-        else{
+        else {
             this.toastr.warning("Please select file!");
         }
     }
 
     //Function (Button) Create Folder
     public saveAddFolder(): void {
-        if(this.folderName){
+        if (this.folderName) {
             const folderViewCreateModel = new FolderCreateViewModel();
             folderViewCreateModel.folderName = this.folderName;
             folderViewCreateModel.folderPath = this.toCollectPath();
@@ -182,15 +187,15 @@ export class HomeComponent implements OnInit {
                 },
             });
         }
-        else{
+        else {
             this.toastr.warning("Please enter a folder name!");
         }
-       
+
     }
 
     //Function (Button) Upload file
     public saveUploadFile(): void {
-        if(this.fileSource){
+        if (this.fileSource) {
             const fileViewCreateModel = new FileViewCreateModel();
             fileViewCreateModel.file = this.fileSource;
             fileViewCreateModel.filePath = this.toCollectPath();
@@ -207,18 +212,18 @@ export class HomeComponent implements OnInit {
                     } else {
                         this.toastr.warning('Error during file upload!');
                     };
-    
+
                 },
             });
         }
-        else{
+        else {
             this.toastr.warning("Please select file!");
         }
-        
+
     }
 
     //Function Download file
-    public downloadFile(filePath: string,fileName:string): void {
+    public downloadFile(filePath: string, fileName: string): void {
         this._serviceFile.downloadFile(filePath).subscribe(
             (response: Blob) => {
                 // Create a Blob from the file data
@@ -245,4 +250,37 @@ export class HomeComponent implements OnInit {
             }
         );
     }
+
+    //Download Folder Zip
+    public downloadFolderZip(folderName: string): void {
+        debugger;
+        const folderPath:string=this.toCollectPath();
+        this._serviceFolder.downloadFolderZip(folderName, folderPath).subscribe(
+            (response: Blob) => {
+                // Create a Blob from the file data
+                const blob = new Blob([response], { type: `application/zip` });
+
+                // Create a link element
+                const link = document.createElement('a');
+
+                // Set the download attribute and create a URL for the blob
+                link.download = `${folderName+'.zip'}`;
+                link.href = window.URL.createObjectURL(blob);
+
+                // Append the link to the body and trigger the click event
+                document.body.appendChild(link);
+                link.click();
+
+                // Clean up: remove the link and revoke the URL
+                document.body.removeChild(link);
+                window.URL.revokeObjectURL(link.href);
+                this.toastr.success('Folder download successful!');
+            },
+            (error) => {
+                this.toastr.warning('Folder download error!');
+            }
+        );
+    }
+
+
 }

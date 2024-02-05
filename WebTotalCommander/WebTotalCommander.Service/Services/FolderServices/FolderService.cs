@@ -47,6 +47,18 @@ public class FolderService : IFolderService
         return result;
     }
 
+    public async Task<(MemoryStream memoryStream, string fileName)> DownloadFolderZipAsync(string folderPath, string folderName)
+    {
+        string path = Path.Combine(ROOTPATH, folderPath,folderName);
+        if (!Directory.Exists(path))
+        {
+            throw new EntryNotFoundException("Folder not found!");
+        }
+
+        var memory = await _repository.DownloadFolderZipAsync(folderPath, folderName);
+        return (memory, folderName);
+    }
+
     public async Task<IList<FolderGetAllViewModel>> FolderGetAllAsync(string folderPath)
     {
         string path = Path.Combine(ROOTPATH, folderPath);

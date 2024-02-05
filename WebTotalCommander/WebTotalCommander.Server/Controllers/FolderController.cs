@@ -23,6 +23,14 @@ public class FolderController : ControllerBase
         return Ok(folderGetAllView);
     }
 
+    [HttpGet("zip")]
+    [DisableRequestSizeLimit]
+    public async Task<IActionResult> FolderDownloadZipAsync(string folderPath="",string folderName = "")
+    {
+        var result=await _service.DownloadFolderZipAsync(folderPath, folderName);
+        return File(result.memoryStream, "application/zip", result.fileName);
+    }
+
     [HttpPost]
     public IActionResult CreateFolder(FolderViewModel folderViewModel)
     {
