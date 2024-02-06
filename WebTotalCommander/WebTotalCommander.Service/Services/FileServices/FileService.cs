@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using System.Xml.XPath;
 using WebTotalCommander.Core.Errors;
 using WebTotalCommander.FileAccess.Models.File;
 using WebTotalCommander.Repository.Files;
@@ -66,15 +67,21 @@ public class FileService : IFileService
         return (memory, path);
     }
 
-    public async Task<string> GetTextTxtFileAsync(string filePath)
+    public async Task<MemoryStream> GetTxtFileAsync(string filePath)
     {
         string path = Path.Combine(ROOTPATH, filePath);
-        if (!File.Exists(path))
+        var fileInfo=new FileInfo(path);
+        if (fileInfo.Extension != ".txt")
+        {
+            throw new ParameterInvalidException("File not txt!");
+        }
+        else if (!File.Exists(path))
         {
             throw new EntryNotFoundException("File not found!");
         }
+        
 
-        var result = await _repository.GetTextTxtFileAsync(filePath);
+        var result = await _repository.GetTxtFileAsync(filePath);
         return result;
     }
 }

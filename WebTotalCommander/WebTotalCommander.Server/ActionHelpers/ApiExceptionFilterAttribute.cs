@@ -17,6 +17,10 @@ public class ApiExceptionFilterAttribute : ExceptionFilterAttribute
         {
             code = 409;
         }
+        if(actionExecutedContext.Exception is ParameterInvalidException)
+        {
+            code = 422;
+        }
 
         actionExecutedContext.HttpContext.Response.StatusCode = code;
         actionExecutedContext.Result = new JsonResult(new

@@ -39,10 +39,10 @@ public class FileController : ControllerBase
     }
 
     [HttpGet("text")]
-    public async Task<IActionResult> GetTextTxtFileAsync(string file_path)
+    public async Task<IActionResult> GetTxtFileAsync(string file_path)
     {
-        string result = await _service.GetTextTxtFileAsync(file_path);
-        return Ok(result);
+        MemoryStream result = await _service.GetTxtFileAsync(file_path);
+        return File(result, "application/txt");
     }
 
 }

@@ -55,21 +55,17 @@ public class FileRepository : IFileRepository
 
    
 
-    public async Task<string> GetTextTxtFileAsync(string filePath)
+    public async Task<MemoryStream> GetTxtFileAsync(string filePath)
     {
         string path = Path.Combine(ROOTPATH, filePath);
 
-        using (StreamReader reader = new StreamReader(path))
+        var memory = new MemoryStream();
+        await using (var stream = new FileStream(path, FileMode.Open))
         {
-            string content = "";
-            string line;
-
-            while ((line = await reader.ReadLineAsync()) != null)
-            {
-                content+= line;
-            }
-
-            return content;
+            await stream.CopyToAsync(memory);
         }
+        memory.Position = 0;
+
+        return memory;
     }
 }
