@@ -39,7 +39,7 @@
                         <div *ngIf="dataItem.extension==='.txt'">
                             <button kendoGridRemoveCommand [svgIcon]="deleteIcon"
                                 (click)="openDeleteModalFile(dataItem.name)" class="me-4">Delete</button>
-                            <button kendoGridEditCommand [svgIcon]="editIcon" (click)="open()"
+                            <button kendoGridEditCommand [svgIcon]="editIcon" (click)="openEditTxtModal(dataItem.name)"
                                 class="me-4">Edit</button>
                         </div>
                         <div *ngIf="dataItem.extension!='folder' && dataItem.extension!='.txt'">
@@ -95,7 +95,7 @@
                     <fieldset>
                         <label class="k-form-field">
                             <span>template.txt</span>
-                            <kendo-textarea placeholder="Your Last Name"></kendo-textarea>
+                            <kendo-textarea [(ngModel)]="txtFileContent" name="txtFileContent" placeholder="Your Last Name"></kendo-textarea>
                         </label>
                     </fieldset>
 

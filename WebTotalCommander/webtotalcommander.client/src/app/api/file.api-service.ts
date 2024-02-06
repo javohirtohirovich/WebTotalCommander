@@ -24,6 +24,11 @@ export class FileApiService{
     public deleteFile(fileDeleteModel:FileDeleteModel):Observable<any>{
         return this.client.delete(this.url,{body:fileDeleteModel});
     }
+    public getTxtFile(filePath:string):Observable<any>{
+        return this.client.get(`${this.url}/text?file_path=${filePath}`,{
+            responseType: 'blob'
+        })
+    }
 
    
 }

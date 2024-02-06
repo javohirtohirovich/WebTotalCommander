@@ -83,6 +83,7 @@ export class HomeComponent implements OnInit {
     };
 
     //Edit Modal
+    public txtFileContent: string = '';
     public opened = true;
     public dataSaved = false;
   
@@ -90,8 +91,21 @@ export class HomeComponent implements OnInit {
       this.opened = false;
     }
   
-    public open(): void {
+    public openEditTxtModal(fileName:string): void {
       this.opened = true;
+      this._serviceFile.getTxtFile(this.toCollectPath() + fileName).subscribe({
+        next: (response) => {
+            // Assuming the response is a Blob containing the text file content
+            const reader = new FileReader();
+            reader.onload = () => {
+                this.txtFileContent = reader.result as string;
+            };
+            reader.readAsText(response);
+        },
+        error: (err) => {
+            this.toastr.warning('Error retrieving file content!');
+        },
+    });
     }
   
     public submit(): void {

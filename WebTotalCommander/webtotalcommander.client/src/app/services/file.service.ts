@@ -20,4 +20,7 @@ export class FileService {
     public deleteFile(fileDeleteModel:FileViewDeleteModel):Observable<any>{
         return this.fileApiService.deleteFile(fileDeleteModel);
     }
+    public getTxtFile(filePath:string):Observable<any>{
+        return this.fileApiService.getTxtFile(filePath);
+    }
 }

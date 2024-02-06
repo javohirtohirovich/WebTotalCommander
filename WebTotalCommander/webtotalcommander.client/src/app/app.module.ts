@@ -40,7 +40,7 @@ import { InputsModule } from "@progress/kendo-angular-inputs";
       timeOut: 2000,
     positionClass: 'toast-top-right',
     preventDuplicates: true,
-    }),BrowserAnimationsModule,ButtonsModule,SVGIconModule,DialogsModule,InputsModule
+    }),BrowserAnimationsModule,ButtonsModule,SVGIconModule,DialogsModule,InputsModule,FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
