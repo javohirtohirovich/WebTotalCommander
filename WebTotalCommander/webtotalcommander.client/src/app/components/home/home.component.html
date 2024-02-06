@@ -39,7 +39,8 @@
                         <div *ngIf="dataItem.extension==='.txt'">
                             <button kendoGridRemoveCommand [svgIcon]="deleteIcon"
                                 (click)="openDeleteModalFile(dataItem.name)" class="me-4">Delete</button>
-                            <button kendoGridEditCommand [svgIcon]="editIcon" class="me-4">Edit</button>
+                            <button kendoGridEditCommand [svgIcon]="editIcon" (click)="open()"
+                                class="me-4">Edit</button>
                         </div>
                         <div *ngIf="dataItem.extension!='folder' && dataItem.extension!='.txt'">
                             <button kendoGridRemoveCommand [svgIcon]="deleteIcon"
@@ -77,5 +78,35 @@
                 </button>
             </kendo-dialog-actions>
         </kendo-dialog>
+    </div>
+    <div>
+
+        <div class="example-wrapper">
+           
+            <p *ngIf="dataSaved">Data has been saved</p>
+            <kendo-window  title="Please provide additional data" *ngIf="opened" (close)="close()" [minWidth]="250"
+                [width]="450">
+                <kendo-window-titlebar>
+                    <button kendoWindowMaximizeAction></button>
+                    <button kendoWindowRestoreAction></button>
+                    <button kendoWindowCloseAction></button>
+                  </kendo-window-titlebar>
+                <form class="k-form">
+                    <fieldset>
+                        <label class="k-form-field">
+                            <span>template.txt</span>
+                            <kendo-textarea placeholder="Your Last Name"></kendo-textarea>
+                        </label>
+                    </fieldset>
+
+                    <div class="k-actions k-actions-end">
+                        <button kendoButton type="button" (click)="close()">Cancel</button>
+                        <button kendoButton themeColor="primary" type="button" (click)="submit()">
+                            Submit
+                        </button>
+                    </div>
+                </form>
+            </kendo-window>
+        </div>
     </div>
 </div>

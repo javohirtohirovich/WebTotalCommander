@@ -82,6 +82,24 @@ export class HomeComponent implements OnInit {
 
     };
 
+    //Edit Modal
+    public opened = true;
+    public dataSaved = false;
+  
+    public close(): void {
+      this.opened = false;
+    }
+  
+    public open(): void {
+      this.opened = true;
+    }
+  
+    public submit(): void {
+      this.dataSaved = true;
+      this.close();
+    }
+    //Edit Modal
+
     //Delete Modal
     public openedFolder = false;
     public openedFile = false;
