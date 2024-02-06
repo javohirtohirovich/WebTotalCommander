@@ -3,12 +3,14 @@ import { Injectable, inject } from "@angular/core";
 import { Observable, catchError } from "rxjs";
 import { FolderCreateModel } from "./models/folder/folder.create-model";
 import { FolderGetAllMode } from "./models/common/folder.getall-model";
+import { FolderDeleteModel } from "./models/folder/folder.delete-model";
 
 @Injectable({ providedIn: "root" })
 export class FolderApiService {
     private client: HttpClient = inject(HttpClient);
     private url: string = "https://localhost:7251/api/folder"
 
+    //Folder GetAll
     public getAllFolder(folderPath: string): Observable<Array<FolderGetAllMode>> {
         if (folderPath.length === 0) {
             return this.client.get<Array<FolderGetAllMode>>(`${this.url}`).pipe(
@@ -34,6 +36,7 @@ export class FolderApiService {
         return this.client.post(this.url, folder)
     }
 
+    //Download Folder Zip
     public downloadFolderZip(folderPath:string,folderName:string):Observable<any>
     {
         if(folderPath.length===0){
@@ -47,6 +50,12 @@ export class FolderApiService {
             });
         }
        
+    }
+
+    //Delete Folder
+
+    public deleteFolder(folder:FolderDeleteModel):Observable<any>{
+        return this.client.delete(this.url,{body:folder})
     }
 
 }   

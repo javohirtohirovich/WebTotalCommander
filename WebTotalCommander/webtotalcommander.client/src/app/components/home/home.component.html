@@ -31,18 +31,19 @@
                 <kendo-grid-column title="Action" [width]="300">
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <div *ngIf="dataItem.extension==='folder'">
-                            <button kendoGridRemoveCommand [svgIcon]="deleteIcon" (click)="open()"
-                                class="me-4">Delete</button>
+                            <button kendoGridRemoveCommand [svgIcon]="deleteIcon"
+                                (click)="openDeleteModalFolder(dataItem.name)" class="me-4">Delete</button>
                             <button kendoGridEditCommand [svgIcon]="downloadIcon"
                                 (click)="downloadFolderZip(dataItem.name)" class="me-4">Zip</button>
                         </div>
                         <div *ngIf="dataItem.extension==='.txt'">
-                            <button kendoGridRemoveCommand [svgIcon]="deleteIcon" (click)="open()"
-                                class="me-4">Delete</button>
+                            <button kendoGridRemoveCommand [svgIcon]="deleteIcon"
+                                (click)="openDeleteModalFile(dataItem.name)" class="me-4">Delete</button>
                             <button kendoGridEditCommand [svgIcon]="editIcon" class="me-4">Edit</button>
                         </div>
                         <div *ngIf="dataItem.extension!='folder' && dataItem.extension!='.txt'">
-                            <button kendoGridRemoveCommand [svgIcon]="deleteIcon" (click)="open()" class="me-4">Delete</button>
+                            <button kendoGridRemoveCommand [svgIcon]="deleteIcon"
+                                (click)="openDeleteModalFile(dataItem.name)" class="me-4">Delete</button>
                         </div>
                     </ng-template>
                 </kendo-grid-column>
@@ -50,13 +51,28 @@
         </div>
     </div>
     <div>
-        <kendo-dialog title="Please confirm" *ngIf="opened" (close)="close('cancel')" [minWidth]="250" [width]="450">
+        <kendo-dialog title="Please confirm" *ngIf="openedFolder" (close)="closeDeleteModalFolder('cancel')"
+            [minWidth]="250" [width]="450">
             <p style="margin: 30px; text-align: center;">
-                Are you sure you want to continue?
+                Are you sure you want delete folder?
             </p>
             <kendo-dialog-actions>
-                <button kendoButton (click)="close('no')">No</button>
-                <button kendoButton (click)="close('yes')" themeColor="primary">
+                <button kendoButton (click)=" closeDeleteModalFolder('no')">No</button>
+                <button kendoButton (click)=" closeDeleteModalFolder('yes')" themeColor="primary">
+                    Yes
+                </button>
+            </kendo-dialog-actions>
+        </kendo-dialog>
+    </div>
+    <div>
+        <kendo-dialog title="Please confirm" *ngIf="openedFile" (close)="closeDeleteModalFile('cancel')"
+            [minWidth]="250" [width]="450">
+            <p style="margin: 30px; text-align: center;">
+                Are you sure you want delete file?
+            </p>
+            <kendo-dialog-actions>
+                <button kendoButton (click)="closeDeleteModalFile('no')">No</button>
+                <button kendoButton (click)="closeDeleteModalFile('yes')" themeColor="primary">
                     Yes
                 </button>
             </kendo-dialog-actions>

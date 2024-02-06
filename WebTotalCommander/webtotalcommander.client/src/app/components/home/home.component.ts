@@ -7,11 +7,13 @@ import { ToastrService } from 'ngx-toastr';
 import { FolderGetAllViewModel } from '../../services/models/common/folder.getall.view-model';
 import { BreadCrumbItem } from "@progress/kendo-angular-navigation";
 import {
-    arrowRotateCcwIcon, homeIcon, SVGIcon, filePdfIcon, fileExcelIcon, fileWordIcon,downloadIcon,trashIcon,pencilIcon,
+    arrowRotateCcwIcon, homeIcon, SVGIcon, filePdfIcon, fileExcelIcon, fileWordIcon, downloadIcon, trashIcon, pencilIcon,
     fileImageIcon, fileTxtIcon, fileAudioIcon, fileTypescriptIcon, fileVideoIcon, filePptIcon, folderIcon, exeIcon, fileProgrammingIcon, xIcon, fileZipIcon
 } from "@progress/kendo-svg-icons";
 
 import { CellClickEvent } from '@progress/kendo-angular-grid';
+import { FolderDeleteViewModel } from '../../services/models/folder/folder.view-delete.model';
+import { FileViewDeleteModel } from '../../services/models/file/file.view-delete.model';
 
 @Component({
     selector: 'app-home',
@@ -51,10 +53,10 @@ export class HomeComponent implements OnInit {
     //
     public items: BreadCrumbItem[] = [...this.defaultItems];
     public homeIcon: SVGIcon = homeIcon;
-    public downloadIcon:SVGIcon=downloadIcon;
+    public downloadIcon: SVGIcon = downloadIcon;
     public rotateIcon: SVGIcon = arrowRotateCcwIcon;
-    public deleteIcon:SVGIcon=trashIcon;
-    public editIcon:SVGIcon=pencilIcon;
+    public deleteIcon: SVGIcon = trashIcon;
+    public editIcon: SVGIcon = pencilIcon;
 
     //FileIcon Dictionary
     private fileIcons: { [key: string]: SVGIcon } = {
@@ -79,20 +81,81 @@ export class HomeComponent implements OnInit {
         '.zip': fileZipIcon
 
     };
+
     //Delete Modal
-    public opened = false;
+    public openedFolder = false;
+    public openedFile = false;
+    public folderNameDelete: string = "";
+    public fileNameDelete:string="";
+    public closeDeleteModalFolder(status: string): void {
+        if (status === 'yes') {
+            const folder: FolderDeleteViewModel = new FolderDeleteViewModel();
+            folder.folderName = this.folderNameDelete;
+            folder.folderPath = this.toCollectPath();
+            this._serviceFolder.deleteFolder(folder).subscribe({
+                next: (response) => {
+                    this.toastr.success('Delete folder success!');
+                    this.getAll();
+                },
+                error: (err) => {
+                    this.toastr.warning('Delete folder warning!');
+                },
+            });
 
-    public close(status: string): void {
-      console.log(`Dialog result: ${status}`);
-      this.opened = false;
+            this.openedFolder = false;
+        }
+        else if (status === 'no') {
+            this.openedFolder = false;
+        }
+        else if (status === 'cancel') {
+            this.openedFolder = false;
+        }
+
     }
-  
-    public open(): void {
-      this.opened = true;
+
+    public closeDeleteModalFile(status: string): void {
+
+        if (status === 'yes') {
+            const file: FileViewDeleteModel=new FileViewDeleteModel();
+            file.fileName=this.fileNameDelete;
+            file.filePath = this.toCollectPath();
+            this._serviceFile.deleteFile(file).subscribe({
+                next: (response) => {
+                    this.toastr.success('Delete file success!');
+                    this.getAll();
+                },
+                error: (err) => {
+                    this.toastr.warning('Delete file warning!');
+                },
+            });
+
+            this.openedFile = false;
+        }
+        else if (status === 'no') {
+            this.openedFile = false;
+        }
+        else if (status === 'cancel') {
+            this.openedFile = false;
+        }
+
+
     }
+
+    public openDeleteModalFolder(folderName: string): void {
+        this.folderNameDelete = folderName;
+        this.openedFolder = true;
+    }
+
+    public openDeleteModalFile(fileName: string): void {
+        this.fileNameDelete=fileName;
+        this.openedFile = true;
+    }
+
+
     //Delete Modal
 
 
+    //Get File and Folder extension
     public getIconForExtension(extension: string): SVGIcon {
         // Check if the extension exists in the fileIcons object, if not, use the default icon        
         return this.fileIcons[extension.toLowerCase()] || fileTypescriptIcon;
@@ -267,7 +330,7 @@ export class HomeComponent implements OnInit {
 
     //Download Folder Zip
     public downloadFolderZip(folderName: string): void {
-        const folderPath:string=this.toCollectPath();
+        const folderPath: string = this.toCollectPath();
         this._serviceFolder.downloadFolderZip(folderName, folderPath).subscribe(
             (response: Blob) => {
                 // Create a Blob from the file data

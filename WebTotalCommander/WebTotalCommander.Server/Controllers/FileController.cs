@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Text;
 using WebTotalCommander.Service.Services.FileServices;
 using WebTotalCommander.Service.ViewModels.File;
 
@@ -35,6 +36,13 @@ public class FileController : ControllerBase
     {
         var result = await _service.DownloadFileAsync(filePath);
         return File(result.memoryStream, "application/octet-stream", result.filePath);
+    }
+
+    [HttpGet("text")]
+    public async Task<IActionResult> GetTextTxtFileAsync(string file_path)
+    {
+        string result = await _service.GetTextTxtFileAsync(file_path);
+        return Ok(result);
     }
 
 }

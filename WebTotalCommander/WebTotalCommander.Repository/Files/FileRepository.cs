@@ -1,4 +1,5 @@
-﻿using WebTotalCommander.FileAccess.Models.File;
+﻿using System.Text;
+using WebTotalCommander.FileAccess.Models.File;
 
 namespace WebTotalCommander.Repository.Files;
 
@@ -45,5 +46,30 @@ public class FileRepository : IFileRepository
         memory.Position = 0;
 
         return memory;
+    }
+
+    public Task<bool> EditTextTxtFile(string filePath, StringBuilder text)
+    {
+        throw new NotImplementedException();
+    }
+
+   
+
+    public async Task<string> GetTextTxtFileAsync(string filePath)
+    {
+        string path = Path.Combine(ROOTPATH, filePath);
+
+        using (StreamReader reader = new StreamReader(path))
+        {
+            string content = "";
+            string line;
+
+            while ((line = await reader.ReadLineAsync()) != null)
+            {
+                content+= line;
+            }
+
+            return content;
+        }
     }
 }

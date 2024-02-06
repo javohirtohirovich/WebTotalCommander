@@ -4,6 +4,7 @@ import { Observable, map } from "rxjs";
 import { FolderCreateViewModel } from "./models/folder/folder.view-create.model";
 import { FolderGetAllViewModel } from "./models/common/folder.getall.view-model";
 import {  FolderGetAllMode } from "../api/models/common/folder.getall-model";
+import { FolderDeleteViewModel } from "./models/folder/folder.view-delete.model";
 
 @Injectable({ providedIn: "root" })
 export class FolderService {
@@ -25,6 +26,11 @@ export class FolderService {
     //Function Download Folder Zip format
     public downloadFolderZip(folderName:string,folderPath:string):Observable<any>{
       return this.folderApiService.downloadFolderZip(folderPath,folderName);  
+    }
+
+    //Function Delete Folder
+    public deleteFolder(folder:FolderDeleteViewModel):Observable<any>{
+        return this.folderApiService.deleteFolder(folder);
     }
 
    
