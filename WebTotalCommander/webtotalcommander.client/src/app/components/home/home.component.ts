@@ -14,6 +14,7 @@ import { CellClickEvent } from '@progress/kendo-angular-grid';
 import { FolderDeleteViewModel } from '../../services/models/folder/folder.view-delete.model';
 import { FileViewDeleteModel } from '../../services/models/file/file.view-delete.model';
 import { FileViewEditModel } from '../../services/models/file/file.view-edit.model';
+import { FolderFileViewModel } from '../../services/models/common/folder.file.view-model';
 
 @Component({
     selector: 'app-home',
@@ -37,7 +38,7 @@ export class HomeComponent implements OnInit {
     public fileSourceError: string = '';
 
     //Variables Array Folder GetALL
-    public fileData: Array<FolderGetAllViewModel> = [];
+    public fileData: FolderGetAllViewModel = new FolderGetAllViewModel();
     public path: string = "";
 
     //BreadCrumb
@@ -222,10 +223,12 @@ export class HomeComponent implements OnInit {
 
     //Function (ngOnInit) GetAll Folders and Files
     public getAll(): void {
+        debugger;
         const path: string = this.toCollectPath();
         this._serviceFolder.getFolder(path).subscribe({
             next: (response) => {
                 this.fileData = response;
+                this.toastr.success('Success!');
             },
             error: (err) => {
                 this.toastr.warning('Get all warning!');
@@ -249,8 +252,8 @@ export class HomeComponent implements OnInit {
     }
 
     // Function to fill BreadCrumb (Click folder folder name add bread crumb)
-    public toFillBreadCrumb(folderName: string, folderPath: string): void {
-        for (let i = 0; i < this.fileData.length; i++) {
+  public toFillBreadCrumb(folderName: string, folderPath: string): void {
+    for (let i = 0; i < this.fileData.folderFile.length; i++) {
             this.defaultItems.push({ text: folderPath, title: folderName })
         }
     }

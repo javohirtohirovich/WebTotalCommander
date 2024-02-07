@@ -2,8 +2,8 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable, inject } from "@angular/core";
 import { Observable, catchError } from "rxjs";
 import { FolderCreateModel } from "./models/folder/folder.create-model";
-import { FolderGetAllMode } from "./models/common/folder.getall-model";
 import { FolderDeleteModel } from "./models/folder/folder.delete-model";
+import { FolderGetAllModel } from "./models/common/folder.getall-model";
 
 @Injectable({ providedIn: "root" })
 export class FolderApiService {
@@ -11,9 +11,9 @@ export class FolderApiService {
     private url: string = "https://localhost:7251/api/folder"
 
     //Folder GetAll
-    public getAllFolder(folderPath: string): Observable<Array<FolderGetAllMode>> {
+    public getAllFolder(folderPath: string): Observable<FolderGetAllModel> {
         if (folderPath.length === 0) {
-            return this.client.get<Array<FolderGetAllMode>>(`${this.url}`).pipe(
+            return this.client.get<FolderGetAllModel>(`${this.url}?pageNumber=1&pageSize=5`).pipe(
                 catchError((error) => {
                     console.error("Error in getFolders:", error);
                     throw error;
@@ -21,7 +21,7 @@ export class FolderApiService {
             );
         }
         else {
-            return this.client.get<Array<FolderGetAllMode>>(`${this.url}?folder_path=${folderPath}`).pipe(
+            return this.client.get<FolderGetAllModel>(`${this.url}?folder_path=${folderPath}&pageNumber=1&pageSize=5`).pipe(
                 catchError((error) => {
                     console.error("Error in getFolders:", error);
                     throw error;

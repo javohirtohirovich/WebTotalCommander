@@ -1,7 +1,9 @@
 ﻿using WebTotalCommander.Core.Errors;
 using WebTotalCommander.FileAccess.Models.Common;
 using WebTotalCommander.FileAccess.Models.Folder;
+using WebTotalCommander.FileAccess.Utils;
 using WebTotalCommander.Repository.Folders;
+using WebTotalCommander.Service.Common.Service;
 using WebTotalCommander.Service.ViewModels.Common;
 using WebTotalCommander.Service.ViewModels.Folder;
 
@@ -59,7 +61,7 @@ public class FolderService : IFolderService
         return (memory, folderName);
     }
 
-    public async Task<IList<FolderGetAllViewModel>> FolderGetAllAsync(string folderPath)
+    public async Task<FolderGetAllViewModel> FolderGetAllAsync(string folderPath,PaginationParams @params)
     {
         string path = Path.Combine(ROOTPATH, folderPath);
         if (!Directory.Exists(path)) { throw new EntryNotFoundException("Folder not found!"); }
@@ -67,34 +69,35 @@ public class FolderService : IFolderService
 
         FolderGetAllModel folderGetAll = await _repository.GetAllFolder(folderPath);
 
-        List<FolderGetAllViewModel> result = new List<FolderGetAllViewModel>();
+        FolderGetAllViewModel result = new FolderGetAllViewModel();
         for (int i = 0; i < folderGetAll.FolderNames.Count; i++)
         {
             DirectoryInfo directoryInfo = new DirectoryInfo(folderGetAll.FolderNames[i]);
 
-            FolderGetAllViewModel folderView = new FolderGetAllViewModel()
+            FolderFileViewModel folderView = new FolderFileViewModel()
             {
                 Name = directoryInfo.Name,
                 Path = folderGetAll.FolderNames[i],
                 Extension = "folder"
             };
-            result.Add(folderView);
+            result.FolderFile.Add(folderView);
         }
         for (int i = 0; i < folderGetAll.Files.Count; i++)
         {
             FileInfo fileInfo = new FileInfo(folderGetAll.Files[i]);
-            FolderGetAllViewModel fileView = new FolderGetAllViewModel()
+            FolderFileViewModel fileView = new FolderFileViewModel()
             {
                 Name = fileInfo.Name,
                 Extension = fileInfo.Extension,
                 Path = folderGetAll.Files[i]
             };
-            result.Add(fileView);
+            result.FolderFile .Add(fileView);
         }
+        Paginator paginator = new Paginator();
+        PaginationMetaData paginationMetaData = paginator.Paginate(result.FolderFile.Count, @params);
+        result.PaginationMetaData = paginationMetaData;
+        result.FolderFile =result.FolderFile.Skip(@params.GetSkipCount()).Take(@params.PageSize).ToList();
         return result;
-        
-
-
 
     }
 

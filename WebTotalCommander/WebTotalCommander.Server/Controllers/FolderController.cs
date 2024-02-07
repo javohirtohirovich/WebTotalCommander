@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using WebTotalCommander.FileAccess.Utils;
 using WebTotalCommander.Service.Services.FolderServices;
 using WebTotalCommander.Service.ViewModels.Common;
 using WebTotalCommander.Service.ViewModels.Folder;
@@ -17,9 +18,9 @@ public class FolderController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> FolderGetAllAsync(string folder_path = "")
+    public async Task<IActionResult> FolderGetAllAsync(string folder_path = "", int pageNumber = 1, int pageSize = 5)
     {
-        IList<FolderGetAllViewModel> folderGetAllView = await _service.FolderGetAllAsync(folder_path);
+        FolderGetAllViewModel folderGetAllView = await _service.FolderGetAllAsync(folder_path,new PaginationParams(pageNumber,pageSize));
         return Ok(folderGetAllView);
     }
 

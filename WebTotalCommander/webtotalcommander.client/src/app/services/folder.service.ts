@@ -3,8 +3,10 @@ import { FolderApiService } from "../api/folder.api-service";
 import { Observable, map } from "rxjs";
 import { FolderCreateViewModel } from "./models/folder/folder.view-create.model";
 import { FolderGetAllViewModel } from "./models/common/folder.getall.view-model";
-import {  FolderGetAllMode } from "../api/models/common/folder.getall-model";
 import { FolderDeleteViewModel } from "./models/folder/folder.view-delete.model";
+import { FolderGetAllModel } from "../api/models/common/folder.getall-model";
+import { FolderFileViewModel } from "./models/common/folder.file.view-model";
+import { PaginationMetaDataView } from "./models/common/pagination.data";
 
 @Injectable({ providedIn: "root" })
 export class FolderService {
@@ -12,7 +14,7 @@ export class FolderService {
     private folderApiService: FolderApiService = inject(FolderApiService)
 
 
-    public getFolder(folderPath:string): Observable<Array<FolderGetAllViewModel>> {
+    public getFolder(folderPath:string): Observable<FolderGetAllViewModel> {
         return this.folderApiService.getAllFolder(folderPath).pipe(
             map(apiModel => this.toModel(apiModel))
         );
@@ -34,16 +36,26 @@ export class FolderService {
     }
 
    
-    private toModel(apiModel: Array< FolderGetAllMode>): Array<FolderGetAllViewModel> {
-       
-        const result:Array<FolderGetAllViewModel>=[];
-        for(let i=0;i<apiModel.length;i++){
-            const folderGet:FolderGetAllViewModel=new FolderGetAllViewModel();
-            folderGet.name=apiModel[i].name;
-            folderGet.extension=apiModel[i].extension;
-            folderGet.path=apiModel[i].path;
-            result.push(folderGet);
+    private toModel(apiModel: FolderGetAllModel):FolderGetAllViewModel {
+   
+        const result:FolderGetAllViewModel=new FolderGetAllViewModel();
+        for(let i=0;i<apiModel.folderFile.length;i++){
+            const folderFileModel:FolderFileViewModel=new FolderFileViewModel();
+            folderFileModel.name=apiModel.folderFile[i].name;
+            folderFileModel.extension=apiModel.folderFile[i].extension;
+            folderFileModel.path=apiModel.folderFile[i].path;
+            result.folderFile.push(folderFileModel);
         }
+        const pageData:PaginationMetaDataView=new PaginationMetaDataView();
+        pageData.currentPage=apiModel.paginationMetaData.currentPage;
+        pageData.hasNext=apiModel.paginationMetaData.hasNext;
+        pageData.hasPrevious=apiModel.paginationMetaData.hasPrevious;
+        pageData.pageSize=apiModel.paginationMetaData.pageSize;
+        pageData.totalItems=apiModel.paginationMetaData.totalItems;
+        pageData.totalPages=apiModel.paginationMetaData.totalPages;
+
+        result.paginationMetaData=pageData;
+
         return result;
     }
 }

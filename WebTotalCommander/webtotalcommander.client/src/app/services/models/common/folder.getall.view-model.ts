@@ -1,5 +1,7 @@
+import { FolderFileViewModel } from "./folder.file.view-model";
+import { PaginationMetaDataView } from "./pagination.data";
+
 export class FolderGetAllViewModel{
-    name:string="";
-    extension:string="";
-    path:string="";
+    folderFile:Array<FolderFileViewModel>=[];
+    paginationMetaData:PaginationMetaDataView=new PaginationMetaDataView();
 }
