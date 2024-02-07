@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Text;
 using WebTotalCommander.Service.Services.FileServices;
 using WebTotalCommander.Service.ViewModels.File;
 
@@ -48,7 +47,7 @@ public class FileController : ControllerBase
     [HttpPut("text")]
     public async Task<IActionResult> EditTxtFileAsync(string filePath, IFormFile file)
     {
-        var result=await _service.EditTextTxtFileAsync(filePath, file);
+        var result = await _service.EditTextTxtFileAsync(filePath, file);
         return Ok(result);
     }
 

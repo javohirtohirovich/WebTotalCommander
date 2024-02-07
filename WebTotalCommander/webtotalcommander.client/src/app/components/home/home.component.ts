@@ -6,11 +6,10 @@ import { FileService } from '../../services/file.service';
 import { ToastrService } from 'ngx-toastr';
 import { FolderGetAllViewModel } from '../../services/models/common/folder.getall.view-model';
 import { BreadCrumbItem } from "@progress/kendo-angular-navigation";
-import {
-    arrowRotateCcwIcon, homeIcon, SVGIcon, filePdfIcon, fileExcelIcon, fileWordIcon, downloadIcon, trashIcon, pencilIcon,
-    fileImageIcon, fileTxtIcon, fileAudioIcon, fileTypescriptIcon, fileVideoIcon, filePptIcon, folderIcon, exeIcon, fileProgrammingIcon, xIcon, fileZipIcon
-} from "@progress/kendo-svg-icons";
-
+import {arrowRotateCcwIcon, homeIcon, SVGIcon, filePdfIcon, fileExcelIcon, 
+    fileWordIcon, downloadIcon, trashIcon, pencilIcon,fileImageIcon, fileTxtIcon, 
+    fileAudioIcon, fileTypescriptIcon, fileVideoIcon, filePptIcon, folderIcon, 
+    exeIcon, fileProgrammingIcon, xIcon, fileZipIcon} from "@progress/kendo-svg-icons";
 import { CellClickEvent } from '@progress/kendo-angular-grid';
 import { FolderDeleteViewModel } from '../../services/models/folder/folder.view-delete.model';
 import { FileViewDeleteModel } from '../../services/models/file/file.view-delete.model';
@@ -22,7 +21,6 @@ import { FileViewEditModel } from '../../services/models/file/file.view-edit.mod
     styleUrl: './home.component.css'
 })
 export class HomeComponent implements OnInit {
-
     //Konstruktor
     constructor(private toastr: ToastrService) { }
 
@@ -62,7 +60,7 @@ export class HomeComponent implements OnInit {
     //FileIcon Dictionary
     private fileIcons: { [key: string]: SVGIcon } = {
         'default': xIcon,
-        'folder': folderIcon, // You can change 'folder' to any other extension if needed
+        'folder': folderIcon,
         '.pdf': filePdfIcon,
         '.jpg': fileImageIcon,
         '.jpeg': fileImageIcon,
@@ -79,7 +77,9 @@ export class HomeComponent implements OnInit {
         '.js': fileProgrammingIcon,
         '.mp3': fileAudioIcon,
         '.ts': fileTypescriptIcon,
-        '.zip': fileZipIcon
+        '.zip': fileZipIcon,
+        '.ppt': filePptIcon,
+        '.pptx':filePptIcon
 
     };
 
@@ -132,8 +132,6 @@ export class HomeComponent implements OnInit {
         this.dataSaved = true;
         this.close();
     }
-
-
     //Edit Modal
 
     //Delete Modal
@@ -141,6 +139,7 @@ export class HomeComponent implements OnInit {
     public openedFile = false;
     public folderNameDelete: string = "";
     public fileNameDelete: string = "";
+
     public closeDeleteModalFolder(status: string): void {
         if (status === 'yes') {
             const folder: FolderDeleteViewModel = new FolderDeleteViewModel();
