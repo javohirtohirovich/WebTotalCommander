@@ -84,8 +84,8 @@
         <div class="example-wrapper">
            
             <p *ngIf="dataSaved">Data has been saved</p>
-            <kendo-window  title="Please provide additional data" *ngIf="opened" (close)="close()" [minWidth]="250"
-                [width]="450">
+            <kendo-window  title="Please provide additional data" *ngIf="opened" (close)="close()" [minWidth]="550" [height]="750"
+                [width]="850">
                 <kendo-window-titlebar>
                     <button kendoWindowMaximizeAction></button>
                     <button kendoWindowRestoreAction></button>
@@ -95,7 +95,7 @@
                     <fieldset>
                         <label class="k-form-field">
                             <span>template.txt</span>
-                            <kendo-textarea [(ngModel)]="txtFileContent" name="txtFileContent" placeholder="Your Last Name"></kendo-textarea>
+                            <kendo-textarea  [(ngModel)]="txtFileContent" name="txtFileContent" placeholder="Your Last Name"></kendo-textarea>
                         </label>
                     </fieldset>
 

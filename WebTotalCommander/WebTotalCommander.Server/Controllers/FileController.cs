@@ -45,4 +45,11 @@ public class FileController : ControllerBase
         return File(result, "application/txt");
     }
 
+    [HttpPut("text")]
+    public async Task<IActionResult> EditTxtFileAsync(string filePath, IFormFile file)
+    {
+        var result=await _service.EditTextTxtFileAsync(filePath, file);
+        return Ok(result);
+    }
+
 }

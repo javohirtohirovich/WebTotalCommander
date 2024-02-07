@@ -3,6 +3,7 @@ import { Injectable, inject } from "@angular/core";
 import { FileCreateModel } from "./models/file/file.create-model";
 import { Observable } from "rxjs";
 import { FileDeleteModel } from "./models/file/file.delete-model";
+import { FileEditModel } from "./models/file/file.edit-model";
 
 @Injectable({providedIn:"root"})
 export class FileApiService{
@@ -28,6 +29,12 @@ export class FileApiService{
         return this.client.get(`${this.url}/text?file_path=${filePath}`,{
             responseType: 'blob'
         })
+    }
+
+    public editTxtFile(fileEditModel:FileEditModel):Observable<any>{
+        const formData:FormData=new FormData();
+        formData.append("file",fileEditModel.file!);
+        return this.client.put(`${this.url}/text?filePath=${fileEditModel.filePath}`,formData);
     }
 
    

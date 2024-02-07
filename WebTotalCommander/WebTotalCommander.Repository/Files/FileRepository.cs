@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using Microsoft.AspNetCore.Http;
+using System.Text;
 using WebTotalCommander.FileAccess.Models.File;
 
 namespace WebTotalCommander.Repository.Files;
@@ -12,7 +13,7 @@ public class FileRepository : IFileRepository
         try
         {
             string path = Path.Combine(ROOTPATH, file.FilePath, file.FileSource.FileName);
-            Stream stream = new FileStream(path, FileMode.Create);
+            FileStream stream = new FileStream(path, FileMode.Create);
             await file.FileSource.CopyToAsync(stream);
             stream.Close();
             return true;
@@ -48,12 +49,23 @@ public class FileRepository : IFileRepository
         return memory;
     }
 
-    public Task<bool> EditTextTxtFile(string filePath, StringBuilder text)
+    public async Task<bool> EditTextTxtFile(string filePath, IFormFile formFile)
     {
-        throw new NotImplementedException();
+        try
+        {
+            string path = Path.Combine(ROOTPATH, filePath);
+            using (FileStream stream = new FileStream(path, FileMode.Create))
+            {
+                await formFile.CopyToAsync(stream);
+            }
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+       
     }
-
-   
 
     public async Task<MemoryStream> GetTxtFileAsync(string filePath)
     {

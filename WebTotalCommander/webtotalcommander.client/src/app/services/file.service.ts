@@ -4,6 +4,7 @@ import { FileViewCreateModel } from "./models/file/file.view-create.model";
 import { Observable } from "rxjs";
 import { HttpEvent } from "@angular/common/http";
 import { FileViewDeleteModel } from "./models/file/file.view-delete.model";
+import { FileViewEditModel } from "./models/file/file.view-edit.model";
 
 @Injectable({ providedIn: "root" })
 export class FileService {
@@ -13,6 +14,7 @@ export class FileService {
     public addFile(file:FileViewCreateModel):Observable<any>{
         return this.fileApiService.addFile(file);
     }
+    
     public downloadFile(filePath:string):Observable<any>{
         return this.fileApiService.downloadFile(filePath);
     }
@@ -20,7 +22,12 @@ export class FileService {
     public deleteFile(fileDeleteModel:FileViewDeleteModel):Observable<any>{
         return this.fileApiService.deleteFile(fileDeleteModel);
     }
+
     public getTxtFile(filePath:string):Observable<any>{
         return this.fileApiService.getTxtFile(filePath);
+    }
+
+    public editTxtFile(fileEditModel:FileViewEditModel):Observable<any>{
+        return this.fileApiService.editTxtFile(fileEditModel);
     }
 }

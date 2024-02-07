@@ -14,6 +14,7 @@ import {
 import { CellClickEvent } from '@progress/kendo-angular-grid';
 import { FolderDeleteViewModel } from '../../services/models/folder/folder.view-delete.model';
 import { FileViewDeleteModel } from '../../services/models/file/file.view-delete.model';
+import { FileViewEditModel } from '../../services/models/file/file.view-edit.model';
 
 @Component({
     selector: 'app-home',
@@ -84,41 +85,62 @@ export class HomeComponent implements OnInit {
 
     //Edit Modal
     public txtFileContent: string = '';
-    public opened = true;
+    public opened = false;
     public dataSaved = false;
-  
+    public fileNameToEdit: string = '';
     public close(): void {
-      this.opened = false;
+        this.opened = false;
     }
-  
-    public openEditTxtModal(fileName:string): void {
-      this.opened = true;
-      this._serviceFile.getTxtFile(this.toCollectPath() + fileName).subscribe({
-        next: (response) => {
-            // Assuming the response is a Blob containing the text file content
-            const reader = new FileReader();
-            reader.onload = () => {
-                this.txtFileContent = reader.result as string;
-            };
-            reader.readAsText(response);
-        },
-        error: (err) => {
-            this.toastr.warning('Error retrieving file content!');
-        },
-    });
+
+    public openEditTxtModal(fileName: string): void {
+        this.opened = true;
+        this.fileNameToEdit=fileName;
+        this._serviceFile.getTxtFile(this.toCollectPath() + fileName).subscribe({
+            next: (response) => {
+                // Assuming the response is a Blob containing the text file content
+                const reader = new FileReader();
+                reader.onload = () => {
+                    this.txtFileContent = reader.result as string;
+                };
+                reader.readAsText(response);
+            },
+            error: (err) => {
+                this.toastr.warning('Error retrieving file content!');
+            },
+        });
     }
-  
+
     public submit(): void {
-      this.dataSaved = true;
-      this.close();
+        debugger;
+        // Call the editTxtFile method with the filename and updated content
+        const fileEditModel = new FileViewEditModel();
+
+        fileEditModel.filePath=this.toCollectPath() + this.fileNameToEdit;
+        fileEditModel.file=new File([this.txtFileContent], this.fileNameToEdit)
+
+
+        this._serviceFile.editTxtFile(fileEditModel).subscribe({
+            next: (response) => {
+                this.toastr.success('File content updated successfully!');
+                this.dataSaved = true;
+                this.close();
+            },
+            error: (err) => {
+                this.toastr.warning('Error updating file content!');
+            },
+        });
+        this.dataSaved = true;
+        this.close();
     }
+
+
     //Edit Modal
 
     //Delete Modal
     public openedFolder = false;
     public openedFile = false;
     public folderNameDelete: string = "";
-    public fileNameDelete:string="";
+    public fileNameDelete: string = "";
     public closeDeleteModalFolder(status: string): void {
         if (status === 'yes') {
             const folder: FolderDeleteViewModel = new FolderDeleteViewModel();
@@ -148,8 +170,8 @@ export class HomeComponent implements OnInit {
     public closeDeleteModalFile(status: string): void {
 
         if (status === 'yes') {
-            const file: FileViewDeleteModel=new FileViewDeleteModel();
-            file.fileName=this.fileNameDelete;
+            const file: FileViewDeleteModel = new FileViewDeleteModel();
+            file.fileName = this.fileNameDelete;
             file.filePath = this.toCollectPath();
             this._serviceFile.deleteFile(file).subscribe({
                 next: (response) => {
@@ -179,7 +201,7 @@ export class HomeComponent implements OnInit {
     }
 
     public openDeleteModalFile(fileName: string): void {
-        this.fileNameDelete=fileName;
+        this.fileNameDelete = fileName;
         this.openedFile = true;
     }
 
