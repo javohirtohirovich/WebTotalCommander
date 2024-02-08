@@ -10,51 +10,52 @@ import { PaginationMetaDataView } from "./models/common/pagination.data";
 
 @Injectable({ providedIn: "root" })
 export class FolderService {
-    //Inject FolderApiService
+    //Variable Inject FolderApiService
     private folderApiService: FolderApiService = inject(FolderApiService)
 
-
-    public getFolder(folderPath:string,skip:number,take:number): Observable<FolderGetAllViewModel> {
-        return this.folderApiService.getAllFolder(folderPath,skip,take).pipe(
+    //Function (request)
+    public getFolder(folderPath: string, skip: number, take: number): Observable<FolderGetAllViewModel> {
+        return this.folderApiService.getAllFolder(folderPath, skip, take).pipe(
             map(apiModel => this.toModel(apiModel))
         );
     }
 
-    //Function Create Folder
-    public addFolder(folder:FolderCreateViewModel):Observable<any>{
+    //Function (request) Create Folder
+    public addFolder(folder: FolderCreateViewModel): Observable<any> {
         return this.folderApiService.addFolder(folder);
     }
 
-    //Function Download Folder Zip format
-    public downloadFolderZip(folderName:string,folderPath:string):Observable<any>{
-      return this.folderApiService.downloadFolderZip(folderPath,folderName);  
+    //Function (request) Download Folder Zip format
+    public downloadFolderZip(folderName: string, folderPath: string): Observable<any> {
+        return this.folderApiService.downloadFolderZip(folderPath, folderName);
     }
 
-    //Function Delete Folder
-    public deleteFolder(folder:FolderDeleteViewModel):Observable<any>{
+    //Function (request) Delete Folder
+    public deleteFolder(folder: FolderDeleteViewModel): Observable<any> {
         return this.folderApiService.deleteFolder(folder);
     }
 
-   
-    private toModel(apiModel: FolderGetAllModel):FolderGetAllViewModel {
-   
-        const result:FolderGetAllViewModel=new FolderGetAllViewModel();
-        for(let i=0;i<apiModel.folderFile.length;i++){
-            const folderFileModel:FolderFileViewModel=new FolderFileViewModel();
-            folderFileModel.name=apiModel.folderFile[i].name;
-            folderFileModel.extension=apiModel.folderFile[i].extension;
-            folderFileModel.path=apiModel.folderFile[i].path;
+    //Function FolderGetAllModel to FolderGetAllViewModel
+    private toModel(apiModel: FolderGetAllModel): FolderGetAllViewModel {
+
+        const result: FolderGetAllViewModel = new FolderGetAllViewModel();
+        for (let i = 0; i < apiModel.folderFile.length; i++) {
+            const folderFileModel: FolderFileViewModel = new FolderFileViewModel();
+            folderFileModel.name = apiModel.folderFile[i].name;
+            folderFileModel.extension = apiModel.folderFile[i].extension;
+            folderFileModel.path = apiModel.folderFile[i].path;
+            
             result.folderFile.push(folderFileModel);
         }
-        const pageData:PaginationMetaDataView=new PaginationMetaDataView();
-        pageData.currentPage=apiModel.paginationMetaData.currentPage;
-        pageData.hasNext=apiModel.paginationMetaData.hasNext;
-        pageData.hasPrevious=apiModel.paginationMetaData.hasPrevious;
-        pageData.pageSize=apiModel.paginationMetaData.pageSize;
-        pageData.totalItems=apiModel.paginationMetaData.totalItems;
-        pageData.totalPages=apiModel.paginationMetaData.totalPages;
+        const pageData: PaginationMetaDataView = new PaginationMetaDataView();
+        pageData.currentPage = apiModel.paginationMetaData.currentPage;
+        pageData.hasNext = apiModel.paginationMetaData.hasNext;
+        pageData.hasPrevious = apiModel.paginationMetaData.hasPrevious;
+        pageData.pageSize = apiModel.paginationMetaData.pageSize;
+        pageData.totalItems = apiModel.paginationMetaData.totalItems;
+        pageData.totalPages = apiModel.paginationMetaData.totalPages;
 
-        result.paginationMetaData=pageData;
+        result.paginationMetaData = pageData;
 
         return result;
     }
