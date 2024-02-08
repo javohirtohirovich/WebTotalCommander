@@ -1,5 +1,9 @@
+<!--begin:: Main div-->
 <div class="container">
+    <!--begin:: Secondary div-->
     <div class="d-flex flex-wrap align-items-center justify-content-center py-3 mb-4">
+
+        <!--begin:: Add Folder-->
         <button (click)="saveAddFolder()" type="button" class="btn btn-primary btn-lg m-1">Add Folder</button>
         <div class="me-2">
             <div class="input-group input-group-lg">
@@ -8,20 +12,34 @@
                     aria-describedby="inputGroup-sizing-lg">
             </div>
         </div>
+        <!--end:: Add Folder-->
 
+        <!--begin:: Upload File-->
         <button type="button" (click)="saveUploadFile()" class="btn btn-secondary btn-lg ms-3 me-1">Upload
             File</button>
         <div>
             <input (change)="onChange($event)" type="file" class="form-control form-control-lg">
         </div>
+        <!--end:: Upload File-->
 
+        <!--begin::Third div-->
         <div class="mt-4">
+            <!--begin:: Button Refresh BreadCrumb-->
             <button kendoButton [svgIcon]="rotateIcon" (click)="refreshBreadCrumb()">
                 Refresh breadcrumb
             </button>
-            <kendo-breadcrumb [items]="items" (itemClick)="onItemClick($event)"></kendo-breadcrumb>
-            <kendo-grid (cellClick)="cellClickHandler($event)" [data]="gridView" [pageSize]="pageSize" 
-                [skip]="skip" [pageable]="{
+            <!--end:: Button Refresh BreadCrumb-->
+
+            <!--begin:: BreadCrumb-->
+            <kendo-breadcrumb [items]="items" (itemClick)="onItemClick($event)">
+            </kendo-breadcrumb>
+            <!--end:: BreadCrumb-->
+
+            <!--begin:: Grid Table-->
+            <kendo-grid (cellClick)="cellClickHandler($event)" [data]="gridView" 
+                [pageSize]="pageSize" [skip]="skip" 
+                (pageChange)="pageChange($event)"
+                [pageable]="{
                     buttonCount: buttonCount,
                     info: info,
                     type: type,
@@ -29,15 +47,22 @@
                     previousNext: previousNext,
                     position: position,
                     
-                }"
-                (pageChange)="pageChange($event)">
+                }">
+
+                <!--begin::Name Column-->
                 <kendo-grid-column title="Name">
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <kendo-svgicon [icon]="getIconForExtension(dataItem.extension)"></kendo-svgicon>
                         {{ dataItem.name }}
                     </ng-template>
                 </kendo-grid-column>
+                <!--end::Name Column-->
+
+                <!--begin::Type Column-->
                 <kendo-grid-column field="extension" title="Type"> </kendo-grid-column>
+                <!--end::Type Column-->
+
+                <!--begin:: Action Column-->
                 <kendo-grid-column title="Action" [width]="300">
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <div *ngIf="dataItem.extension==='folder'">
@@ -58,11 +83,17 @@
                         </div>
                     </ng-template>
                 </kendo-grid-column>
+                <!--end:: Action Column-->
 
             </kendo-grid>
+            <!--end:: Grid Table-->
 
         </div>
+        <!--end::Third div-->
     </div>
+    <!--end:: Secondary div-->
+
+    <!--begin:: Modal Delete Folder-->
     <div>
         <kendo-dialog title="Please confirm" *ngIf="openedFolder" (close)="closeDeleteModalFolder('cancel')"
             [minWidth]="250" [width]="450">
@@ -77,6 +108,9 @@
             </kendo-dialog-actions>
         </kendo-dialog>
     </div>
+    <!--end:: Modal Delete Folder-->
+
+    <!--begin:: Modal Delete File-->
     <div>
         <kendo-dialog title="Please confirm" *ngIf="openedFile" (close)="closeDeleteModalFile('cancel')"
             [minWidth]="250" [width]="450">
@@ -91,35 +125,36 @@
             </kendo-dialog-actions>
         </kendo-dialog>
     </div>
-    <div>
+    <!--end:: Modal Delete File-->
 
-        <div class="example-wrapper">
-
-            <p *ngIf="dataSaved">Data has been saved</p>
-            <kendo-window title="Please provide additional data" *ngIf="opened" (close)="close()" [minWidth]="550"
-                [height]="750" [width]="850">
-                <kendo-window-titlebar>
-                    <button kendoWindowMaximizeAction></button>
-                    <button kendoWindowRestoreAction></button>
-                    <button kendoWindowCloseAction></button>
-                </kendo-window-titlebar>
-                <form class="k-form">
-                    <fieldset>
-                        <label class="k-form-field">
-                            <span>template.txt</span>
-                            <kendo-textarea [(ngModel)]="txtFileContent" name="txtFileContent"
-                                placeholder="Your Last Name"></kendo-textarea>
-                        </label>
-                    </fieldset>
-
-                    <div class="k-actions k-actions-end">
-                        <button kendoButton type="button" (click)="close()">Cancel</button>
-                        <button kendoButton themeColor="primary" type="button" (click)="submit()">
-                            Submit
-                        </button>
-                    </div>
-                </form>
-            </kendo-window>
-        </div>
+    <!--begin:: Modal Edit Txt File-->
+    <div class="example-wrapper">
+        <p *ngIf="dataSaved">Data has been saved</p>
+        <kendo-window title="Please provide additional data" *ngIf="opened" (close)="close()" [minWidth]="550"
+            [height]="750" [width]="850">
+            <kendo-window-titlebar>
+                <button kendoWindowMaximizeAction></button>
+                <button kendoWindowRestoreAction></button>
+                <button kendoWindowCloseAction></button>
+            </kendo-window-titlebar>
+            <form class="k-form">
+                <fieldset>
+                    <label class="k-form-field">
+                        <span>template.txt</span>
+                        <kendo-textarea [(ngModel)]="txtFileContent" name="txtFileContent"
+                            placeholder="Your Last Name"></kendo-textarea>
+                    </label>
+                </fieldset>
+                
+                <div class="k-actions k-actions-end">
+                    <button kendoButton type="button" (click)="close()">Cancel</button>
+                    <button kendoButton themeColor="primary" type="button" (click)="submit()">
+                        Submit
+                    </button>
+                </div>
+            </form>
+        </kendo-window>
     </div>
+    <!--end:: Modal Edit Txt File-->
 </div>
+<!--end:: Main div-->
