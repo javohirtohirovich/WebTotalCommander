@@ -11,9 +11,9 @@ export class FolderApiService {
     private url: string = "https://localhost:7251/api/folder"
 
     //Folder GetAll
-    public getAllFolder(folderPath: string): Observable<FolderGetAllModel> {
+    public getAllFolder(folderPath: string,skip:number,take:number): Observable<FolderGetAllModel> {
         if (folderPath.length === 0) {
-            return this.client.get<FolderGetAllModel>(`${this.url}?pageNumber=1&pageSize=5`).pipe(
+            return this.client.get<FolderGetAllModel>(`${this.url}?skip=${skip}&take=${take}`).pipe(
                 catchError((error) => {
                     console.error("Error in getFolders:", error);
                     throw error;
@@ -21,7 +21,7 @@ export class FolderApiService {
             );
         }
         else {
-            return this.client.get<FolderGetAllModel>(`${this.url}?folder_path=${folderPath}&pageNumber=1&pageSize=5`).pipe(
+            return this.client.get<FolderGetAllModel>(`${this.url}?folder_path=${folderPath}&pageNumber=${skip}&pageSize=${take}`).pipe(
                 catchError((error) => {
                     console.error("Error in getFolders:", error);
                     throw error;

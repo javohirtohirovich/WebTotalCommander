@@ -18,9 +18,9 @@ public class FolderController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> FolderGetAllAsync(string folder_path = "", int pageNumber = 1, int pageSize = 5)
+    public async Task<IActionResult> FolderGetAllAsync(string folder_path = "", int skip= 0, int take = 5)
     {
-        FolderGetAllViewModel folderGetAllView = await _service.FolderGetAllAsync(folder_path,new PaginationParams(pageNumber,pageSize));
+        FolderGetAllViewModel folderGetAllView = await _service.FolderGetAllAsync(folder_path,new PaginationParams(skip,take));
         return Ok(folderGetAllView);
     }
 

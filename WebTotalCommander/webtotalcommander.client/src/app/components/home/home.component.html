@@ -20,7 +20,17 @@
                 Refresh breadcrumb
             </button>
             <kendo-breadcrumb [items]="items" (itemClick)="onItemClick($event)"></kendo-breadcrumb>
-            <kendo-grid (cellClick)="cellClickHandler($event)" [data]="fileData.folderFile">
+            <kendo-grid (cellClick)="cellClickHandler($event)" [data]="gridView" [pageSize]="pageSize" 
+                [skip]="skip" [pageable]="{
+                    buttonCount: buttonCount,
+                    info: info,
+                    type: type,
+                    pageSizes: pageSizes,
+                    previousNext: previousNext,
+                    position: position,
+                    
+                }"
+                (pageChange)="pageChange($event)">
                 <kendo-grid-column title="Name">
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <kendo-svgicon [icon]="getIconForExtension(dataItem.extension)"></kendo-svgicon>
@@ -48,7 +58,9 @@
                         </div>
                     </ng-template>
                 </kendo-grid-column>
+
             </kendo-grid>
+
         </div>
     </div>
     <div>
@@ -82,20 +94,21 @@
     <div>
 
         <div class="example-wrapper">
-           
+
             <p *ngIf="dataSaved">Data has been saved</p>
-            <kendo-window  title="Please provide additional data" *ngIf="opened" (close)="close()" [minWidth]="550" [height]="750"
-                [width]="850">
+            <kendo-window title="Please provide additional data" *ngIf="opened" (close)="close()" [minWidth]="550"
+                [height]="750" [width]="850">
                 <kendo-window-titlebar>
                     <button kendoWindowMaximizeAction></button>
                     <button kendoWindowRestoreAction></button>
                     <button kendoWindowCloseAction></button>
-                  </kendo-window-titlebar>
+                </kendo-window-titlebar>
                 <form class="k-form">
                     <fieldset>
                         <label class="k-form-field">
                             <span>template.txt</span>
-                            <kendo-textarea  [(ngModel)]="txtFileContent" name="txtFileContent" placeholder="Your Last Name"></kendo-textarea>
+                            <kendo-textarea [(ngModel)]="txtFileContent" name="txtFileContent"
+                                placeholder="Your Last Name"></kendo-textarea>
                         </label>
                     </fieldset>
 

@@ -23,7 +23,8 @@ import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideToastr } from 'ngx-toastr';
 import { SVGIconModule } from '@progress/kendo-angular-icons';
 import { InputsModule } from "@progress/kendo-angular-inputs";
-
+import { PagerModule } from "@progress/kendo-angular-pager";
+import { LabelModule } from '@progress/kendo-angular-label';
 
 @NgModule({
   declarations: [
@@ -40,7 +41,7 @@ import { InputsModule } from "@progress/kendo-angular-inputs";
       timeOut: 2000,
     positionClass: 'toast-top-right',
     preventDuplicates: true,
-    }),BrowserAnimationsModule,ButtonsModule,SVGIconModule,DialogsModule,InputsModule,FormsModule
+    }),BrowserAnimationsModule,ButtonsModule,SVGIconModule,DialogsModule,InputsModule,FormsModule,PagerModule,LabelModule
   ],
   providers: [],
   bootstrap: [AppComponent]

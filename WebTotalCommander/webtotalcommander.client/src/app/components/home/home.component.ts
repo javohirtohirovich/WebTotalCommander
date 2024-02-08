@@ -6,16 +6,17 @@ import { FileService } from '../../services/file.service';
 import { ToastrService } from 'ngx-toastr';
 import { FolderGetAllViewModel } from '../../services/models/common/folder.getall.view-model';
 import { BreadCrumbItem } from "@progress/kendo-angular-navigation";
-import {arrowRotateCcwIcon, homeIcon, SVGIcon, filePdfIcon, fileExcelIcon, 
-    fileWordIcon, downloadIcon, trashIcon, pencilIcon,fileImageIcon, fileTxtIcon, 
-    fileAudioIcon, fileTypescriptIcon, fileVideoIcon, filePptIcon, folderIcon, 
-    exeIcon, fileProgrammingIcon, xIcon, fileZipIcon} from "@progress/kendo-svg-icons";
-import { CellClickEvent } from '@progress/kendo-angular-grid';
+import {
+    arrowRotateCcwIcon, homeIcon, SVGIcon, filePdfIcon, fileExcelIcon,
+    fileWordIcon, downloadIcon, trashIcon, pencilIcon, fileImageIcon, fileTxtIcon,
+    fileAudioIcon, fileTypescriptIcon, fileVideoIcon, filePptIcon, folderIcon,
+    exeIcon, fileProgrammingIcon, xIcon, fileZipIcon
+} from "@progress/kendo-svg-icons";
+import { CellClickEvent, PageChangeEvent, PagerPosition, PagerType} from '@progress/kendo-angular-grid';
 import { FolderDeleteViewModel } from '../../services/models/folder/folder.view-delete.model';
 import { FileViewDeleteModel } from '../../services/models/file/file.view-delete.model';
 import { FileViewEditModel } from '../../services/models/file/file.view-edit.model';
-import { FolderFileViewModel } from '../../services/models/common/folder.file.view-model';
-
+import { GridTDataView } from '../../services/models/folder/grid.data.view';
 @Component({
     selector: 'app-home',
     templateUrl: './home.component.html',
@@ -80,9 +81,50 @@ export class HomeComponent implements OnInit {
         '.ts': fileTypescriptIcon,
         '.zip': fileZipIcon,
         '.ppt': filePptIcon,
-        '.pptx':filePptIcon
+        '.pptx': filePptIcon
 
     };
+
+    //Pagination
+    public pagerTypes = ["numeric", "input"];
+    public totalCount=1;
+    public type: PagerType = "numeric";
+    public buttonCount = 5;
+    public info = true;
+    public pageSizes = true;
+    public previousNext = true;
+    public position: PagerPosition = "bottom";
+    public gridView:GridTDataView=new GridTDataView();
+    public pageSize = 5;
+    public skip = 0;
+    public pageChange({ skip, take }: PageChangeEvent): void {
+        this.skip = skip;
+        this.pageSize = take;
+        this.getAll(this.skip,this.pageSize)
+      }
+    //Pagination
+    //Function NgOnit
+    ngOnInit(): void {
+        this.getAll(this.skip,this.pageSize);
+    }
+
+    //Function (ngOnInit) GetAll Folders and Files
+    public getAll(skip: number = 0, take: number = 5): void {
+     
+        const path: string = this.toCollectPath();
+        this._serviceFolder.getFolder(path, skip, take).subscribe({
+            next: (response) => {
+                this.fileData = response;
+                this.gridView.data=response.folderFile;
+                this.gridView.total=response.paginationMetaData.totalItems;
+                this.totalCount=response.paginationMetaData.totalItems;
+                this.toastr.success('Success!');
+            },
+            error: (err) => {
+                this.toastr.warning('Get all warning!');
+            },
+        });
+    }
 
     //Edit Modal
     public txtFileContent: string = '';
@@ -95,7 +137,7 @@ export class HomeComponent implements OnInit {
 
     public openEditTxtModal(fileName: string): void {
         this.opened = true;
-        this.fileNameToEdit=fileName;
+        this.fileNameToEdit = fileName;
         this._serviceFile.getTxtFile(this.toCollectPath() + fileName).subscribe({
             next: (response) => {
                 // Assuming the response is a Blob containing the text file content
@@ -116,8 +158,8 @@ export class HomeComponent implements OnInit {
         // Call the editTxtFile method with the filename and updated content
         const fileEditModel = new FileViewEditModel();
 
-        fileEditModel.filePath=this.toCollectPath() + this.fileNameToEdit;
-        fileEditModel.file=new File([this.txtFileContent], this.fileNameToEdit)
+        fileEditModel.filePath = this.toCollectPath() + this.fileNameToEdit;
+        fileEditModel.file = new File([this.txtFileContent], this.fileNameToEdit)
 
 
         this._serviceFile.editTxtFile(fileEditModel).subscribe({
@@ -216,25 +258,7 @@ export class HomeComponent implements OnInit {
     }
 
 
-    //Function NgOnit
-    ngOnInit(): void {
-        this.getAll();
-    }
 
-    //Function (ngOnInit) GetAll Folders and Files
-    public getAll(): void {
-        debugger;
-        const path: string = this.toCollectPath();
-        this._serviceFolder.getFolder(path).subscribe({
-            next: (response) => {
-                this.fileData = response;
-                this.toastr.success('Success!');
-            },
-            error: (err) => {
-                this.toastr.warning('Get all warning!');
-            },
-        });
-    }
 
     //Function BreadCrumb Item click
     public onItemClick(item: BreadCrumbItem): void {
@@ -252,8 +276,8 @@ export class HomeComponent implements OnInit {
     }
 
     // Function to fill BreadCrumb (Click folder folder name add bread crumb)
-  public toFillBreadCrumb(folderName: string, folderPath: string): void {
-    for (let i = 0; i < this.fileData.folderFile.length; i++) {
+    public toFillBreadCrumb(folderName: string, folderPath: string): void {
+        for (let i = 0; i < this.fileData.folderFile.length; i++) {
             this.defaultItems.push({ text: folderPath, title: folderName })
         }
     }

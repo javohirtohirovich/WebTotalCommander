@@ -96,7 +96,7 @@ public class FolderService : IFolderService
         Paginator paginator = new Paginator();
         PaginationMetaData paginationMetaData = paginator.Paginate(result.FolderFile.Count, @params);
         result.PaginationMetaData = paginationMetaData;
-        result.FolderFile =result.FolderFile.Skip(@params.GetSkipCount()).Take(@params.PageSize).ToList();
+        result.FolderFile =result.FolderFile.Skip(@params.Skip).Take(@params.Take).ToList();
         return result;
 
     }

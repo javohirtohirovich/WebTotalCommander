@@ -2,15 +2,12 @@
 
 public class PaginationParams
 {
-    public PaginationParams(int pageNumber, int pageSize)
+    public PaginationParams(int skip, int take)
     {
-        PageNumber = pageNumber;
-        PageSize = pageSize;
+        Skip = skip;
+        Take = take;
     }
-    public int PageNumber {  get; set; }
-    public int PageSize { get; set; }
-    public int GetSkipCount()
-    {
-        return (PageNumber - 1) * PageSize;
-    }
+    public int Skip {  get; set; }
+    public int Take { get; set; }
+  
 }
