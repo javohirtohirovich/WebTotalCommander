@@ -25,7 +25,7 @@
         <!--begin::Third div-->
         <div class="mt-4">
             <!--begin:: Button Refresh BreadCrumb-->
-            <button kendoButton [svgIcon]="rotateIcon" (click)="refreshBreadCrumb()">
+            <button kendoButton [svgIcon]="_iconsKendo.rotateIcon" (click)="refreshBreadCrumb()">
                 Refresh breadcrumb
             </button>
             <!--end:: Button Refresh BreadCrumb-->
@@ -52,7 +52,7 @@
                 <!--begin::Name Column-->
                 <kendo-grid-column title="Name">
                     <ng-template kendoGridCellTemplate let-dataItem>
-                        <kendo-svgicon [icon]="getIconForExtension(dataItem.extension)"></kendo-svgicon>
+                        <kendo-svgicon [icon]="_iconsKendo.getIconForExtension(dataItem.extension)"></kendo-svgicon>
                         {{ dataItem.name }}
                     </ng-template>
                 </kendo-grid-column>
@@ -66,19 +66,19 @@
                 <kendo-grid-column title="Action" [width]="300">
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <div *ngIf="dataItem.extension==='folder'">
-                            <button kendoGridRemoveCommand [svgIcon]="deleteIcon"
+                            <button kendoGridRemoveCommand [svgIcon]="_iconsKendo.deleteIcon"
                                 (click)="openDeleteModalFolder(dataItem.name)" class="me-4">Delete</button>
-                            <button kendoGridEditCommand [svgIcon]="downloadIcon"
+                            <button kendoGridEditCommand [svgIcon]="_iconsKendo.downloadIcon"
                                 (click)="downloadFolderZip(dataItem.name)" class="me-4">Zip</button>
                         </div>
                         <div *ngIf="dataItem.extension==='.txt'">
-                            <button kendoGridRemoveCommand [svgIcon]="deleteIcon"
+                            <button kendoGridRemoveCommand [svgIcon]="_iconsKendo.deleteIcon"
                                 (click)="openDeleteModalFile(dataItem.name)" class="me-4">Delete</button>
-                            <button kendoGridEditCommand [svgIcon]="editIcon" (click)="openEditTxtModal(dataItem.name)"
+                            <button kendoGridEditCommand [svgIcon]="_iconsKendo.editIcon" (click)="openEditTxtModal(dataItem.name)"
                                 class="me-4">Edit</button>
                         </div>
                         <div *ngIf="dataItem.extension!='folder' && dataItem.extension!='.txt'">
-                            <button kendoGridRemoveCommand [svgIcon]="deleteIcon"
+                            <button kendoGridRemoveCommand [svgIcon]="_iconsKendo.deleteIcon"
                                 (click)="openDeleteModalFile(dataItem.name)" class="me-4">Delete</button>
                         </div>
                     </ng-template>

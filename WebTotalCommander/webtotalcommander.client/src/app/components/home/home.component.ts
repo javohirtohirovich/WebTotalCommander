@@ -6,14 +6,6 @@ import { Component, OnInit, inject } from '@angular/core';
 //Kendo BreadCrumb
 import { BreadCrumbItem } from "@progress/kendo-angular-navigation";
 
-//Kenod Icons
-import {
-    arrowRotateCcwIcon, homeIcon, SVGIcon, filePdfIcon, fileExcelIcon,
-    fileWordIcon, downloadIcon, trashIcon, pencilIcon, fileImageIcon, fileTxtIcon,
-    fileAudioIcon, fileTypescriptIcon, fileVideoIcon, filePptIcon, folderIcon,
-    exeIcon, fileProgrammingIcon, xIcon, fileZipIcon
-} from "@progress/kendo-svg-icons";
-
 //Kenod Grid Libraries
 import { CellClickEvent, PageChangeEvent, PagerPosition, PagerType } from '@progress/kendo-angular-grid';
 
@@ -35,6 +27,7 @@ import { FileViewEditModel } from '../../services/models/file/file.view-edit.mod
 //ViewModel Folder
 import { FolderCreateViewModel } from '../../services/models/folder/folder.view-create.model';
 import { FolderDeleteViewModel } from '../../services/models/folder/folder.view-delete.model';
+import { KendoIcons } from '../helpers/get-icons';
 
 @Component({
     selector: 'app-home',
@@ -48,7 +41,7 @@ export class HomeComponent implements OnInit {
     //Inject FolderService and FileService
     private _serviceFolder: FolderService = inject(FolderService);
     private _serviceFile: FileService = inject(FileService);
-
+    public _iconsKendo:KendoIcons=inject(KendoIcons);
     //Variables folder name
     public folderName: string = '';
     public fileSource: File | null = null;
@@ -66,44 +59,12 @@ export class HomeComponent implements OnInit {
         {
             text: "Home",
             title: "Home",
-            svgIcon: homeIcon,
+            svgIcon: this._iconsKendo.homeIcon,
         }
     ];
 
     //Array BreadCrumb
     public items: BreadCrumbItem[] = [...this.defaultItems];
-
-    //Variables SVGIcon
-    public homeIcon: SVGIcon = homeIcon;
-    public downloadIcon: SVGIcon = downloadIcon;
-    public rotateIcon: SVGIcon = arrowRotateCcwIcon;
-    public deleteIcon: SVGIcon = trashIcon;
-    public editIcon: SVGIcon = pencilIcon;
-
-    //Dictionary FileIcons
-    private fileIcons: { [key: string]: SVGIcon } = {
-        'default': xIcon,
-        'folder': folderIcon,
-        '.pdf': filePdfIcon,
-        '.jpg': fileImageIcon,
-        '.jpeg': fileImageIcon,
-        '.png': fileImageIcon,
-        '.gif': fileImageIcon,
-        '.xlsx': fileExcelIcon,
-        '.xls': fileExcelIcon,
-        '.docx': fileWordIcon,
-        '.doc': fileWordIcon,
-        '.txt': fileTxtIcon,
-        '.mp4': fileVideoIcon,
-        '.exe': exeIcon,
-        '.py': fileProgrammingIcon,
-        '.js': fileProgrammingIcon,
-        '.mp3': fileAudioIcon,
-        '.ts': fileTypescriptIcon,
-        '.zip': fileZipIcon,
-        '.ppt': filePptIcon,
-        '.pptx': filePptIcon
-    };
 
     //Variables for Pagination
     public pagerTypes = ["numeric", "input"];
@@ -305,10 +266,7 @@ export class HomeComponent implements OnInit {
     }
     //end:: BreadCrumb----------------------------------------------------------------------------------
 
-    //Get File and Folder extension
-    public getIconForExtension(extension: string): SVGIcon {
-        return this.fileIcons[extension.toLowerCase()] || fileTypescriptIcon;
-    }
+   
 
     //Function (Tables Items Folder and File click)
     public cellClickHandler(args: CellClickEvent): void {
