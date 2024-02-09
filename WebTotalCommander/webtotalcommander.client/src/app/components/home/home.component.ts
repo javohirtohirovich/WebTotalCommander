@@ -63,7 +63,6 @@ export class HomeComponent implements OnInit {
     public items: BreadCrumbItem[] = [...this.defaultItems];
 
     //Variables for Pagination
-    public pagerTypes = ["numeric", "input"];
     public totalCount = 1;
     public type: PagerType = "numeric";
     public buttonCount = 5;
@@ -78,7 +77,6 @@ export class HomeComponent implements OnInit {
     //Variables Edit Txt File (Modal)
     public txtFileContent: string = '';
     public opened = false;
-    public dataSaved = false;
     public fileNameToEdit: string = '';
 
     //Variables Delete Folder (Modal)
@@ -102,7 +100,7 @@ export class HomeComponent implements OnInit {
     }
 
     //Function (ngOnInit) GetAll Folders and Files
-    public getAll(skip: number = 0, take: number = 5): void {
+    public getAll(skip: number, take: number): void {
 
         const path: string = this.toCollectPath();
         this._serviceFolder.getFolder(path, skip, take).subscribe({
@@ -158,14 +156,12 @@ export class HomeComponent implements OnInit {
         this._serviceFile.editTxtFile(fileEditModel).subscribe({
             next: (response) => {
                 this.toastr.success('File content updated successfully!');
-                this.dataSaved = true;
                 this.close();
             },
             error: (err) => {
                 this.toastr.warning('Error updating file content!');
             },
         });
-        this.dataSaved = true;
         this.close();
     }
 
@@ -180,7 +176,7 @@ export class HomeComponent implements OnInit {
             this._serviceFolder.deleteFolder(folder).subscribe({
                 next: (response) => {
                     this.toastr.success('Delete folder success!');
-                    this.getAll();
+                    this.getAll(this.skip,this.pageSize);
                 },
                 error: (err) => {
                     this.toastr.warning('Delete folder warning!');
@@ -214,7 +210,7 @@ export class HomeComponent implements OnInit {
             this._serviceFile.deleteFile(file).subscribe({
                 next: (response) => {
                     this.toastr.success('Delete file success!');
-                    this.getAll();
+                    this.getAll(this.skip,this.pageSize);
                 },
                 error: (err) => {
                     this.toastr.warning('Delete file warning!');
@@ -243,14 +239,14 @@ export class HomeComponent implements OnInit {
     public onItemClick(item: BreadCrumbItem): void {
         const index = this.items.findIndex((e) => e.text === item.text);
         this.items = this.items.slice(0, index + 1);
-        this.defaultItems.pop();
-        this.getAll();
+        this.defaultItems=this.defaultItems.slice(0,index+1);
+        this.getAll(this.skip,this.pageSize);
     }
 
     // Function (Button) Refresh button
     public refreshBreadCrumb(): void {
         this.path = "";
-        this.getAll();
+        this.getAll(this.skip,this.pageSize);
         this.items = [...this.defaultItems];
     }
 
@@ -262,18 +258,23 @@ export class HomeComponent implements OnInit {
     }
     //end:: BreadCrumb----------------------------------------------------------------------------------
 
+    public cellArgs!: CellClickEvent;
     //Function (Tables Items Folder and File click)
-    public cellClickHandler(args: CellClickEvent): void {
-        if (args.dataItem.extension === "folder") {
-            this.defaultItems.push({ text: args.dataItem.name, title: args.dataItem.name })
+    public onDblClick(): void {
+        if (this.cellArgs.dataItem.extension === "folder") {
+            this.defaultItems.push({ text: this.cellArgs.dataItem.name, title: this.cellArgs.dataItem.name })
             this.refreshBreadCrumb();
-            this.getAll();
+            this.getAll(this.skip,this.pageSize);
         }
         else {
-            const path: string = `${this.toCollectPath()}${args.dataItem.name}`
-            this.downloadFile(path, args.dataItem.name);
+            const path: string = `${this.toCollectPath()}${this.cellArgs.dataItem.name}`
+            this.downloadFile(path, this.cellArgs.dataItem.name);
         }
 
+    }
+
+    public cellClickHandler(args: CellClickEvent): void {
+        this.cellArgs = args;
     }
 
     //Fuction make path
@@ -310,7 +311,7 @@ export class HomeComponent implements OnInit {
             this._serviceFolder.addFolder(folderViewCreateModel).subscribe({
                 next: (response) => {
                     this.toastr.success('Folder success created!');
-                    this.getAll();
+                    this.getAll(this.skip,this.pageSize);
                 },
                 error: (err) => {
                     if (err.status == 409) {
@@ -338,7 +339,7 @@ export class HomeComponent implements OnInit {
             this._serviceFile.addFile(fileViewCreateModel).subscribe({
                 next: (response) => {
                     this.toastr.success('File success upload!');
-                    this.getAll();
+                    this.getAll(this.skip,this.pageSize);
                 },
                 error: (err) => {
                     if (err.status == 409) {

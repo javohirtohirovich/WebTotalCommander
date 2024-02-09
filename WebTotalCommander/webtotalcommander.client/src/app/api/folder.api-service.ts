@@ -25,7 +25,7 @@ export class FolderApiService {
         }
         //If Folder Path full
         else {
-            return this.client.get<FolderGetAllModel>(`${this.url}?folder_path=${folderPath}&pageNumber=${skip}&pageSize=${take}`).pipe(
+            return this.client.get<FolderGetAllModel>(`${this.url}?folder_path=${folderPath}&skip=${skip}&take=${take}`).pipe(
                 catchError((error) => {
                     throw error;
                 })

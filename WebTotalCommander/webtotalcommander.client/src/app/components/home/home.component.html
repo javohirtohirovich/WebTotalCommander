@@ -24,19 +24,14 @@
 
         <!--begin::Third div-->
         <div class="mt-4">
-            <!--begin:: Button Refresh BreadCrumb-->
-            <button kendoButton [svgIcon]="_iconsKendo.rotateIcon" (click)="refreshBreadCrumb()">
-                Refresh breadcrumb
-            </button>
-            <!--end:: Button Refresh BreadCrumb-->
-
             <!--begin:: BreadCrumb-->
             <kendo-breadcrumb [items]="items" (itemClick)="onItemClick($event)">
             </kendo-breadcrumb>
             <!--end:: BreadCrumb-->
 
             <!--begin:: Grid Table-->
-            <kendo-grid (cellClick)="cellClickHandler($event)" [data]="gridView" 
+            <kendo-grid   (dblclick)="onDblClick()"
+            (cellClick)="cellClickHandler($event)" [data]="gridView" 
                 [pageSize]="pageSize" [skip]="skip" 
                 (pageChange)="pageChange($event)"
                 [pageable]="{
@@ -129,7 +124,6 @@
 
     <!--begin:: Modal Edit Txt File-->
     <div class="example-wrapper">
-        <p *ngIf="dataSaved">Data has been saved</p>
         <kendo-window title="Please provide additional data" *ngIf="opened" (close)="close()" [minWidth]="550"
             [height]="750" [width]="850">
             <kendo-window-titlebar>
