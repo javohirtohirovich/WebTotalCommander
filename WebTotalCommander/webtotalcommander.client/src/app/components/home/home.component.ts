@@ -4,8 +4,7 @@ import { Component, OnInit, inject } from '@angular/core';
 //begin:: Kendo
 
 //Kendo BreadCrumb
-import { BreadCrumbItem } from "@progress/kendo-angular-navigation";
-
+import { BreadCrumbItem } from "@progress/kendo-angular-navigation";  
 //Kenod Grid Libraries
 import { CellClickEvent, PageChangeEvent, PagerPosition, PagerType } from '@progress/kendo-angular-grid';
 
@@ -38,18 +37,15 @@ export class HomeComponent implements OnInit {
     //Konstruktor
     constructor(private toastr: ToastrService) { }
 
-    //Inject FolderService and FileService
+    //Inject FolderService, FileService, KendoIcons (helper)
     private _serviceFolder: FolderService = inject(FolderService);
     private _serviceFile: FileService = inject(FileService);
     public _iconsKendo:KendoIcons=inject(KendoIcons);
+
     //Variables folder name
     public folderName: string = '';
     public fileSource: File | null = null;
-
-    //Variables Modal error folder name
-    public folderNameError: string = '';
-    public fileSourceError: string = '';
-
+    
     //Variables Array Folder GetALL
     public fileData: FolderGetAllViewModel = new FolderGetAllViewModel();
     public path: string = "";
@@ -265,8 +261,6 @@ export class HomeComponent implements OnInit {
         }
     }
     //end:: BreadCrumb----------------------------------------------------------------------------------
-
-   
 
     //Function (Tables Items Folder and File click)
     public cellClickHandler(args: CellClickEvent): void {
