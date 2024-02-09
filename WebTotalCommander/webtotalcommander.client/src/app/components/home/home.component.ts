@@ -162,7 +162,7 @@ export class HomeComponent implements OnInit {
         });
     }
 
-    //begin:: Edit Modal ===========================================================
+    //begin:: Edit Modal ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
     //Function (button) Close EditModal
     public close(): void {
@@ -212,9 +212,9 @@ export class HomeComponent implements OnInit {
         this.close();
     }
 
-    //end:: Edit Modal================================================================
+    //end:: Edit Modal--------------------------------------------------------------------------
 
-    //begin:: Delete Folder Modal=====================================================
+    //begin:: Delete Folder Modal+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     public closeDeleteModalFolder(status: string): void {
         if (status === 'yes') {
             const folder: FolderDeleteViewModel = new FolderDeleteViewModel();
@@ -245,9 +245,9 @@ export class HomeComponent implements OnInit {
         this.openedFolder = true;
     }
 
-    //end:: Delete Folder Modal=========================================================
+    //end:: Delete Folder Modal-----------------------------------------------------------------------
 
-    //begin:: Delete File Modal==========================================================
+    //begin:: Delete File Modal+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     public closeDeleteModalFile(status: string): void {
 
         if (status === 'yes') {
@@ -279,9 +279,9 @@ export class HomeComponent implements OnInit {
         this.fileNameDelete = fileName;
         this.openedFile = true;
     }
-    //end:: Delete File Modal==============================================================
+    //end:: Delete File Modal----------------------------------------------------------------------------
 
-    //begin:: BreadCrumb================================================================
+    //begin:: BreadCrumb+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     //Function BreadCrumb Item click
     public onItemClick(item: BreadCrumbItem): void {
         const index = this.items.findIndex((e) => e.text === item.text);
@@ -303,7 +303,7 @@ export class HomeComponent implements OnInit {
             this.defaultItems.push({ text: folderPath, title: folderName })
         }
     }
-    //end:: BreadCrumb========================================================================
+    //end:: BreadCrumb----------------------------------------------------------------------------------
 
     //Get File and Folder extension
     public getIconForExtension(extension: string): SVGIcon {
