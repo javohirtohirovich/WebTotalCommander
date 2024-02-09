@@ -4,7 +4,7 @@ import {
     arrowRotateCcwIcon, homeIcon, SVGIcon, filePdfIcon, fileExcelIcon,
     fileWordIcon, downloadIcon, trashIcon, pencilIcon, fileImageIcon, fileTxtIcon,
     fileAudioIcon, fileTypescriptIcon, fileVideoIcon, filePptIcon, folderIcon,
-    exeIcon, fileProgrammingIcon, xIcon, fileZipIcon
+    exeIcon, fileProgrammingIcon, xIcon, fileZipIcon,arrowLeftIcon,arrowRightIcon,arrowUpIcon,folderUpIcon
 } from "@progress/kendo-svg-icons";
 
 @Injectable({ providedIn: "root" })
@@ -15,7 +15,10 @@ export class KendoIcons{
     public rotateIcon: SVGIcon = arrowRotateCcwIcon;
     public deleteIcon: SVGIcon = trashIcon;
     public editIcon: SVGIcon = pencilIcon;
-
+    public arrowLeft:SVGIcon=arrowLeftIcon;
+    public arrowRight:SVGIcon=arrowRightIcon;
+    public arrowUp:SVGIcon=arrowUpIcon;
+    
      //Dictionary FileIcons
      private fileIcons: { [key: string]: SVGIcon } = {
         'default': xIcon,
@@ -38,7 +41,8 @@ export class KendoIcons{
         '.ts': fileTypescriptIcon,
         '.zip': fileZipIcon,
         '.ppt': filePptIcon,
-        '.pptx': filePptIcon
+        '.pptx': filePptIcon,
+        '':folderUpIcon
     };
     
     //Get File and Folder extension

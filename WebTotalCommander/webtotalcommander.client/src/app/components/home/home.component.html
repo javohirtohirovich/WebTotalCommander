@@ -24,17 +24,23 @@
 
         <!--begin::Third div-->
         <div class="mt-4">
+            <button kendoButton [svgIcon]="_iconsKendo.arrowLeft"  class="me-2">
+                Back
+            </button>
+            <button kendoButton [svgIcon]="_iconsKendo.arrowRight" class="me-2">
+                Forward
+            </button>
+            <button kendoButton [svgIcon]="_iconsKendo.arrowUp"  >
+                Up
+            </button>
             <!--begin:: BreadCrumb-->
-            <kendo-breadcrumb  [items]="items" (itemClick)="onItemClick($event)">
+            <kendo-breadcrumb [items]="items" (itemClick)="onItemClick($event)">
             </kendo-breadcrumb>
             <!--end:: BreadCrumb-->
 
             <!--begin:: Grid Table-->
-            <kendo-grid   (dblclick)="onDblClick()"
-            (cellClick)="cellClickHandler($event)" [data]="gridView" 
-                [pageSize]="pageSize" [skip]="skip" 
-                (pageChange)="pageChange($event)"
-                [pageable]="{
+            <kendo-grid (dblclick)="onDblClick()" (cellClick)="cellClickHandler($event)" [data]="gridView"
+                [pageSize]="pageSize" [skip]="skip" (pageChange)="pageChange($event)" [pageable]="{
                     buttonCount: buttonCount,
                     info: info,
                     type: type,
@@ -69,10 +75,10 @@
                         <div *ngIf="dataItem.extension==='.txt'">
                             <button kendoGridRemoveCommand [svgIcon]="_iconsKendo.deleteIcon"
                                 (click)="openDeleteModalFile(dataItem.name)" class="me-4">Delete</button>
-                            <button kendoGridEditCommand [svgIcon]="_iconsKendo.editIcon" (click)="openEditTxtModal(dataItem.name)"
-                                class="me-4">Edit</button>
+                            <button kendoGridEditCommand [svgIcon]="_iconsKendo.editIcon"
+                                (click)="openEditTxtModal(dataItem.name)" class="me-4">Edit</button>
                         </div>
-                        <div *ngIf="dataItem.extension!='folder' && dataItem.extension!='.txt'">
+                        <div *ngIf="dataItem.extension!='folder' && dataItem.extension!='.txt' && dataItem.extension!=''">
                             <button kendoGridRemoveCommand [svgIcon]="_iconsKendo.deleteIcon"
                                 (click)="openDeleteModalFile(dataItem.name)" class="me-4">Delete</button>
                         </div>
@@ -135,11 +141,10 @@
                 <fieldset>
                     <label class="k-form-field">
                         <span>template.txt</span>
-                        <kendo-textarea [rows]="30" [(ngModel)]="txtFileContent" name="txtFileContent"
-                            ></kendo-textarea>
+                        <kendo-textarea [rows]="30" [(ngModel)]="txtFileContent" name="txtFileContent"></kendo-textarea>
                     </label>
                 </fieldset>
-                
+
                 <div class="k-actions k-actions-end">
                     <button kendoButton type="button" (click)="close()">Cancel</button>
                     <button kendoButton themeColor="primary" type="button" (click)="submit()">

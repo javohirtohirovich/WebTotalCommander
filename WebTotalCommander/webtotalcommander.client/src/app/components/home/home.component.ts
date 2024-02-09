@@ -27,6 +27,7 @@ import { FileViewEditModel } from '../../services/models/file/file.view-edit.mod
 import { FolderCreateViewModel } from '../../services/models/folder/folder.view-create.model';
 import { FolderDeleteViewModel } from '../../services/models/folder/folder.view-delete.model';
 import { KendoIcons } from '../helpers/get-icons';
+import { FolderFileViewModel } from '../../services/models/common/folder.file.view-model';
 
 @Component({
     selector: 'app-home',
@@ -63,7 +64,6 @@ export class HomeComponent implements OnInit {
     public items: BreadCrumbItem[] = [...this.defaultItems];
 
     //Variables for Pagination
-    public totalCount = 1;
     public type: PagerType = "numeric";
     public buttonCount = 5;
     public info = true;
@@ -108,8 +108,15 @@ export class HomeComponent implements OnInit {
                 this.fileData = response;
                 this.gridView.data = response.folderFile;
                 this.gridView.total = response.paginationMetaData.totalItems;
-                this.totalCount = response.paginationMetaData.totalItems;
-                this.toastr.success('Success!');
+                if(path.length!==0)
+                {
+                    const exitRow:FolderFileViewModel=new FolderFileViewModel();
+                    exitRow.name="...";
+                    exitRow.extension="";
+                    exitRow.path="";
+
+                    this.gridView.data.unshift(exitRow);
+                }
             },
             error: (err) => {
                 this.toastr.warning('Get all warning!');
@@ -239,6 +246,7 @@ export class HomeComponent implements OnInit {
         const index = this.items.findIndex((e) => e.text === item.text);
         this.items = this.items.slice(0, index + 1);
         this.defaultItems=this.defaultItems.slice(0,index+1);
+        this.skip=0;
         this.getAll(this.skip,this.pageSize);
     }
 
@@ -263,7 +271,11 @@ export class HomeComponent implements OnInit {
         if (this.cellArgs.dataItem.extension === "folder") {
             this.defaultItems.push({ text: this.cellArgs.dataItem.name, title: this.cellArgs.dataItem.name })
             this.refreshBreadCrumb();
-            this.getAll(this.skip,this.pageSize);
+        }
+        else if(this.cellArgs.dataItem.extension===""){
+            this.defaultItems.pop();
+            this.skip=0;
+            this.refreshBreadCrumb();
         }
         else {
             const path: string = `${this.toCollectPath()}${this.cellArgs.dataItem.name}`
