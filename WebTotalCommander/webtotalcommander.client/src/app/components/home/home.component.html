@@ -25,7 +25,7 @@
         <!--begin::Third div-->
         <div class="mt-4">
             <!--begin:: BreadCrumb-->
-            <kendo-breadcrumb [items]="items" (itemClick)="onItemClick($event)">
+            <kendo-breadcrumb  [items]="items" (itemClick)="onItemClick($event)">
             </kendo-breadcrumb>
             <!--end:: BreadCrumb-->
 
@@ -135,8 +135,8 @@
                 <fieldset>
                     <label class="k-form-field">
                         <span>template.txt</span>
-                        <kendo-textarea [(ngModel)]="txtFileContent" name="txtFileContent"
-                            placeholder="Your Last Name"></kendo-textarea>
+                        <kendo-textarea [rows]="30" [(ngModel)]="txtFileContent" name="txtFileContent"
+                            ></kendo-textarea>
                     </label>
                 </fieldset>
                 

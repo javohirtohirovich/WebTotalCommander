@@ -145,7 +145,6 @@ export class HomeComponent implements OnInit {
 
     //Function (button) Save EditModal
     public submit(): void {
-        debugger;
         // Call the editTxtFile method with the filename and updated content
         const fileEditModel = new FileViewEditModel();
 
