@@ -1,22 +1,41 @@
+//Angular local Libraries
 import { Component, OnInit, inject } from '@angular/core';
-import { FolderService } from '../../services/folder.service';
-import { FolderCreateViewModel } from '../../services/models/folder/folder.view-create.model';
-import { FileViewCreateModel } from '../../services/models/file/file.view-create.model';
-import { FileService } from '../../services/file.service';
-import { ToastrService } from 'ngx-toastr';
-import { FolderGetAllViewModel } from '../../services/models/common/folder.getall.view-model';
+
+//begin:: Kendo
+
+//Kendo BreadCrumb
 import { BreadCrumbItem } from "@progress/kendo-angular-navigation";
+
+//Kenod Icons
 import {
     arrowRotateCcwIcon, homeIcon, SVGIcon, filePdfIcon, fileExcelIcon,
     fileWordIcon, downloadIcon, trashIcon, pencilIcon, fileImageIcon, fileTxtIcon,
     fileAudioIcon, fileTypescriptIcon, fileVideoIcon, filePptIcon, folderIcon,
     exeIcon, fileProgrammingIcon, xIcon, fileZipIcon
 } from "@progress/kendo-svg-icons";
-import { CellClickEvent, PageChangeEvent, PagerPosition, PagerType} from '@progress/kendo-angular-grid';
-import { FolderDeleteViewModel } from '../../services/models/folder/folder.view-delete.model';
+
+//Kenod Grid Libraries
+import { CellClickEvent, PageChangeEvent, PagerPosition, PagerType } from '@progress/kendo-angular-grid';
+
+//end:: Kendo
+
+//Toastr
+import { ToastrService } from 'ngx-toastr';
+//Service Folder
+import { FolderService } from '../../services/folder.service';
+//ServiceFile
+import { FileService } from '../../services/file.service';
+//ViewModels Common
+import { GridTDataView } from '../../services/models/folder/grid.data.view';
+import { FolderGetAllViewModel } from '../../services/models/common/folder.getall.view-model';
+//ViewModel File
+import { FileViewCreateModel } from '../../services/models/file/file.view-create.model';
 import { FileViewDeleteModel } from '../../services/models/file/file.view-delete.model';
 import { FileViewEditModel } from '../../services/models/file/file.view-edit.model';
-import { GridTDataView } from '../../services/models/folder/grid.data.view';
+//ViewModel Folder
+import { FolderCreateViewModel } from '../../services/models/folder/folder.view-create.model';
+import { FolderDeleteViewModel } from '../../services/models/folder/folder.view-delete.model';
+
 @Component({
     selector: 'app-home',
     templateUrl: './home.component.html',
@@ -26,7 +45,7 @@ export class HomeComponent implements OnInit {
     //Konstruktor
     constructor(private toastr: ToastrService) { }
 
-    //Inject FolderService
+    //Inject FolderService and FileService
     private _serviceFolder: FolderService = inject(FolderService);
     private _serviceFile: FileService = inject(FileService);
 
@@ -42,7 +61,7 @@ export class HomeComponent implements OnInit {
     public fileData: FolderGetAllViewModel = new FolderGetAllViewModel();
     public path: string = "";
 
-    //BreadCrumb
+    //BreadCrumb Defult Value
     private defaultItems: BreadCrumbItem[] = [
         {
             text: "Home",
@@ -51,15 +70,17 @@ export class HomeComponent implements OnInit {
         }
     ];
 
-    //
+    //Array BreadCrumb
     public items: BreadCrumbItem[] = [...this.defaultItems];
+
+    //Variables SVGIcon
     public homeIcon: SVGIcon = homeIcon;
     public downloadIcon: SVGIcon = downloadIcon;
     public rotateIcon: SVGIcon = arrowRotateCcwIcon;
     public deleteIcon: SVGIcon = trashIcon;
     public editIcon: SVGIcon = pencilIcon;
 
-    //FileIcon Dictionary
+    //Dictionary FileIcons
     private fileIcons: { [key: string]: SVGIcon } = {
         'default': xIcon,
         'folder': folderIcon,
@@ -82,42 +103,57 @@ export class HomeComponent implements OnInit {
         '.zip': fileZipIcon,
         '.ppt': filePptIcon,
         '.pptx': filePptIcon
-
     };
 
-    //Pagination
+    //Variables for Pagination
     public pagerTypes = ["numeric", "input"];
-    public totalCount=1;
+    public totalCount = 1;
     public type: PagerType = "numeric";
     public buttonCount = 5;
     public info = true;
     public pageSizes = true;
     public previousNext = true;
     public position: PagerPosition = "bottom";
-    public gridView:GridTDataView=new GridTDataView();
+    public gridView: GridTDataView = new GridTDataView();
     public pageSize = 5;
     public skip = 0;
+
+    //Variables Edit Txt File (Modal)
+    public txtFileContent: string = '';
+    public opened = false;
+    public dataSaved = false;
+    public fileNameToEdit: string = '';
+
+    //Variables Delete Folder (Modal)
+    public openedFolder = false;
+    public folderNameDelete: string = "";
+
+    //Variables Delete File (Modal)
+    public openedFile = false;
+    public fileNameDelete: string = "";
+
+    //Functionn For Pagination (Change page)
     public pageChange({ skip, take }: PageChangeEvent): void {
         this.skip = skip;
         this.pageSize = take;
-        this.getAll(this.skip,this.pageSize)
-      }
-    //Pagination
+        this.getAll(this.skip, this.pageSize)
+    }
+
     //Function NgOnit
     ngOnInit(): void {
-        this.getAll(this.skip,this.pageSize);
+        this.getAll(this.skip, this.pageSize);
     }
 
     //Function (ngOnInit) GetAll Folders and Files
     public getAll(skip: number = 0, take: number = 5): void {
-     
+
         const path: string = this.toCollectPath();
         this._serviceFolder.getFolder(path, skip, take).subscribe({
             next: (response) => {
                 this.fileData = response;
-                this.gridView.data=response.folderFile;
-                this.gridView.total=response.paginationMetaData.totalItems;
-                this.totalCount=response.paginationMetaData.totalItems;
+                this.gridView.data = response.folderFile;
+                this.gridView.total = response.paginationMetaData.totalItems;
+                this.totalCount = response.paginationMetaData.totalItems;
                 this.toastr.success('Success!');
             },
             error: (err) => {
@@ -126,15 +162,14 @@ export class HomeComponent implements OnInit {
         });
     }
 
-    //Edit Modal
-    public txtFileContent: string = '';
-    public opened = false;
-    public dataSaved = false;
-    public fileNameToEdit: string = '';
+    //begin:: Edit Modal ===========================================================
+
+    //Function (button) Close EditModal
     public close(): void {
         this.opened = false;
     }
 
+    //Function (button) Open EditModal
     public openEditTxtModal(fileName: string): void {
         this.opened = true;
         this.fileNameToEdit = fileName;
@@ -153,6 +188,7 @@ export class HomeComponent implements OnInit {
         });
     }
 
+    //Function (button) Save EditModal
     public submit(): void {
         debugger;
         // Call the editTxtFile method with the filename and updated content
@@ -175,14 +211,10 @@ export class HomeComponent implements OnInit {
         this.dataSaved = true;
         this.close();
     }
-    //Edit Modal
 
-    //Delete Modal
-    public openedFolder = false;
-    public openedFile = false;
-    public folderNameDelete: string = "";
-    public fileNameDelete: string = "";
+    //end:: Edit Modal================================================================
 
+    //begin:: Delete Folder Modal=====================================================
     public closeDeleteModalFolder(status: string): void {
         if (status === 'yes') {
             const folder: FolderDeleteViewModel = new FolderDeleteViewModel();
@@ -208,7 +240,14 @@ export class HomeComponent implements OnInit {
         }
 
     }
+    public openDeleteModalFolder(folderName: string): void {
+        this.folderNameDelete = folderName;
+        this.openedFolder = true;
+    }
 
+    //end:: Delete Folder Modal=========================================================
+
+    //begin:: Delete File Modal==========================================================
     public closeDeleteModalFile(status: string): void {
 
         if (status === 'yes') {
@@ -236,30 +275,13 @@ export class HomeComponent implements OnInit {
 
 
     }
-
-    public openDeleteModalFolder(folderName: string): void {
-        this.folderNameDelete = folderName;
-        this.openedFolder = true;
-    }
-
     public openDeleteModalFile(fileName: string): void {
         this.fileNameDelete = fileName;
         this.openedFile = true;
     }
+    //end:: Delete File Modal==============================================================
 
-
-    //Delete Modal
-
-
-    //Get File and Folder extension
-    public getIconForExtension(extension: string): SVGIcon {
-        // Check if the extension exists in the fileIcons object, if not, use the default icon        
-        return this.fileIcons[extension.toLowerCase()] || fileTypescriptIcon;
-    }
-
-
-
-
+    //begin:: BreadCrumb================================================================
     //Function BreadCrumb Item click
     public onItemClick(item: BreadCrumbItem): void {
         const index = this.items.findIndex((e) => e.text === item.text);
@@ -281,8 +303,14 @@ export class HomeComponent implements OnInit {
             this.defaultItems.push({ text: folderPath, title: folderName })
         }
     }
+    //end:: BreadCrumb========================================================================
 
-    //Function (Folder and File click)
+    //Get File and Folder extension
+    public getIconForExtension(extension: string): SVGIcon {
+        return this.fileIcons[extension.toLowerCase()] || fileTypescriptIcon;
+    }
+
+    //Function (Tables Items Folder and File click)
     public cellClickHandler(args: CellClickEvent): void {
         if (args.dataItem.extension === "folder") {
             this.defaultItems.push({ text: args.dataItem.name, title: args.dataItem.name })
@@ -309,7 +337,6 @@ export class HomeComponent implements OnInit {
             return result;
         }
     }
-
 
     //Function Get select file in fileSource
     public onChange(event: any) {
@@ -437,6 +464,4 @@ export class HomeComponent implements OnInit {
             }
         );
     }
-
-
 }
