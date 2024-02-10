@@ -282,6 +282,7 @@ export class HomeComponent implements OnInit {
         const index = this.items.findIndex((e) => e.text === item.text);
         this.items = this.items.slice(0, index + 1);
         this.defaultItems=this.defaultItems.slice(0,index+1);
+        this.backHistory.push(item.text!);
         this.skip=0;
         this.getAll(this.skip,this.pageSize);
     }
@@ -480,11 +481,21 @@ export class HomeComponent implements OnInit {
 
     public forwardHistory:Array<string>=[];
 
-    //Back (button)
+    //Function Back (button)
     public backFolder():void{
-
+        debugger
+        let backItem:string="home";
+        let staertIndex:number=0;
+        if(this.backHistory.length>1)
+        {backItem=this.backHistory.pop()!;}
+        this.forwardHistory.push(backItem);
+        const index = this.items.findIndex((e) => e.text === backItem);
+        this.items = this.items.slice(0, index);
+        this.defaultItems=this.defaultItems.slice(0,index); 
+        this.skip=0;
+        this.getAll(this.skip,this.pageSize);
     }
-    //Forward (button)
+    //Function Forward (button)
 
     //Up (button)
 
