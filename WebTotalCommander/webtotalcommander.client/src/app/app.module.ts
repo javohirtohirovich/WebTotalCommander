@@ -34,6 +34,9 @@ import { InputsModule } from "@progress/kendo-angular-inputs";
 import { PagerModule } from "@progress/kendo-angular-pager";
 import { LabelModule } from '@progress/kendo-angular-label';
 
+//Loader
+import { IndicatorsModule } from "@progress/kendo-angular-indicators";
+
 @NgModule({
     declarations: [
         //Main Component
@@ -64,6 +67,7 @@ import { LabelModule } from '@progress/kendo-angular-label';
         DialogsModule, 
         InputsModule, 
         GridModule,
+        IndicatorsModule,
         //Toastr
         ToastrModule.forRoot({
             timeOut: 2000,

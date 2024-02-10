@@ -29,6 +29,12 @@ import { FolderDeleteViewModel } from '../../services/models/folder/folder.view-
 import { KendoIcons } from '../helpers/get-icons';
 import { FolderFileViewModel } from '../../services/models/common/folder.file.view-model';
 
+//Loader
+import {
+    LoaderType,
+    LoaderThemeColor,
+    LoaderSize,
+  } from "@progress/kendo-angular-indicators";
 @Component({
     selector: 'app-home',
     templateUrl: './home.component.html',
@@ -87,6 +93,21 @@ export class HomeComponent implements OnInit {
     public openedFile = false;
     public fileNameDelete: string = "";
 
+    //Variable (get event when click folder or file)
+    public cellArgs!: CellClickEvent;
+
+    //Loaders
+    public isLoading : boolean = false;
+
+    public loaders = [
+    
+        {
+          type: <LoaderType>"converging-spinner",
+          themeColor: <LoaderThemeColor>"info",
+          size: <LoaderSize>"medium",
+        },
+      ];
+
     //Functionn For Pagination (Change page)
     public pageChange({ skip, take }: PageChangeEvent): void {
         this.skip = skip;
@@ -101,7 +122,7 @@ export class HomeComponent implements OnInit {
 
     //Function (ngOnInit) GetAll Folders and Files
     public getAll(skip: number, take: number): void {
-
+        this.isLoading=true;
         const path: string = this.toCollectPath();
         this._serviceFolder.getFolder(path, skip, take).subscribe({
             next: (response) => {
@@ -117,9 +138,11 @@ export class HomeComponent implements OnInit {
 
                     this.gridView.data.unshift(exitRow);
                 }
+                this.isLoading=false;
             },
             error: (err) => {
                 this.toastr.warning('Get all warning!');
+                this.isLoading=false;
             },
         });
     }
@@ -133,6 +156,7 @@ export class HomeComponent implements OnInit {
 
     //Function (button) Open EditModal
     public openEditTxtModal(fileName: string): void {
+        this.isLoading=true;
         this.opened = true;
         this.fileNameToEdit = fileName;
         this._serviceFile.getTxtFile(this.toCollectPath() + fileName).subscribe({
@@ -143,15 +167,18 @@ export class HomeComponent implements OnInit {
                     this.txtFileContent = reader.result as string;
                 };
                 reader.readAsText(response);
+                this.isLoading=false;
             },
             error: (err) => {
                 this.toastr.warning('Error retrieving file content!');
+                this.isLoading=false;
             },
         });
     }
 
     //Function (button) Save EditModal
     public submit(): void {
+        this.isLoading=true;
         // Call the editTxtFile method with the filename and updated content
         const fileEditModel = new FileViewEditModel();
 
@@ -161,10 +188,13 @@ export class HomeComponent implements OnInit {
 
         this._serviceFile.editTxtFile(fileEditModel).subscribe({
             next: (response) => {
+                this.isLoading=false;
                 this.toastr.success('File content updated successfully!');
                 this.close();
+
             },
             error: (err) => {
+                this.isLoading=false;
                 this.toastr.warning('Error updating file content!');
             },
         });
@@ -176,6 +206,7 @@ export class HomeComponent implements OnInit {
     //begin:: Delete Folder Modal+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     public closeDeleteModalFolder(status: string): void {
         if (status === 'yes') {
+            this.isLoading=true
             const folder: FolderDeleteViewModel = new FolderDeleteViewModel();
             folder.folderName = this.folderNameDelete;
             folder.folderPath = this.toCollectPath();
@@ -183,8 +214,10 @@ export class HomeComponent implements OnInit {
                 next: (response) => {
                     this.toastr.success('Delete folder success!');
                     this.getAll(this.skip,this.pageSize);
+                    this.isLoading=false;
                 },
                 error: (err) => {
+                    this.isLoading=false;
                     this.toastr.warning('Delete folder warning!');
                 },
             });
@@ -210,6 +243,7 @@ export class HomeComponent implements OnInit {
     public closeDeleteModalFile(status: string): void {
 
         if (status === 'yes') {
+            this.isLoading=true;
             const file: FileViewDeleteModel = new FileViewDeleteModel();
             file.fileName = this.fileNameDelete;
             file.filePath = this.toCollectPath();
@@ -217,8 +251,10 @@ export class HomeComponent implements OnInit {
                 next: (response) => {
                     this.toastr.success('Delete file success!');
                     this.getAll(this.skip,this.pageSize);
+                    this.isLoading=false;
                 },
                 error: (err) => {
+                    this.isLoading=false;
                     this.toastr.warning('Delete file warning!');
                 },
             });
@@ -265,11 +301,12 @@ export class HomeComponent implements OnInit {
     }
     //end:: BreadCrumb----------------------------------------------------------------------------------
 
-    public cellArgs!: CellClickEvent;
-    //Function (Tables Items Folder and File click)
+    
+    //Function (Tables Items Folder and File dbclick)
     public onDblClick(): void {
         if (this.cellArgs.dataItem.extension === "folder") {
             this.defaultItems.push({ text: this.cellArgs.dataItem.name, title: this.cellArgs.dataItem.name })
+            this.backHistory.push(this.cellArgs.dataItem.name)
             this.refreshBreadCrumb();
         }
         else if(this.cellArgs.dataItem.extension===""){
@@ -284,6 +321,7 @@ export class HomeComponent implements OnInit {
 
     }
 
+    //Function get event when click folder or file
     public cellClickHandler(args: CellClickEvent): void {
         this.cellArgs = args;
     }
@@ -344,15 +382,18 @@ export class HomeComponent implements OnInit {
     //Function (Button) Upload file
     public saveUploadFile(): void {
         if (this.fileSource) {
+            this.isLoading=true;
             const fileViewCreateModel = new FileViewCreateModel();
             fileViewCreateModel.file = this.fileSource;
             fileViewCreateModel.filePath = this.toCollectPath();
             this._serviceFile.addFile(fileViewCreateModel).subscribe({
                 next: (response) => {
                     this.toastr.success('File success upload!');
+                    this.isLoading=false;
                     this.getAll(this.skip,this.pageSize);
                 },
                 error: (err) => {
+                    this.isLoading=false;
                     if (err.status == 409) {
                         this.toastr.warning('File already exists!');
                     } else if (err.status == 404) {
@@ -372,6 +413,7 @@ export class HomeComponent implements OnInit {
 
     //Function Download file
     public downloadFile(filePath: string, fileName: string): void {
+        this.isLoading=true;
         this._serviceFile.downloadFile(filePath).subscribe(
             (response: Blob) => {
                 // Create a Blob from the file data
@@ -391,9 +433,11 @@ export class HomeComponent implements OnInit {
                 // Clean up: remove the link and revoke the URL
                 document.body.removeChild(link);
                 window.URL.revokeObjectURL(link.href);
+                this.isLoading=false;
                 this.toastr.success('File download successful!');
             },
             (error) => {
+                this.isLoading=false;
                 this.toastr.warning('File download error!');
             }
         );
@@ -402,6 +446,7 @@ export class HomeComponent implements OnInit {
     //Download Folder Zip
     public downloadFolderZip(folderName: string): void {
         const folderPath: string = this.toCollectPath();
+        this.isLoading=true;
         this._serviceFolder.downloadFolderZip(folderName, folderPath).subscribe(
             (response: Blob) => {
                 // Create a Blob from the file data
@@ -422,10 +467,26 @@ export class HomeComponent implements OnInit {
                 document.body.removeChild(link);
                 window.URL.revokeObjectURL(link.href);
                 this.toastr.success('Folder download successful!');
+                this.isLoading=false;
             },
             (error) => {
+                this.isLoading=false;
                 this.toastr.warning('Folder download error!');
             }
         );
     }
+    
+    public backHistory:Array<string>=["home"];
+
+    public forwardHistory:Array<string>=[];
+
+    //Back (button)
+    public backFolder():void{
+
+    }
+    //Forward (button)
+
+    //Up (button)
+
+    
 }
