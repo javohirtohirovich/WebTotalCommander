@@ -466,23 +466,41 @@ export class HomeComponent implements OnInit {
     }
 
 
-    //////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public backHistory: Array<BreadCrumbItem[]> = [];
 
     public forwardHistory: Array<BreadCrumbItem[]> = [];
 
     //Function Back (button)
     public backFolder(): void {
+        debugger;
         if (this.backHistory.length > 0) {
             let Value: BreadCrumbItem[] = this.backHistory.pop()!;
+            this.forwardHistory.push(this.defaultItems.slice());
             this.defaultItems = Value.slice();
             this.refreshBreadCrumb();
         }
     }
 
     //Function Forward (button)
-
+    public forwardFolder():void{
+        debugger;
+        if(this.forwardHistory.length>0){
+            let Value:BreadCrumbItem[]=this.forwardHistory.pop()!;
+            this.backHistory.push(this.defaultItems.slice());
+            this.defaultItems=Value.slice();
+            this.refreshBreadCrumb();
+        }
+    }
     //Up (button)
-
+    public upFolder():void{
+        if(this.defaultItems.length>1){
+            this.backHistory.push(this.defaultItems.slice());
+            this.defaultItems.pop();
+            this.skip = 0;
+            this.refreshBreadCrumb();
+        }
+       
+    }
 
 }
