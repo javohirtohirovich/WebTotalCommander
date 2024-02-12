@@ -4,7 +4,7 @@ import { Component, OnInit, inject } from '@angular/core';
 //begin:: Kendo
 
 //Kendo BreadCrumb
-import { BreadCrumbItem } from "@progress/kendo-angular-navigation";  
+import { BreadCrumbItem } from "@progress/kendo-angular-navigation";
 //Kenod Grid Libraries
 import { CellClickEvent, PageChangeEvent, PagerPosition, PagerType } from '@progress/kendo-angular-grid';
 
@@ -28,13 +28,9 @@ import { FolderCreateViewModel } from '../../services/models/folder/folder.view-
 import { FolderDeleteViewModel } from '../../services/models/folder/folder.view-delete.model';
 import { KendoIcons } from '../helpers/get-icons';
 import { FolderFileViewModel } from '../../services/models/common/folder.file.view-model';
-
 //Loader
-import {
-    LoaderType,
-    LoaderThemeColor,
-    LoaderSize,
-  } from "@progress/kendo-angular-indicators";
+import { LoaderType, LoaderThemeColor, LoaderSize } from "@progress/kendo-angular-indicators";
+
 @Component({
     selector: 'app-home',
     templateUrl: './home.component.html',
@@ -47,12 +43,12 @@ export class HomeComponent implements OnInit {
     //Inject FolderService, FileService, KendoIcons (helper)
     private _serviceFolder: FolderService = inject(FolderService);
     private _serviceFile: FileService = inject(FileService);
-    public _iconsKendo:KendoIcons=inject(KendoIcons);
+    public _iconsKendo: KendoIcons = inject(KendoIcons);
 
     //Variables folder name
     public folderName: string = '';
     public fileSource: File | null = null;
-    
+
     //Variables Array Folder GetALL
     public fileData: FolderGetAllViewModel = new FolderGetAllViewModel();
     public path: string = "";
@@ -97,16 +93,15 @@ export class HomeComponent implements OnInit {
     public cellArgs!: CellClickEvent;
 
     //Loaders
-    public isLoading : boolean = false;
+    public isLoading: boolean = false;
 
     public loaders = [
-    
         {
-          type: <LoaderType>"converging-spinner",
-          themeColor: <LoaderThemeColor>"info",
-          size: <LoaderSize>"medium",
+            type: <LoaderType>"converging-spinner",
+            themeColor: <LoaderThemeColor>"info",
+            size: <LoaderSize>"medium",
         },
-      ];
+    ];
 
     //Functionn For Pagination (Change page)
     public pageChange({ skip, take }: PageChangeEvent): void {
@@ -122,27 +117,26 @@ export class HomeComponent implements OnInit {
 
     //Function (ngOnInit) GetAll Folders and Files
     public getAll(skip: number, take: number): void {
-        this.isLoading=true;
+        this.isLoading = true;
         const path: string = this.toCollectPath();
         this._serviceFolder.getFolder(path, skip, take).subscribe({
             next: (response) => {
                 this.fileData = response;
                 this.gridView.data = response.folderFile;
                 this.gridView.total = response.paginationMetaData.totalItems;
-                if(path.length!==0)
-                {
-                    const exitRow:FolderFileViewModel=new FolderFileViewModel();
-                    exitRow.name="...";
-                    exitRow.extension="";
-                    exitRow.path="";
+                if (path.length !== 0) {
+                    const exitRow: FolderFileViewModel = new FolderFileViewModel();
+                    exitRow.name = "...";
+                    exitRow.extension = "";
+                    exitRow.path = "";
 
                     this.gridView.data.unshift(exitRow);
                 }
-                this.isLoading=false;
+                this.isLoading = false;
             },
             error: (err) => {
                 this.toastr.warning('Get all warning!');
-                this.isLoading=false;
+                this.isLoading = false;
             },
         });
     }
@@ -156,7 +150,7 @@ export class HomeComponent implements OnInit {
 
     //Function (button) Open EditModal
     public openEditTxtModal(fileName: string): void {
-        this.isLoading=true;
+        this.isLoading = true;
         this.opened = true;
         this.fileNameToEdit = fileName;
         this._serviceFile.getTxtFile(this.toCollectPath() + fileName).subscribe({
@@ -167,18 +161,18 @@ export class HomeComponent implements OnInit {
                     this.txtFileContent = reader.result as string;
                 };
                 reader.readAsText(response);
-                this.isLoading=false;
+                this.isLoading = false;
             },
             error: (err) => {
                 this.toastr.warning('Error retrieving file content!');
-                this.isLoading=false;
+                this.isLoading = false;
             },
         });
     }
 
     //Function (button) Save EditModal
     public submit(): void {
-        this.isLoading=true;
+        this.isLoading = true;
         // Call the editTxtFile method with the filename and updated content
         const fileEditModel = new FileViewEditModel();
 
@@ -188,13 +182,13 @@ export class HomeComponent implements OnInit {
 
         this._serviceFile.editTxtFile(fileEditModel).subscribe({
             next: (response) => {
-                this.isLoading=false;
+                this.isLoading = false;
                 this.toastr.success('File content updated successfully!');
                 this.close();
 
             },
             error: (err) => {
-                this.isLoading=false;
+                this.isLoading = false;
                 this.toastr.warning('Error updating file content!');
             },
         });
@@ -206,18 +200,18 @@ export class HomeComponent implements OnInit {
     //begin:: Delete Folder Modal+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     public closeDeleteModalFolder(status: string): void {
         if (status === 'yes') {
-            this.isLoading=true
+            this.isLoading = true
             const folder: FolderDeleteViewModel = new FolderDeleteViewModel();
             folder.folderName = this.folderNameDelete;
             folder.folderPath = this.toCollectPath();
             this._serviceFolder.deleteFolder(folder).subscribe({
                 next: (response) => {
                     this.toastr.success('Delete folder success!');
-                    this.getAll(this.skip,this.pageSize);
-                    this.isLoading=false;
+                    this.getAll(this.skip, this.pageSize);
+                    this.isLoading = false;
                 },
                 error: (err) => {
-                    this.isLoading=false;
+                    this.isLoading = false;
                     this.toastr.warning('Delete folder warning!');
                 },
             });
@@ -243,18 +237,18 @@ export class HomeComponent implements OnInit {
     public closeDeleteModalFile(status: string): void {
 
         if (status === 'yes') {
-            this.isLoading=true;
+            this.isLoading = true;
             const file: FileViewDeleteModel = new FileViewDeleteModel();
             file.fileName = this.fileNameDelete;
             file.filePath = this.toCollectPath();
             this._serviceFile.deleteFile(file).subscribe({
                 next: (response) => {
                     this.toastr.success('Delete file success!');
-                    this.getAll(this.skip,this.pageSize);
-                    this.isLoading=false;
+                    this.getAll(this.skip, this.pageSize);
+                    this.isLoading = false;
                 },
                 error: (err) => {
-                    this.isLoading=false;
+                    this.isLoading = false;
                     this.toastr.warning('Delete file warning!');
                 },
             });
@@ -280,39 +274,33 @@ export class HomeComponent implements OnInit {
     //Function BreadCrumb Item click
     public onItemClick(item: BreadCrumbItem): void {
         const index = this.items.findIndex((e) => e.text === item.text);
+        this.backHistory.push(this.defaultItems.slice());
         this.items = this.items.slice(0, index + 1);
-        this.defaultItems=this.defaultItems.slice(0,index+1);
-        this.backHistory.push(item.text!);
-        this.skip=0;
-        this.getAll(this.skip,this.pageSize);
+        this.defaultItems = this.defaultItems.slice(0, index + 1);
+        this.skip = 0;
+        this.getAll(this.skip, this.pageSize);
     }
 
     // Function (Button) Refresh button
     public refreshBreadCrumb(): void {
         this.path = "";
-        this.getAll(this.skip,this.pageSize);
+        this.getAll(this.skip, this.pageSize);
         this.items = [...this.defaultItems];
-    }
-
-    // Function to fill BreadCrumb (Click folder folder name add bread crumb)
-    public toFillBreadCrumb(folderName: string, folderPath: string): void {
-        for (let i = 0; i < this.fileData.folderFile.length; i++) {
-            this.defaultItems.push({ text: folderPath, title: folderName })
-        }
     }
     //end:: BreadCrumb----------------------------------------------------------------------------------
 
-    
+
     //Function (Tables Items Folder and File dbclick)
     public onDblClick(): void {
         if (this.cellArgs.dataItem.extension === "folder") {
+            this.backHistory.push(this.defaultItems.slice());
             this.defaultItems.push({ text: this.cellArgs.dataItem.name, title: this.cellArgs.dataItem.name })
-            this.backHistory.push(this.cellArgs.dataItem.name)
             this.refreshBreadCrumb();
         }
-        else if(this.cellArgs.dataItem.extension===""){
+        else if (this.cellArgs.dataItem.extension === "") {
+            this.backHistory.push(this.defaultItems.slice());
             this.defaultItems.pop();
-            this.skip=0;
+            this.skip = 0;
             this.refreshBreadCrumb();
         }
         else {
@@ -361,7 +349,7 @@ export class HomeComponent implements OnInit {
             this._serviceFolder.addFolder(folderViewCreateModel).subscribe({
                 next: (response) => {
                     this.toastr.success('Folder success created!');
-                    this.getAll(this.skip,this.pageSize);
+                    this.getAll(this.skip, this.pageSize);
                 },
                 error: (err) => {
                     if (err.status == 409) {
@@ -383,18 +371,18 @@ export class HomeComponent implements OnInit {
     //Function (Button) Upload file
     public saveUploadFile(): void {
         if (this.fileSource) {
-            this.isLoading=true;
+            this.isLoading = true;
             const fileViewCreateModel = new FileViewCreateModel();
             fileViewCreateModel.file = this.fileSource;
             fileViewCreateModel.filePath = this.toCollectPath();
             this._serviceFile.addFile(fileViewCreateModel).subscribe({
                 next: (response) => {
                     this.toastr.success('File success upload!');
-                    this.isLoading=false;
-                    this.getAll(this.skip,this.pageSize);
+                    this.isLoading = false;
+                    this.getAll(this.skip, this.pageSize);
                 },
                 error: (err) => {
-                    this.isLoading=false;
+                    this.isLoading = false;
                     if (err.status == 409) {
                         this.toastr.warning('File already exists!');
                     } else if (err.status == 404) {
@@ -414,7 +402,7 @@ export class HomeComponent implements OnInit {
 
     //Function Download file
     public downloadFile(filePath: string, fileName: string): void {
-        this.isLoading=true;
+        this.isLoading = true;
         this._serviceFile.downloadFile(filePath).subscribe(
             (response: Blob) => {
                 // Create a Blob from the file data
@@ -434,11 +422,11 @@ export class HomeComponent implements OnInit {
                 // Clean up: remove the link and revoke the URL
                 document.body.removeChild(link);
                 window.URL.revokeObjectURL(link.href);
-                this.isLoading=false;
+                this.isLoading = false;
                 this.toastr.success('File download successful!');
             },
             (error) => {
-                this.isLoading=false;
+                this.isLoading = false;
                 this.toastr.warning('File download error!');
             }
         );
@@ -447,7 +435,7 @@ export class HomeComponent implements OnInit {
     //Download Folder Zip
     public downloadFolderZip(folderName: string): void {
         const folderPath: string = this.toCollectPath();
-        this.isLoading=true;
+        this.isLoading = true;
         this._serviceFolder.downloadFolderZip(folderName, folderPath).subscribe(
             (response: Blob) => {
                 // Create a Blob from the file data
@@ -468,36 +456,33 @@ export class HomeComponent implements OnInit {
                 document.body.removeChild(link);
                 window.URL.revokeObjectURL(link.href);
                 this.toastr.success('Folder download successful!');
-                this.isLoading=false;
+                this.isLoading = false;
             },
             (error) => {
-                this.isLoading=false;
+                this.isLoading = false;
                 this.toastr.warning('Folder download error!');
             }
         );
     }
-    
-    public backHistory:Array<string>=["home"];
 
-    public forwardHistory:Array<string>=[];
+
+    //////////////////////////////////////////////
+    public backHistory: Array<BreadCrumbItem[]> = [];
+
+    public forwardHistory: Array<BreadCrumbItem[]> = [];
 
     //Function Back (button)
-    public backFolder():void{
-        debugger
-        let backItem:string="home";
-        let staertIndex:number=0;
-        if(this.backHistory.length>1)
-        {backItem=this.backHistory.pop()!;}
-        this.forwardHistory.push(backItem);
-        const index = this.items.findIndex((e) => e.text === backItem);
-        this.items = this.items.slice(0, index);
-        this.defaultItems=this.defaultItems.slice(0,index); 
-        this.skip=0;
-        this.getAll(this.skip,this.pageSize);
+    public backFolder(): void {
+        if (this.backHistory.length > 0) {
+            let Value: BreadCrumbItem[] = this.backHistory.pop()!;
+            this.defaultItems = Value.slice();
+            this.refreshBreadCrumb();
+        }
     }
+
     //Function Forward (button)
 
     //Up (button)
 
-    
+
 }
