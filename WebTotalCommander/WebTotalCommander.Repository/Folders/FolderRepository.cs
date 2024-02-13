@@ -1,7 +1,6 @@
 ﻿using System.IO.Compression;
 using WebTotalCommander.FileAccess.Models.Common;
 using WebTotalCommander.FileAccess.Models.Folder;
-using WebTotalCommander.FileAccess.Utils;
 
 namespace WebTotalCommander.Repository.Folders;
 
@@ -18,22 +17,22 @@ public class FolderRepository : IFolderRepository
             model.Files = Directory.GetFiles(path);
             model.FolderNames = Directory.GetDirectories(path);
         });
-       
-        return model;  
+
+        return model;
     }
-    
+
     public bool CreateFolder(Folder folder)
     {
         try
         {
             string path = Path.Combine(ROOTPATH, folder.FolderPath, folder.FolderName);
-            var  result = Directory.CreateDirectory(path);
+            var result = Directory.CreateDirectory(path);
             return true;
         }
-        catch 
+        catch
         {
             return false;
-        }   
+        }
     }
 
     public bool DeleteFolder(Folder folder)
@@ -41,7 +40,7 @@ public class FolderRepository : IFolderRepository
         try
         {
             string path = Path.Combine(ROOTPATH, folder.FolderPath, folder.FolderName);
-            Directory.Delete(path,true);
+            Directory.Delete(path, true);
             return true;
         }
         catch { return false; }
@@ -53,18 +52,18 @@ public class FolderRepository : IFolderRepository
         {
             string oldPath = Path.Combine(ROOTPATH, folderRename.FolderPath, folderRename.FolderOldName);
             string newPath = Path.Combine(ROOTPATH, folderRename.FolderPath, folderRename.FolderNewName);
-            Directory.Move(oldPath,newPath);
-            
+            Directory.Move(oldPath, newPath);
+
             return true;
         }
-        catch 
+        catch
         { return false; }
     }
 
-    public async Task<MemoryStream> DownloadFolderZipAsync(string folderPath,string folderName)
+    public async Task<MemoryStream> DownloadFolderZipAsync(string folderPath, string folderName)
     {
-        string zipPath =Path.Combine(ROOTPATH,folderPath,folderName+".zip");    
-        string path = Path.Combine(ROOTPATH, folderPath,folderName);
+        string zipPath = Path.Combine(ROOTPATH, folderPath, folderName + ".zip");
+        string path = Path.Combine(ROOTPATH, folderPath, folderName);
         ZipFile.CreateFromDirectory(path, zipPath);
 
         var memory = new MemoryStream();

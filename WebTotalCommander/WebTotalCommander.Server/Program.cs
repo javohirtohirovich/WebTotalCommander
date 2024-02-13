@@ -4,6 +4,8 @@ using WebTotalCommander.Repository.Files;
 using WebTotalCommander.Repository.Folders;
 using WebTotalCommander.Server.ActionHelpers;
 using WebTotalCommander.Server.Configuration;
+using WebTotalCommander.Service.Common.Interface;
+using WebTotalCommander.Service.Common.Service;
 using WebTotalCommander.Service.Services.FileServices;
 using WebTotalCommander.Service.Services.FolderServices;
 
@@ -29,6 +31,9 @@ public class Program
 
         builder.Services.AddScoped<IFolderService, FolderService>();
         builder.Services.AddScoped<IFileService, FileService>();
+
+        builder.Services.AddScoped<ISorter, Sorter>();
+        builder.Services.AddScoped<IPaginator, Paginator>();
 
         var app = builder.Build();
 
