@@ -39,8 +39,12 @@
             <!--end:: BreadCrumb-->
 
             <!--begin:: Grid Table-->
-            <kendo-grid (dblclick)="onDblClick()" (cellClick)="cellClickHandler($event)" [data]="gridView"
-                [pageSize]="pageSize" [skip]="skip" (pageChange)="pageChange($event)" [pageable]="{
+            <kendo-grid (dblclick)="onDblClick()" (cellClick)="cellClickHandler($event)" 
+                [data]="gridView"
+                [pageSize]="pageSize" 
+                [skip]="skip" 
+                (pageChange)="pageChange($event)" 
+                [pageable]="{
                     buttonCount: buttonCount,
                     info: info,
                     type: type,
@@ -48,7 +52,11 @@
                     previousNext: previousNext,
                     position: position,
                     
-                }">
+                }"
+                [filter]=""
+                [sortable]="true"
+                filterable="menu"
+                >
 
                 <!--begin::Name Column-->
                 <kendo-grid-column title="Name">
