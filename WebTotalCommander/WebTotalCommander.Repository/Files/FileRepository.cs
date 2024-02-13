@@ -12,8 +12,8 @@ public class FileRepository : IFileRepository
     {
         try
         {
-            string path = Path.Combine(ROOTPATH, file.FilePath, file.FileSource.FileName);
-            FileStream stream = new FileStream(path, FileMode.Create);
+            var path = Path.Combine(ROOTPATH, file.FilePath, file.FileSource.FileName);
+            var stream = new FileStream(path, FileMode.Create);
             await file.FileSource.CopyToAsync(stream);
             stream.Close();
             return true;
@@ -27,7 +27,7 @@ public class FileRepository : IFileRepository
 
     public async Task<bool> DeleteFile(FileDeleteModel file)
     {
-        string path = Path.Combine(ROOTPATH, file.FilePath, file.FileName);
+        var path = Path.Combine(ROOTPATH, file.FilePath, file.FileName);
         await Task.Run(() =>
         {
             File.Delete(path);
@@ -37,7 +37,7 @@ public class FileRepository : IFileRepository
 
     public async Task<MemoryStream> DownloadFileAsync(string filePath)
     {
-        string path=Path.Combine(ROOTPATH, filePath);
+        var path=Path.Combine(ROOTPATH, filePath);
 
         var memory = new MemoryStream();
         await using(var stream=new FileStream(path, FileMode.Open))
@@ -53,8 +53,8 @@ public class FileRepository : IFileRepository
     {
         try
         {
-            string path = Path.Combine(ROOTPATH, filePath);
-            using (FileStream stream = new FileStream(path, FileMode.Create))
+            var path = Path.Combine(ROOTPATH, filePath);
+            using (var stream = new FileStream(path, FileMode.Create))
             {
                 await formFile.CopyToAsync(stream);
             }
@@ -69,7 +69,7 @@ public class FileRepository : IFileRepository
 
     public async Task<MemoryStream> GetTxtFileAsync(string filePath)
     {
-        string path = Path.Combine(ROOTPATH, filePath);
+        var path = Path.Combine(ROOTPATH, filePath);
 
         var memory = new MemoryStream();
         await using (var stream = new FileStream(path, FileMode.Open))

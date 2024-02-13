@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using WebTotalCommander.Service.Common.Interface;
+﻿using WebTotalCommander.Service.Common.Interface;
 using WebTotalCommander.Service.ViewModels.Common;
 
 namespace WebTotalCommander.Service.Common.Service;

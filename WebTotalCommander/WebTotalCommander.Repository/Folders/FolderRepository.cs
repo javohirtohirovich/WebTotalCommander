@@ -10,8 +10,8 @@ public class FolderRepository : IFolderRepository
 
     public async Task<FolderGetAllModel> GetAllFolder(string folderPath)
     {
-        string path = Path.Combine(ROOTPATH, folderPath);
-        FolderGetAllModel model = new FolderGetAllModel();
+        var path = Path.Combine(ROOTPATH, folderPath);
+        var model = new FolderGetAllModel();
         await Task.Run(() =>
         {
             model.Files = Directory.GetFiles(path);
@@ -25,7 +25,7 @@ public class FolderRepository : IFolderRepository
     {
         try
         {
-            string path = Path.Combine(ROOTPATH, folder.FolderPath, folder.FolderName);
+            var path = Path.Combine(ROOTPATH, folder.FolderPath, folder.FolderName);
             var result = Directory.CreateDirectory(path);
             return true;
         }
@@ -39,7 +39,7 @@ public class FolderRepository : IFolderRepository
     {
         try
         {
-            string path = Path.Combine(ROOTPATH, folder.FolderPath, folder.FolderName);
+            var path = Path.Combine(ROOTPATH, folder.FolderPath, folder.FolderName);
             Directory.Delete(path, true);
             return true;
         }
@@ -50,8 +50,8 @@ public class FolderRepository : IFolderRepository
     {
         try
         {
-            string oldPath = Path.Combine(ROOTPATH, folderRename.FolderPath, folderRename.FolderOldName);
-            string newPath = Path.Combine(ROOTPATH, folderRename.FolderPath, folderRename.FolderNewName);
+            var oldPath = Path.Combine(ROOTPATH, folderRename.FolderPath, folderRename.FolderOldName);
+            var newPath = Path.Combine(ROOTPATH, folderRename.FolderPath, folderRename.FolderNewName);
             Directory.Move(oldPath, newPath);
 
             return true;
@@ -62,8 +62,8 @@ public class FolderRepository : IFolderRepository
 
     public async Task<MemoryStream> DownloadFolderZipAsync(string folderPath, string folderName)
     {
-        string zipPath = Path.Combine(ROOTPATH, folderPath, folderName + ".zip");
-        string path = Path.Combine(ROOTPATH, folderPath, folderName);
+        var zipPath = Path.Combine(ROOTPATH, folderPath, folderName + ".zip");
+        var path = Path.Combine(ROOTPATH, folderPath, folderName);
         ZipFile.CreateFromDirectory(path, zipPath);
 
         var memory = new MemoryStream();
