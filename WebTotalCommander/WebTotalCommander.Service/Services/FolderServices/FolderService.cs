@@ -128,7 +128,7 @@ public class FolderService : IFolderService
         {
             foreach (var item in query.Filter.Filters)
             {
-                var isName = item.Filters.Any(x => x.Field == "Type");
+                var isName = item.Filters.Any(x => x.Field == "name");
                 if (isName)
                 {
                     var containsFilter = item.Filters.FirstOrDefault(x => x.Operator == "contains");

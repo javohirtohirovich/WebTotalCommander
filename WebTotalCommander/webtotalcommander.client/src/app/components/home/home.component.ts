@@ -119,14 +119,14 @@ export class HomeComponent implements OnInit {
             'Filter.Logic': 'and',
             'Filter.Filters': this.convertFilters(this.gridState.filter),
         };
-        
-        const sortViewModel:SortViewModel=new SortViewModel();
-        sortViewModel.dir=this.sort[0].dir;
-        sortViewModel.field=this.sort[0].field;
+
+        const sortViewModel: SortViewModel = new SortViewModel();
+        sortViewModel.dir = this.sort[0].dir;
+        sortViewModel.field = this.sort[0].field;
 
 
         const path: string = this.toCollectPath();
-        this._serviceFolder.getFolder(path, skip, take,sortViewModel,filter).subscribe({
+        this._serviceFolder.getFolder(path, skip, take, sortViewModel, filter).subscribe({
 
             next: (response) => {
                 this.fileData = response;
@@ -215,9 +215,10 @@ export class HomeComponent implements OnInit {
         return result;
     }
 
-    public filterChange(ev: any): void {
-        if (ev.filter) {
-            this.gridState.filter = ev.filter;
+    public filterChange(ev: CompositeFilterDescriptor): void {
+        debugger;
+        if (ev) {
+            this.gridState.filter = ev;
         } else {
             this.gridState.filter = {
                 logic: 'and',
@@ -229,14 +230,14 @@ export class HomeComponent implements OnInit {
 
     public sort: SortDescriptor[] = [
         {
-          field: "name",
-          dir: undefined,
+            field: "name",
+            dir: undefined,
         },
-      ];
+    ];
     public sortChange(sort: SortDescriptor[]): void {
-        this.sort=sort;
+        this.sort = sort;
         console.log(sort);
-        
+
         this.getAll(this.skip, this.pageSize)
     }
 
