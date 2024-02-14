@@ -17,7 +17,7 @@ public class FolderService : IFolderService
     private readonly string _mainFolderName = "DataFolder";
 
     //Konstruktor
-    public FolderService(IFolderRepository folderRepository,ISorter sorter)
+    public FolderService(IFolderRepository folderRepository, ISorter sorter)
     {
         this._repository = folderRepository;
         this._sorter = sorter;
@@ -35,7 +35,7 @@ public class FolderService : IFolderService
             FolderPath = folderViewModel.FolderPath,
         };
 
-        bool result=_repository.CreateFolder(folder);
+        bool result = _repository.CreateFolder(folder);
 
         return result;
     }
@@ -44,7 +44,7 @@ public class FolderService : IFolderService
     public bool DeleteFolder(FolderViewModel folderViewModel)
     {
         var path = Path.Combine(_mainFolderName, folderViewModel.FolderPath, folderViewModel.FolderName);
-        if (!Directory.Exists(path)) {  throw new EntryNotFoundException("Folder not found!"); }
+        if (!Directory.Exists(path)) { throw new EntryNotFoundException("Folder not found!"); }
 
         Folder folder = new Folder()
         {
@@ -52,7 +52,7 @@ public class FolderService : IFolderService
             FolderPath = folderViewModel.FolderPath,
         };
 
-        bool result=_repository.DeleteFolder(folder);
+        bool result = _repository.DeleteFolder(folder);
 
         return result;
     }
@@ -60,7 +60,7 @@ public class FolderService : IFolderService
     //Function Download Folder Zip (API)
     public async Task<(MemoryStream memoryStream, string fileName)> DownloadFolderZipAsync(string folderPath, string folderName)
     {
-        var path = Path.Combine(_mainFolderName, folderPath,folderName);
+        var path = Path.Combine(_mainFolderName, folderPath, folderName);
         if (!Directory.Exists(path))
         {
             throw new EntryNotFoundException("Folder not found!");
@@ -76,9 +76,9 @@ public class FolderService : IFolderService
     {
         var path = Path.Combine(_mainFolderName, query.Path);
 
-        if (!Directory.Exists(path)) 
-        { 
-            throw new EntryNotFoundException("Folder not found!"); 
+        if (!Directory.Exists(path))
+        {
+            throw new EntryNotFoundException("Folder not found!");
         }
 
         var folderGetAll = await _repository.GetAllFolder(query.Path);
@@ -93,7 +93,8 @@ public class FolderService : IFolderService
             {
                 Name = directoryInfo.Name,
                 Path = folderGetAll.FolderNames[i],
-                Extension = "folder"
+                Extension = "folder",
+                CreatedDate = directoryInfo.CreationTime
             };
             result.FolderFile.Add(folderView);
         }
@@ -106,13 +107,14 @@ public class FolderService : IFolderService
             {
                 Name = fileInfo.Name,
                 Extension = fileInfo.Extension,
-                Path = folderGetAll.Files[i]
+                Path = folderGetAll.Files[i],
+                CreatedDate = fileInfo.CreationTime,
             };
-            result.FolderFile .Add(fileView);
+            result.FolderFile.Add(fileView);
         }
 
         Paginator paginator = new Paginator();
-        var paginationMetaData = paginator.Paginate(result.FolderFile.Count, new PaginationParams(query.Offset,query.Limit));
+        var paginationMetaData = paginator.Paginate(result.FolderFile.Count, new PaginationParams(query.Offset, query.Limit));
 
         if (query.SortDir == "desc")
         {
@@ -123,12 +125,12 @@ public class FolderService : IFolderService
             result.FolderFile = _sorter.SortAsc(query, result.FolderFile);
         }
 
-        if(query.Filter != null)
+        if (query.Filter != null)
         {
-            foreach(var item in query.Filter.Filters) 
-            { 
-                var isName=item.Filters.Any(x=>x.Field=="Name");
-                if(isName)
+            foreach (var item in query.Filter.Filters)
+            {
+                var isName = item.Filters.Any(x => x.Field == "Name");
+                if (isName)
                 {
                     var containsFilter = item.Filters.FirstOrDefault(x => x.Operator == "contains");
                     if (containsFilter != null)
@@ -140,20 +142,20 @@ public class FolderService : IFolderService
         }
 
         result.PaginationMetaData = paginationMetaData;
-        result.FolderFile =result.FolderFile.Skip(query.Offset).Take(query.Limit).ToList();
+        result.FolderFile = result.FolderFile.Skip(query.Offset).Take(query.Limit).ToList();
 
         return result;
 
-       
+
     }
 
     //Function Rename folder (API)
     public bool RenameFolder(FolderRenameViewModel folderRenameViewModel)
     {
         var path = Path.Combine(_mainFolderName, folderRenameViewModel.FolderPath, folderRenameViewModel.FolderOldName);
-        if (!Directory.Exists(path)) 
-        { 
-            throw new EntryNotFoundException("Folder not found!"); 
+        if (!Directory.Exists(path))
+        {
+            throw new EntryNotFoundException("Folder not found!");
         }
 
         FolderRename folderRename = new FolderRename()
@@ -162,9 +164,9 @@ public class FolderService : IFolderService
             FolderNewName = folderRenameViewModel.FolderNewName,
             FolderOldName = folderRenameViewModel.FolderOldName
         };
-        var result=_repository.RenameFolder(folderRename);
+        var result = _repository.RenameFolder(folderRename);
 
         return result;
     }
-            
+
 }

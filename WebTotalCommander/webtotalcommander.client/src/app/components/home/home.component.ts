@@ -7,6 +7,10 @@ import { Component, OnInit, inject } from '@angular/core';
 import { BreadCrumbItem } from "@progress/kendo-angular-navigation";
 //Kenod Grid Libraries
 import { CellClickEvent, PageChangeEvent, PagerPosition, PagerType } from '@progress/kendo-angular-grid';
+//Loader
+import { LoaderType, LoaderThemeColor, LoaderSize } from "@progress/kendo-angular-indicators";
+//Filter
+import {CompositeFilterDescriptor,FilterDescriptor} from '@progress/kendo-data-query';
 
 //end:: Kendo
 
@@ -28,8 +32,10 @@ import { FolderCreateViewModel } from '../../services/models/folder/folder.view-
 import { FolderDeleteViewModel } from '../../services/models/folder/folder.view-delete.model';
 import { KendoIcons } from '../helpers/get-icons';
 import { FolderFileViewModel } from '../../services/models/common/folder.file.view-model';
-//Loader
-import { LoaderType, LoaderThemeColor, LoaderSize } from "@progress/kendo-angular-indicators";
+
+//ViewModel Filter
+import { SubFilter } from '../models/sub-filter';
+import { GridState } from '../models/grid-state';
 
 @Component({
     selector: 'app-home',
@@ -118,8 +124,14 @@ export class HomeComponent implements OnInit {
     //Function (ngOnInit) GetAll Folders and Files
     public getAll(skip: number, take: number): void {
         this.isLoading = true;
+        //Filter
+        const filter = {
+            'Filter.Logic': 'and',
+            'Filter.Filters': this.convertFilters(this.gridState.filter),
+        };
+       const  sort= { dir: "asc", field: "Name" }
         const path: string = this.toCollectPath();
-        this._serviceFolder.getFolder(path, skip, take).subscribe({
+        this._serviceFolder.getFolder(path, skip, take,filter, sort).subscribe({
             next: (response) => {
                 this.fileData = response;
                 this.gridView.data = response.folderFile;
@@ -501,6 +513,68 @@ export class HomeComponent implements OnInit {
             this.refreshBreadCrumb();
         }
        
+    }
+
+    //Filter
+
+
+    public gridState: GridState = this.creteInitialState();
+
+    
+    private creteInitialState(): GridState {
+        return {
+            filter: {
+                filters: [],
+                logic: 'and',
+            },
+            sort: null,
+        };
+    }
+
+    private convertFilters(filter: CompositeFilterDescriptor): SubFilter[] {
+        const result: SubFilter[] = [];
+        for (let i = filter.filters.length - 1; i >= 0; i--) {
+            const currentFilter: CompositeFilterDescriptor = <any>filter.filters[i];
+            if (!currentFilter || !currentFilter.logic) {
+                filter.filters.splice(i, 1);
+            }
+        }
+        for (let i = 0; i < filter.filters.length; i++) {
+            const currentFilter: CompositeFilterDescriptor = <any>filter.filters[i];
+            if (currentFilter)
+                result.push({
+                    logic: currentFilter.logic,
+                    filters:
+                        currentFilter.filters?.map((x) => {
+                            const descriptor: FilterDescriptor = <any>x;
+                            let strVal;
+                            if (
+                                typeof descriptor.value == 'object' &&
+                                descriptor.value.constructor == Date
+                            ) {
+                                if (
+                                    descriptor.operator === 'lte' ||
+                                    descriptor.operator === 'gt'
+                                ) {
+                                    const oneDayInMs = 24 * 60 * 60 * 1000;
+                                    strVal = new Date(
+                                        descriptor.value.getTime() + oneDayInMs
+                                    ).toISOString();
+                                } else {
+                                    strVal = descriptor.value.toISOString();
+                                }
+                            } else {
+                                strVal = descriptor.value;
+                            }
+                            return {
+                                field: <string>(<any>descriptor.field),
+                                operator: <string>(<any>descriptor.operator),
+                                value: strVal,
+                            };
+                        }) || [],
+                });
+        }
+        return result;
     }
 
 }

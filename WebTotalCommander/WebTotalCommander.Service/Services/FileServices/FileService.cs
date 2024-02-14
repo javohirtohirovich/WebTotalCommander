@@ -23,7 +23,7 @@ public class FileService : IFileService
         {
             fileView.FilePath = "";
         }
-        string path = Path.Combine(ROOTPATH, fileView.FilePath, fileView.File.FileName);
+        var path = Path.Combine(ROOTPATH, fileView.FilePath, fileView.File.FileName);
         if (File.Exists(path))
         {
             throw new AlreadeExsistException("File already exsist!");
@@ -41,7 +41,7 @@ public class FileService : IFileService
 
     public async Task<bool> DeleteFile(FileDeleteViewModel fileView)
     {
-        string path = Path.Combine(ROOTPATH, fileView.FilePath, fileView.FileName);
+        var path = Path.Combine(ROOTPATH, fileView.FilePath, fileView.FileName);
         if (!File.Exists(path)) { throw new EntryNotFoundException("File not found!"); }
 
         FileDeleteModel fileDeleteModel = new FileDeleteModel()
@@ -55,7 +55,7 @@ public class FileService : IFileService
 
     public async Task<(MemoryStream memoryStream, string filePath)> DownloadFileAsync(string filePath)
     {
-        string path = Path.Combine(ROOTPATH, filePath);
+        var path = Path.Combine(ROOTPATH, filePath);
         if (!File.Exists(path))
         {
             throw new EntryNotFoundException("File not found!");
@@ -68,7 +68,7 @@ public class FileService : IFileService
 
     public async Task<bool> EditTextTxtFileAsync(string filePath, IFormFile formFile)
     {
-        string path = Path.Combine(ROOTPATH, filePath);
+        var path = Path.Combine(ROOTPATH, filePath);
         var fileInfo = new FileInfo(path);
         if (fileInfo.Extension != ".txt")
         {
@@ -91,7 +91,7 @@ public class FileService : IFileService
 
     public async Task<MemoryStream> GetTxtFileAsync(string filePath)
     {
-        string path = Path.Combine(ROOTPATH, filePath);
+        var path = Path.Combine(ROOTPATH, filePath);
         var fileInfo = new FileInfo(path);
         if (fileInfo.Extension != ".txt")
         {

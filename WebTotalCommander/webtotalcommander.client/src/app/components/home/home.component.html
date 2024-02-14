@@ -8,7 +8,7 @@
         <div class="me-2">
             <div class="input-group input-group-lg">
                 <span class="input-group-text" id="inputGroup-sizing-lg">Folder Name</span>
-                <input [(ngModel)]="folderName" type="text" class="form-control" aria-label="Sizing example input"
+                <input [(ngModel)]="folderName" name="folderName" type="text" class="form-control" aria-label="Sizing example input"
                     aria-describedby="inputGroup-sizing-lg">
             </div>
         </div>
@@ -66,6 +66,10 @@
                     </ng-template>
                 </kendo-grid-column>
                 <!--end::Name Column-->
+
+                <!--begin::Created Date-->
+                <kendo-grid-column field="createdDate" title="Date modified"> </kendo-grid-column>
+                <!--end::Created Date-->
 
                 <!--begin::Type Column-->
                 <kendo-grid-column field="extension" title="Type"> </kendo-grid-column>
