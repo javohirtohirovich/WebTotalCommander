@@ -29,7 +29,7 @@ export class FolderApiService {
             url = this.addFiltersToQuery(url, filters);
         }
         //If Sort
-        if (sort) {
+        if (sort && sort.dir) {
             url = this.addSort(url, sort);
         }
 

@@ -229,12 +229,14 @@ export class HomeComponent implements OnInit {
 
     public sort: SortDescriptor[] = [
         {
-          field: "extension",
-          dir: "desc",
+          field: "name",
+          dir: undefined,
         },
       ];
     public sortChange(sort: SortDescriptor[]): void {
         this.sort=sort;
+        console.log(sort);
+        
         this.getAll(this.skip, this.pageSize)
     }
 
