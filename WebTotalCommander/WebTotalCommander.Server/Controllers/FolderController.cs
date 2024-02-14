@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using WebTotalCommander.FileAccess.Utils;
 using WebTotalCommander.Service.Services.FolderServices;
 using WebTotalCommander.Service.ViewModels.Common;
 using WebTotalCommander.Service.ViewModels.Folder;
@@ -26,9 +25,9 @@ public class FolderController : ControllerBase
 
     [HttpGet("zip")]
     [DisableRequestSizeLimit]
-    public async Task<IActionResult> FolderDownloadZipAsync(string folderPath="",string folderName = "")
+    public async Task<IActionResult> FolderDownloadZipAsync(string folderPath = "", string folderName = "")
     {
-        var result=await _service.DownloadFolderZipAsync(folderPath, folderName);
+        var result = await _service.DownloadFolderZipAsync(folderPath, folderName);
         return File(result.memoryStream, "application/zip", result.fileName);
     }
 

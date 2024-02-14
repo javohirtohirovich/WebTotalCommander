@@ -10,7 +10,7 @@ import { CellClickEvent, PageChangeEvent, PagerPosition, PagerType } from '@prog
 //Loader
 import { LoaderType, LoaderThemeColor, LoaderSize } from "@progress/kendo-angular-indicators";
 //Filter
-import {CompositeFilterDescriptor,FilterDescriptor} from '@progress/kendo-data-query';
+import { CompositeFilterDescriptor, FilterDescriptor } from '@progress/kendo-data-query';
 
 //end:: Kendo
 
@@ -98,23 +98,13 @@ export class HomeComponent implements OnInit {
     //Variable (get event when click folder or file)
     public cellArgs!: CellClickEvent;
 
-    //Loaders
+    //Variable Loader
     public isLoading: boolean = false;
 
-    public loaders = [
-        {
-            type: <LoaderType>"converging-spinner",
-            themeColor: <LoaderThemeColor>"info",
-            size: <LoaderSize>"medium",
-        },
-    ];
+     //Arrays Back and Forwar (buttons) history
+     public backHistory: Array<BreadCrumbItem[]> = [];
 
-    //Functionn For Pagination (Change page)
-    public pageChange({ skip, take }: PageChangeEvent): void {
-        this.skip = skip;
-        this.pageSize = take;
-        this.getAll(this.skip, this.pageSize)
-    }
+     public forwardHistory: Array<BreadCrumbItem[]> = [];
 
     //Function NgOnit
     ngOnInit(): void {
@@ -129,9 +119,9 @@ export class HomeComponent implements OnInit {
             'Filter.Logic': 'and',
             'Filter.Filters': this.convertFilters(this.gridState.filter),
         };
-       const  sort= { dir: "asc", field: "Name" }
+        const sort = { dir: "asc", field: "Name" }
         const path: string = this.toCollectPath();
-        this._serviceFolder.getFolder(path, skip, take,filter, sort).subscribe({
+        this._serviceFolder.getFolder(path, skip, take, filter, sort).subscribe({
             next: (response) => {
                 this.fileData = response;
                 this.gridView.data = response.folderFile;
@@ -152,6 +142,14 @@ export class HomeComponent implements OnInit {
             },
         });
     }
+
+    //Functionn For Pagination (Change page)
+    public pageChange({ skip, take }: PageChangeEvent): void {
+        this.skip = skip;
+        this.pageSize = take;
+        this.getAll(this.skip, this.pageSize)
+    }
+
 
     //begin:: Edit Modal ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -210,6 +208,7 @@ export class HomeComponent implements OnInit {
     //end:: Edit Modal--------------------------------------------------------------------------
 
     //begin:: Delete Folder Modal+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
     public closeDeleteModalFolder(status: string): void {
         if (status === 'yes') {
             this.isLoading = true
@@ -283,6 +282,7 @@ export class HomeComponent implements OnInit {
     //end:: Delete File Modal----------------------------------------------------------------------------
 
     //begin:: BreadCrumb+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
     //Function BreadCrumb Item click
     public onItemClick(item: BreadCrumbItem): void {
         const index = this.items.findIndex((e) => e.text === item.text);
@@ -300,7 +300,6 @@ export class HomeComponent implements OnInit {
         this.items = [...this.defaultItems];
     }
     //end:: BreadCrumb----------------------------------------------------------------------------------
-
 
     //Function (Tables Items Folder and File dbclick)
     public onDblClick(): void {
@@ -477,12 +476,6 @@ export class HomeComponent implements OnInit {
         );
     }
 
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public backHistory: Array<BreadCrumbItem[]> = [];
-
-    public forwardHistory: Array<BreadCrumbItem[]> = [];
-
     //Function Back (button)
     public backFolder(): void {
         debugger;
@@ -495,32 +488,30 @@ export class HomeComponent implements OnInit {
     }
 
     //Function Forward (button)
-    public forwardFolder():void{
+    public forwardFolder(): void {
         debugger;
-        if(this.forwardHistory.length>0){
-            let Value:BreadCrumbItem[]=this.forwardHistory.pop()!;
+        if (this.forwardHistory.length > 0) {
+            let Value: BreadCrumbItem[] = this.forwardHistory.pop()!;
             this.backHistory.push(this.defaultItems.slice());
-            this.defaultItems=Value.slice();
+            this.defaultItems = Value.slice();
             this.refreshBreadCrumb();
         }
     }
+
     //Up (button)
-    public upFolder():void{
-        if(this.defaultItems.length>1){
+    public upFolder(): void {
+        if (this.defaultItems.length > 1) {
             this.backHistory.push(this.defaultItems.slice());
             this.defaultItems.pop();
             this.skip = 0;
             this.refreshBreadCrumb();
         }
-       
+
     }
 
     //Filter
-
-
     public gridState: GridState = this.creteInitialState();
 
-    
     private creteInitialState(): GridState {
         return {
             filter: {
@@ -576,5 +567,4 @@ export class HomeComponent implements OnInit {
         }
         return result;
     }
-
 }
