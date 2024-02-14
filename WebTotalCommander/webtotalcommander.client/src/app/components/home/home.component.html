@@ -41,9 +41,12 @@
             <!--begin:: Grid Table-->
             <kendo-grid (dblclick)="onDblClick()" (cellClick)="cellClickHandler($event)" [data]="gridView"
                 [loading]="isLoading"
-                [filter]="" 
+                [filter]="gridState.filter" 
                 filterable="menu"
+                (filterChange)="filterChange($event)"
                 [sortable]="true" 
+                [sort]="sort"
+                (sortChange)="sortChange($event)"
                 [pageSize]="pageSize" 
                 [skip]="skip" 
                 (pageChange)="pageChange($event)" 
@@ -58,7 +61,7 @@
                 }">
 
                 <!--begin::Name Column-->
-                <kendo-grid-column title="Name">
+                <kendo-grid-column title="Name" field="name" [sortable]="true">
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <kendo-svgicon [icon]="_iconsKendo.getIconForExtension(dataItem.extension)"></kendo-svgicon>
                         {{ dataItem.name }}

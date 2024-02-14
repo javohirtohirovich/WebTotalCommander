@@ -8,6 +8,7 @@ import { FolderGetAllModel } from "../api/models/common/folder.getall-model";
 import { FolderFileViewModel } from "./models/common/folder.file.view-model";
 import { PaginationMetaDataView } from "./models/common/pagination.data";
 import { SubFilter } from "../components/models/sub-filter";
+import { SortViewModel } from "./models/common/sort.view-model";
 
 @Injectable({ providedIn: "root" })
 export class FolderService {
@@ -15,11 +16,11 @@ export class FolderService {
     private folderApiService: FolderApiService = inject(FolderApiService)
 
     //Function (request)
-    public getFolder(folderPath: string, skip: number, take: number,
+    public getFolder(folderPath: string, skip: number, take: number,sort?:SortViewModel,
         filters?: { 'Filter.Logic': string; 'Filter.Filters': Array<SubFilter>; },
-        sort?: { dir?: string, field: string }): Observable<FolderGetAllViewModel> {
+        ): Observable<FolderGetAllViewModel> {
 
-        return this.folderApiService.getAllFolder(folderPath, skip, take, filters, sort).pipe(
+        return this.folderApiService.getAllFolder(folderPath, skip, take,sort, filters).pipe(
             map(apiModel => this.toModel(apiModel))
         );
 

@@ -1,5 +1,4 @@
 ﻿using WebTotalCommander.Core.Errors;
-using WebTotalCommander.FileAccess.Models.Common;
 using WebTotalCommander.FileAccess.Models.Folder;
 using WebTotalCommander.FileAccess.Utils;
 using WebTotalCommander.Repository.Folders;
@@ -120,7 +119,7 @@ public class FolderService : IFolderService
         {
             result.FolderFile = _sorter.SortDesc(query, result.FolderFile);
         }
-        else
+        else if(query.SortDir=="asc")
         {
             result.FolderFile = _sorter.SortAsc(query, result.FolderFile);
         }
@@ -129,7 +128,7 @@ public class FolderService : IFolderService
         {
             foreach (var item in query.Filter.Filters)
             {
-                var isName = item.Filters.Any(x => x.Field == "Name");
+                var isName = item.Filters.Any(x => x.Field == "Type");
                 if (isName)
                 {
                     var containsFilter = item.Filters.FirstOrDefault(x => x.Operator == "contains");
@@ -145,8 +144,6 @@ public class FolderService : IFolderService
         result.FolderFile = result.FolderFile.Skip(query.Offset).Take(query.Limit).ToList();
 
         return result;
-
-
     }
 
     //Function Rename folder (API)

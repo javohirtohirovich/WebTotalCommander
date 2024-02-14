@@ -7,10 +7,9 @@ import { Component, OnInit, inject } from '@angular/core';
 import { BreadCrumbItem } from "@progress/kendo-angular-navigation";
 //Kenod Grid Libraries
 import { CellClickEvent, PageChangeEvent, PagerPosition, PagerType } from '@progress/kendo-angular-grid';
-//Loader
-import { LoaderType, LoaderThemeColor, LoaderSize } from "@progress/kendo-angular-indicators";
+
 //Filter
-import { CompositeFilterDescriptor, FilterDescriptor } from '@progress/kendo-data-query';
+import { CompositeFilterDescriptor, FilterDescriptor, SortDescriptor } from '@progress/kendo-data-query';
 
 //end:: Kendo
 
@@ -36,6 +35,7 @@ import { FolderFileViewModel } from '../../services/models/common/folder.file.vi
 //ViewModel Filter
 import { SubFilter } from '../models/sub-filter';
 import { GridState } from '../models/grid-state';
+import { SortViewModel } from '../../services/models/common/sort.view-model';
 
 @Component({
     selector: 'app-home',
@@ -101,10 +101,10 @@ export class HomeComponent implements OnInit {
     //Variable Loader
     public isLoading: boolean = false;
 
-     //Arrays Back and Forwar (buttons) history
-     public backHistory: Array<BreadCrumbItem[]> = [];
+    //Arrays Back and Forwar (buttons) history
+    public backHistory: Array<BreadCrumbItem[]> = [];
 
-     public forwardHistory: Array<BreadCrumbItem[]> = [];
+    public forwardHistory: Array<BreadCrumbItem[]> = [];
 
     //Function NgOnit
     ngOnInit(): void {
@@ -119,9 +119,15 @@ export class HomeComponent implements OnInit {
             'Filter.Logic': 'and',
             'Filter.Filters': this.convertFilters(this.gridState.filter),
         };
-        const sort = { dir: "asc", field: "Name" }
+        
+        const sortViewModel:SortViewModel=new SortViewModel();
+        sortViewModel.dir=this.sort[0].dir;
+        sortViewModel.field=this.sort[0].field;
+
+
         const path: string = this.toCollectPath();
-        this._serviceFolder.getFolder(path, skip, take, filter, sort).subscribe({
+        this._serviceFolder.getFolder(path, skip, take,sortViewModel,filter).subscribe({
+
             next: (response) => {
                 this.fileData = response;
                 this.gridView.data = response.folderFile;
@@ -150,6 +156,87 @@ export class HomeComponent implements OnInit {
         this.getAll(this.skip, this.pageSize)
     }
 
+    //Filter
+    public gridState: GridState = this.creteInitialState();
+
+    private creteInitialState(): GridState {
+        return {
+            filter: {
+                filters: [],
+                logic: 'and',
+            },
+            sort: null,
+        };
+    }
+
+    private convertFilters(filter: CompositeFilterDescriptor): SubFilter[] {
+        const result: SubFilter[] = [];
+        for (let i = filter.filters.length - 1; i >= 0; i--) {
+            const currentFilter: CompositeFilterDescriptor = <any>filter.filters[i];
+            if (!currentFilter || !currentFilter.logic) {
+                filter.filters.splice(i, 1);
+            }
+        }
+        for (let i = 0; i < filter.filters.length; i++) {
+            const currentFilter: CompositeFilterDescriptor = <any>filter.filters[i];
+            if (currentFilter)
+                result.push({
+                    logic: currentFilter.logic,
+                    filters:
+                        currentFilter.filters?.map((x) => {
+                            const descriptor: FilterDescriptor = <any>x;
+                            let strVal;
+                            if (
+                                typeof descriptor.value == 'object' &&
+                                descriptor.value.constructor == Date
+                            ) {
+                                if (
+                                    descriptor.operator === 'lte' ||
+                                    descriptor.operator === 'gt'
+                                ) {
+                                    const oneDayInMs = 24 * 60 * 60 * 1000;
+                                    strVal = new Date(
+                                        descriptor.value.getTime() + oneDayInMs
+                                    ).toISOString();
+                                } else {
+                                    strVal = descriptor.value.toISOString();
+                                }
+                            } else {
+                                strVal = descriptor.value;
+                            }
+                            return {
+                                field: <string>(<any>descriptor.field),
+                                operator: <string>(<any>descriptor.operator),
+                                value: strVal,
+                            };
+                        }) || [],
+                });
+        }
+        return result;
+    }
+
+    public filterChange(ev: any): void {
+        if (ev.filter) {
+            this.gridState.filter = ev.filter;
+        } else {
+            this.gridState.filter = {
+                logic: 'and',
+                filters: [],
+            };
+        }
+        this.getAll(this.skip, this.pageSize);
+    }
+
+    public sort: SortDescriptor[] = [
+        {
+          field: "extension",
+          dir: "desc",
+        },
+      ];
+    public sortChange(sort: SortDescriptor[]): void {
+        this.sort=sort;
+        this.getAll(this.skip, this.pageSize)
+    }
 
     //begin:: Edit Modal ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -478,7 +565,6 @@ export class HomeComponent implements OnInit {
 
     //Function Back (button)
     public backFolder(): void {
-        debugger;
         if (this.backHistory.length > 0) {
             let Value: BreadCrumbItem[] = this.backHistory.pop()!;
             this.forwardHistory.push(this.defaultItems.slice());
@@ -489,7 +575,6 @@ export class HomeComponent implements OnInit {
 
     //Function Forward (button)
     public forwardFolder(): void {
-        debugger;
         if (this.forwardHistory.length > 0) {
             let Value: BreadCrumbItem[] = this.forwardHistory.pop()!;
             this.backHistory.push(this.defaultItems.slice());
@@ -506,65 +591,5 @@ export class HomeComponent implements OnInit {
             this.skip = 0;
             this.refreshBreadCrumb();
         }
-
-    }
-
-    //Filter
-    public gridState: GridState = this.creteInitialState();
-
-    private creteInitialState(): GridState {
-        return {
-            filter: {
-                filters: [],
-                logic: 'and',
-            },
-            sort: null,
-        };
-    }
-
-    private convertFilters(filter: CompositeFilterDescriptor): SubFilter[] {
-        const result: SubFilter[] = [];
-        for (let i = filter.filters.length - 1; i >= 0; i--) {
-            const currentFilter: CompositeFilterDescriptor = <any>filter.filters[i];
-            if (!currentFilter || !currentFilter.logic) {
-                filter.filters.splice(i, 1);
-            }
-        }
-        for (let i = 0; i < filter.filters.length; i++) {
-            const currentFilter: CompositeFilterDescriptor = <any>filter.filters[i];
-            if (currentFilter)
-                result.push({
-                    logic: currentFilter.logic,
-                    filters:
-                        currentFilter.filters?.map((x) => {
-                            const descriptor: FilterDescriptor = <any>x;
-                            let strVal;
-                            if (
-                                typeof descriptor.value == 'object' &&
-                                descriptor.value.constructor == Date
-                            ) {
-                                if (
-                                    descriptor.operator === 'lte' ||
-                                    descriptor.operator === 'gt'
-                                ) {
-                                    const oneDayInMs = 24 * 60 * 60 * 1000;
-                                    strVal = new Date(
-                                        descriptor.value.getTime() + oneDayInMs
-                                    ).toISOString();
-                                } else {
-                                    strVal = descriptor.value.toISOString();
-                                }
-                            } else {
-                                strVal = descriptor.value;
-                            }
-                            return {
-                                field: <string>(<any>descriptor.field),
-                                operator: <string>(<any>descriptor.operator),
-                                value: strVal,
-                            };
-                        }) || [],
-                });
-        }
-        return result;
     }
 }

@@ -9,8 +9,9 @@ public class Sorter : ISorter
     {
         return query.SortField switch
         {
-            "Name" => folderFileViewModels.OrderBy(x => x.Name).ToList(),
-            "Extension" => folderFileViewModels.OrderBy(x => x.Extension).ToList(),
+            "name" => folderFileViewModels.OrderBy(x => x.Name).ToList(),
+            "extension" => folderFileViewModels.OrderBy(x => x.Extension).ToList(),
+            "createdDate" => folderFileViewModels.OrderBy(x => x.CreatedDate).ToList(),
             _ => throw new ArgumentException($"Invalid sort field: {query.SortField}")
         };
     }
@@ -19,8 +20,9 @@ public class Sorter : ISorter
     {
         return query.SortField switch
         {
-            "Name" => folderFileViewModels.OrderByDescending(x => x.Name).ToList(),
-            "Extension" => folderFileViewModels.OrderByDescending(x => x.Extension).ToList(),
+            "name" => folderFileViewModels.OrderByDescending(x => x.Name).ToList(),
+            "extension" => folderFileViewModels.OrderByDescending(x => x.Extension).ToList(),
+            "createdDate"=>folderFileViewModels.OrderByDescending(x => x.CreatedDate).ToList(),
             _ => throw new ArgumentException($"Invalid sort field: {query.SortField}")
         };
     }

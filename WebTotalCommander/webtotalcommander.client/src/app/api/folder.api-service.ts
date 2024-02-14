@@ -5,6 +5,7 @@ import { FolderCreateModel } from "./models/folder/folder.create-model";
 import { FolderDeleteModel } from "./models/folder/folder.delete-model";
 import { FolderGetAllModel } from "./models/common/folder.getall-model";
 import { SubFilter } from "../components/models/sub-filter";
+import { SortModel } from "./models/common/sort.model";
 
 @Injectable({ providedIn: "root" })
 export class FolderApiService {
@@ -14,9 +15,8 @@ export class FolderApiService {
     private urlMain: string = "https://localhost:7251/api/folder"
 
     //Function (request) GetAll Folders and Files
-    public getAllFolder(folderPath: string, skip: number, take: number,
-        filters?: { 'Filter.Logic': string; 'Filter.Filters': Array<SubFilter>; },
-        sort?: { dir?: string, field: string }): Observable<FolderGetAllModel> {
+    public getAllFolder(folderPath: string, skip: number, take: number,sort?:SortModel,
+        filters?: { 'Filter.Logic': string; 'Filter.Filters': Array<SubFilter>; }): Observable<FolderGetAllModel> {
         
         let url: string = `${this.urlMain}?Offset=${skip}&Limit=${take}`; 
 
@@ -42,20 +42,20 @@ export class FolderApiService {
 
     //Function (request) Create Folder
     public addFolder(folder: FolderCreateModel): Observable<any> {
-        return this.client.post(this.url, folder)
+        return this.client.post(this.urlMain, folder)
     }
 
     //Function (request) Download Folder Zip
     public downloadFolderZip(folderPath: string, folderName: string): Observable<any> {
         //If Folder Path empty
         if (folderPath.length === 0) {
-            return this.client.get(`${this.url}/zip?folderName=${folderName}`, {
+            return this.client.get(`${this.urlMain}/zip?folderName=${folderName}`, {
                 responseType: 'blob'
             });
         }
         //If Folder Path full
         else {
-            return this.client.get(`${this.url}/zip?folderPath=${folderPath}&folderName=${folderName}`, {
+            return this.client.get(`${this.urlMain}/zip?folderPath=${folderPath}&folderName=${folderName}`, {
                 responseType: 'blob'
             });
         }
@@ -64,7 +64,7 @@ export class FolderApiService {
 
     //Function (request) Delete Folder
     public deleteFolder(folder: FolderDeleteModel): Observable<any> {
-        return this.client.delete(this.url, { body: folder })
+        return this.client.delete(this.urlMain, { body: folder })
     }
 
     //Function (helper) Add filter query in getAll request url
@@ -89,9 +89,8 @@ export class FolderApiService {
     }
 
     //Function (helper) Add sort query in getAll request url
-    private addSort(url: string, sort: { dir?: string, field: string }): string {
-        const dir = typeof sort.dir === "string" ? sort.dir : "asc";
-        const resultUrl = url + `&SortDir=${dir}&SortField=${sort.field}`;
+    private addSort(url: string, sort:SortModel): string {        
+        const resultUrl = url + `&SortDir=${sort.dir}&SortField=${sort.field}`;
         return resultUrl;
     }
 
