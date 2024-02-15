@@ -216,6 +216,7 @@ export class HomeComponent implements OnInit {
     }
 
     public filterChange(ev: CompositeFilterDescriptor): void {
+        debugger;
         if (ev) {
             this.gridState.filter = ev;
         } else {

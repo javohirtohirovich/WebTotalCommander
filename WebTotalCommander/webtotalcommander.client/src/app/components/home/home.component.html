@@ -70,7 +70,18 @@
                 <!--end::Name Column-->
 
                 <!--begin::Created Date-->
-                <kendo-grid-column field="createdDate" title="Date modified"> </kendo-grid-column>
+                <kendo-grid-column field="createdDate" format="{0:MM/dd/yyyy h:mm a}" title="Date modified">
+                    <ng-template    kendoGridFilterMenuTemplate let-dataItem let-filter let-column="column"
+                    let-filterService="filterService">
+                    <kendo-grid-date-filter-menu [column]="column" [filter]="filter" [filterService]="filterService">
+                        <kendo-filter-eq-operator></kendo-filter-eq-operator>
+                        <kendo-filter-gte-operator></kendo-filter-gte-operator>
+                        <kendo-filter-gt-operator></kendo-filter-gt-operator>
+                        <kendo-filter-lte-operator></kendo-filter-lte-operator>
+                        <kendo-filter-lt-operator></kendo-filter-lt-operator>
+                    </kendo-grid-date-filter-menu>
+                </ng-template>    
+                </kendo-grid-column>
                 <!--end::Created Date-->
 
                 <!--begin::Type Column-->

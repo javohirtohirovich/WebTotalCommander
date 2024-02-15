@@ -36,7 +36,7 @@ export class FileApiService {
     //Function (request) Get Txt File (for edit)
     public getTxtFile(filePath: string): Observable<any> {
         return this.client
-            .get(`${this.url}/text?file_path=${filePath}`, {
+            .get(`${this.url}/Text?filePath=${filePath}`, {
                 responseType: 'blob',
             }).pipe(catchError((error) => {
                     throw error;
@@ -49,7 +49,7 @@ export class FileApiService {
         const formData: FormData = new FormData();
         formData.append('file', fileEditModel.file!);
         return this.client.put(
-            `${this.url}/text?filePath=${fileEditModel.filePath}`,
+            `${this.url}/Text?filePath=${fileEditModel.filePath}`,
             formData
         );
     }

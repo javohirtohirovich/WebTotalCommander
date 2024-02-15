@@ -37,14 +37,14 @@ public class FileController : ControllerBase
         return File(result.memoryStream, "application/octet-stream", result.filePath);
     }
 
-    [HttpGet("text")]
-    public async Task<IActionResult> GetTxtFileAsync(string file_path)
+    [HttpGet("Text")]
+    public async Task<IActionResult> GetTxtFileAsync(string filePath)
     {
-        MemoryStream result = await _service.GetTxtFileAsync(file_path);
+        MemoryStream result = await _service.GetTxtFileAsync(filePath);
         return File(result, "application/txt");
     }
 
-    [HttpPut("text")]
+    [HttpPut("Text")]
     public async Task<IActionResult> EditTxtFileAsync(string filePath, IFormFile file)
     {
         var result = await _service.EditTextTxtFileAsync(filePath, file);

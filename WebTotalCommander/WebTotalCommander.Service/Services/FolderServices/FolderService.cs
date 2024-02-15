@@ -150,10 +150,30 @@ public class FolderService : IFolderService
                 var isCreateDate = item.Filters.Any(x => x.Field == "createdDate");
                 if (isCreateDate)
                 {
-                    var containsFilter = item.Filters.FirstOrDefault(x => x.Operator == "contains");
-                    if (containsFilter != null)
+                    var containsFilterEq = item.Filters.FirstOrDefault(x => x.Operator == "eq");
+                    if (containsFilterEq != null)
                     {
-                        result.FolderFile = result.FolderFile.Where(x => x.CreatedDate.ToString()==containsFilter.Value).ToList();
+                        result.FolderFile = result.FolderFile.Where(x => x.CreatedDate==DateTime.Parse(containsFilterEq.Value)).ToList();
+                    }
+                    var containsFilterGte = item.Filters.FirstOrDefault(x => x.Operator == "gte");
+                    if (containsFilterGte != null)
+                    {
+                        result.FolderFile = result.FolderFile.Where(x => x.CreatedDate >= DateTime.Parse(containsFilterGte.Value)).ToList();
+                    }
+                    var containsFilterLte = item.Filters.FirstOrDefault(x => x.Operator == "lte");
+                    if (containsFilterLte != null)
+                    {
+                        result.FolderFile = result.FolderFile.Where(x => x.CreatedDate <= DateTime.Parse(containsFilterLte.Value)).ToList();
+                    }
+                    var containsFilterGt = item.Filters.FirstOrDefault(x => x.Operator == "gt");
+                    if (containsFilterGt != null)
+                    {
+                        result.FolderFile = result.FolderFile.Where(x => x.CreatedDate > DateTime.Parse(containsFilterGt.Value)).ToList();
+                    }
+                    var containsFilterLt = item.Filters.FirstOrDefault(x => x.Operator == "lt");
+                    if (containsFilterLt != null)
+                    {
+                        result.FolderFile = result.FolderFile.Where(x => x.CreatedDate < DateTime.Parse(containsFilterLt.Value)).ToList();
                     }
                 }
             }
