@@ -137,6 +137,25 @@ public class FolderService : IFolderService
                         result.FolderFile = result.FolderFile.Where(x => x.Name.Contains(containsFilter.Value)).ToList();
                     }
                 }
+                var isExtension = item.Filters.Any(x => x.Field == "extension");
+                if (isExtension)
+                {
+                    var containsFilter = item.Filters.FirstOrDefault(x => x.Operator == "contains");
+                    if (containsFilter != null)
+                    {
+                        result.FolderFile = result.FolderFile.Where(x => x.Extension.Contains(containsFilter.Value)).ToList();
+                    }
+                }
+
+                var isCreateDate = item.Filters.Any(x => x.Field == "createdDate");
+                if (isCreateDate)
+                {
+                    var containsFilter = item.Filters.FirstOrDefault(x => x.Operator == "contains");
+                    if (containsFilter != null)
+                    {
+                        result.FolderFile = result.FolderFile.Where(x => x.CreatedDate.ToString()==containsFilter.Value).ToList();
+                    }
+                }
             }
         }
 

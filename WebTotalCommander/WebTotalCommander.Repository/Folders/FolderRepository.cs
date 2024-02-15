@@ -31,7 +31,7 @@ public class FolderRepository : IFolderRepository
         }
         catch
         {
-            return false;
+            return true;
         }
     }
 
