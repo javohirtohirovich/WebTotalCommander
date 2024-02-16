@@ -22,7 +22,7 @@ public class Sorter : ISorter
         {
             "name" => folderFileViewModels.OrderByDescending(x => x.Name).ToList(),
             "extension" => folderFileViewModels.OrderByDescending(x => x.Extension).ToList(),
-            "createdDate"=>folderFileViewModels.OrderByDescending(x => x.CreatedDate).ToList(),
+            "createdDate" => folderFileViewModels.OrderByDescending(x => x.CreatedDate).ToList(),
             _ => throw new ArgumentException($"Invalid sort field: {query.SortField}")
         };
     }

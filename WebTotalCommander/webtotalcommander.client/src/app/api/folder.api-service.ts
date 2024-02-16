@@ -33,16 +33,12 @@ export class FolderApiService {
             url = this.addSort(url, sort);
         }
 
-        return this.client.get<FolderGetAllModel>(url).pipe(
-            catchError((error) => {
-                throw error;
-            })
-        );
+        return this.client.get<FolderGetAllModel>(url);
     }
 
     //Function (request) Create Folder
     public addFolder(folder: FolderCreateModel): Observable<any> {
-        return this.client.post(this.urlMain, folder)
+        return this.client.post(this.urlMain, folder);
     }
 
     //Function (request) Download Folder Zip

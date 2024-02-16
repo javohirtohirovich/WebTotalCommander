@@ -7,10 +7,10 @@ public class FilterViewModel
     private List<SubFilterViewModel> _subFilters;
 
     [Required]
-    public string Logic {  get; set; }
+    public string Logic { get; set; }
     public List<SubFilterViewModel> Filters
     {
-        get =>_subFilters??=new List<SubFilterViewModel>();
+        get => _subFilters ??= new List<SubFilterViewModel>();
         set => _subFilters = value;
     }
 }

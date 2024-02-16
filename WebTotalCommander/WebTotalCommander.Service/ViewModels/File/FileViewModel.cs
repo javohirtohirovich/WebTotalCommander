@@ -1,9 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
-
-namespace WebTotalCommander.Service.ViewModels.File;
+﻿namespace WebTotalCommander.Service.ViewModels.File;
 
 public class FileViewModel
 {
-    public string? FilePath { get; set; } = string.Empty;
-    public IFormFile File { get; set; } = default!;
+    public string FileName { get; set; }
+    public string? FilePath { get; set; }
+    public Stream File { get; set; }
 }

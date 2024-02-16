@@ -1,6 +1,4 @@
-﻿using WebTotalCommander.FileAccess.Utils;
-
-namespace WebTotalCommander.Service.ViewModels.Common;
+﻿namespace WebTotalCommander.Service.ViewModels.Common;
 
 public class FolderFileViewModel
 {

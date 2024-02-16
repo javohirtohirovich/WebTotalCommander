@@ -1,4 +1,5 @@
-﻿using WebTotalCommander.Core.Errors;
+﻿using Microsoft.Extensions.Configuration;
+using WebTotalCommander.Core.Errors;
 using WebTotalCommander.FileAccess.Models.Folder;
 using WebTotalCommander.FileAccess.Utils;
 using WebTotalCommander.Repository.Folders;
@@ -13,50 +14,55 @@ public class FolderService : IFolderService
 {
     private readonly IFolderRepository _repository;
     private readonly ISorter _sorter;
-    private readonly string _mainFolderName = "DataFolder";
+    private readonly string _mainFolderName;
 
-    //Konstruktor
-    public FolderService(IFolderRepository folderRepository, ISorter sorter)
+    public FolderService(IFolderRepository folderRepository, ISorter sorter, IConfiguration config)
     {
         this._repository = folderRepository;
         this._sorter = sorter;
+        this._mainFolderName = config["MainFolderName"];
     }
 
-    //Function Create Folder (API)
     public bool CreateFolder(FolderViewModel folderViewModel)
     {
         var path = Path.Combine(_mainFolderName, folderViewModel.FolderPath, folderViewModel.FolderName);
-        if (Directory.Exists(path)) { throw new AlreadeExsistException("Folder alreade exsist!"); }
+        if (Directory.Exists(path))
+        {
+            throw new AlreadeExsistException("Folder alreade exsist!");
+        }
 
         Folder folder = new Folder()
         {
+            FolderMainName = _mainFolderName,
             FolderName = folderViewModel.FolderName,
             FolderPath = folderViewModel.FolderPath,
         };
 
-        bool result = _repository.CreateFolder(folder);
+        var result = _repository.CreateFolder(folder);
 
         return result;
     }
 
-    //Function Delete Folder (API)
-    public bool DeleteFolder(FolderViewModel folderViewModel)
+    public async Task<bool> DeleteFolderAsync(FolderViewModel folderViewModel)
     {
         var path = Path.Combine(_mainFolderName, folderViewModel.FolderPath, folderViewModel.FolderName);
-        if (!Directory.Exists(path)) { throw new EntryNotFoundException("Folder not found!"); }
+        if (!Directory.Exists(path))
+        {
+            throw new EntryNotFoundException("Folder not found!");
+        }
 
         Folder folder = new Folder()
         {
+            FolderMainName = _mainFolderName,
             FolderName = folderViewModel.FolderName,
             FolderPath = folderViewModel.FolderPath,
         };
 
-        bool result = _repository.DeleteFolder(folder);
+        var result = await _repository.DeleteFolderAsync(folder);
 
         return result;
     }
 
-    //Function Download Folder Zip (API)
     public async Task<(MemoryStream memoryStream, string fileName)> DownloadFolderZipAsync(string folderPath, string folderName)
     {
         var path = Path.Combine(_mainFolderName, folderPath, folderName);
@@ -65,12 +71,11 @@ public class FolderService : IFolderService
             throw new EntryNotFoundException("Folder not found!");
         }
 
-        var memory = await _repository.DownloadFolderZipAsync(folderPath, folderName);
+        var memory = await _repository.DownloadFolderZipAsync(path);
 
         return (memory, folderName);
     }
 
-    //Function GetAll Folder (API)
     public async Task<FolderGetAllViewModel> FolderGetAllAsync(FolderGetAllQuery query)
     {
         var path = Path.Combine(_mainFolderName, query.Path);
@@ -80,12 +85,11 @@ public class FolderService : IFolderService
             throw new EntryNotFoundException("Folder not found!");
         }
 
-        var folderGetAll = await _repository.GetAllFolder(query.Path);
+        var folderGetAll = await _repository.GetAllFolderAsync(path);
 
         var result = new FolderGetAllViewModel();
 
-        //Add folders in result
-        for (int i = 0; i < folderGetAll.FolderNames.Count; i++)
+        for (var i = 0; i < folderGetAll.FolderNames.Count; i++)
         {
             DirectoryInfo directoryInfo = new DirectoryInfo(folderGetAll.FolderNames[i]);
             FolderFileViewModel folderView = new FolderFileViewModel()
@@ -98,8 +102,7 @@ public class FolderService : IFolderService
             result.FolderFile.Add(folderView);
         }
 
-        //Add files in result
-        for (int i = 0; i < folderGetAll.Files.Count; i++)
+        for (var i = 0; i < folderGetAll.Files.Count; i++)
         {
             FileInfo fileInfo = new FileInfo(folderGetAll.Files[i]);
             FolderFileViewModel fileView = new FolderFileViewModel()
@@ -112,14 +115,14 @@ public class FolderService : IFolderService
             result.FolderFile.Add(fileView);
         }
 
-        Paginator paginator = new Paginator();
+        var paginator = new Paginator();
         var paginationMetaData = paginator.Paginate(result.FolderFile.Count, new PaginationParams(query.Offset, query.Limit));
 
         if (query.SortDir == "desc")
         {
             result.FolderFile = _sorter.SortDesc(query, result.FolderFile);
         }
-        else if(query.SortDir=="asc")
+        else if (query.SortDir == "asc")
         {
             result.FolderFile = _sorter.SortAsc(query, result.FolderFile);
         }
@@ -153,7 +156,7 @@ public class FolderService : IFolderService
                     var containsFilterEq = item.Filters.FirstOrDefault(x => x.Operator == "eq");
                     if (containsFilterEq != null)
                     {
-                        result.FolderFile = result.FolderFile.Where(x => x.CreatedDate==DateTime.Parse(containsFilterEq.Value)).ToList();
+                        result.FolderFile = result.FolderFile.Where(x => x.CreatedDate == DateTime.Parse(containsFilterEq.Value)).ToList();
                     }
                     var containsFilterGte = item.Filters.FirstOrDefault(x => x.Operator == "gte");
                     if (containsFilterGte != null)
@@ -185,8 +188,7 @@ public class FolderService : IFolderService
         return result;
     }
 
-    //Function Rename folder (API)
-    public bool RenameFolder(FolderRenameViewModel folderRenameViewModel)
+    public async Task<bool> RenameFolderAsync(FolderRenameViewModel folderRenameViewModel)
     {
         var path = Path.Combine(_mainFolderName, folderRenameViewModel.FolderPath, folderRenameViewModel.FolderOldName);
         if (!Directory.Exists(path))
@@ -196,12 +198,13 @@ public class FolderService : IFolderService
 
         FolderRename folderRename = new FolderRename()
         {
+            MainFolderName = _mainFolderName,
             FolderPath = folderRenameViewModel.FolderPath,
             FolderNewName = folderRenameViewModel.FolderNewName,
             FolderOldName = folderRenameViewModel.FolderOldName
         };
-        var result = _repository.RenameFolder(folderRename);
 
+        var result = await _repository.RenameFolderAsync(folderRename);
         return result;
     }
 

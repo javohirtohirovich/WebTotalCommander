@@ -16,9 +16,12 @@ export class FileApiService {
     //Function (request) Upload File
     public addFile(file: FileCreateModel): Observable<any> {
         const formData: FormData = new FormData();
-        formData.append('FilePath', file.filePath);
         formData.append('File', file.file!);
-        return this.client.post(this.url, formData);
+        if(file.filePath){
+            return this.client.post(`${this.url}?filePath=${file.filePath}`, formData);
+        }
+        else{return this.client.post(this.url,formData)}
+        
     }
 
     //Function (request) Download File

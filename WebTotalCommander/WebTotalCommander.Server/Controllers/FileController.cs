@@ -17,18 +17,26 @@ public class FileController : ControllerBase
 
     [HttpPost]
     [DisableRequestSizeLimit]
-
-    public async Task<IActionResult> CreateFileAsync([FromForm] FileViewModel fileViewModel)
+    public async Task<IActionResult> CreateFileAsync(IFormFile file, string filePath = "")
     {
-        var result = await _service.CreateFile(fileViewModel);
-        return Ok(new { result });
+        using (var stream = file.OpenReadStream())
+        {
+            FileViewModel fileViewModel = new FileViewModel();
+            fileViewModel.FileName = file.FileName;
+            fileViewModel.FilePath = filePath;
+            fileViewModel.File = stream;
+            var result = await _service.CreateFileAsync(fileViewModel);
+            return Ok(new { result });
+        }
     }
+
     [HttpDelete]
     public async Task<IActionResult> DeleteFileAsync(FileDeleteViewModel fileDeleteView)
     {
-        var result = await _service.DeleteFile(fileDeleteView);
+        var result = await _service.DeleteFileAsync(fileDeleteView);
         return Ok(new { result });
     }
+
     [HttpGet]
     [DisableRequestSizeLimit]
     public async Task<IActionResult> DownloadFileAsync([FromQuery] string filePath)
@@ -37,18 +45,21 @@ public class FileController : ControllerBase
         return File(result.memoryStream, "application/octet-stream", result.filePath);
     }
 
+
+    [HttpPut("Text")]
+    public async Task<IActionResult> EditTxtFileAsync(string filePath, IFormFile file)
+    {
+        using (var stream = file.OpenReadStream())
+        {
+            var result = await _service.EditTextTxtFileAsync(filePath, stream);
+            return Ok(new { result });
+        }
+    }
+
     [HttpGet("Text")]
     public async Task<IActionResult> GetTxtFileAsync(string filePath)
     {
         MemoryStream result = await _service.GetTxtFileAsync(filePath);
         return File(result, "application/txt");
     }
-
-    [HttpPut("Text")]
-    public async Task<IActionResult> EditTxtFileAsync(string filePath, IFormFile file)
-    {
-        var result = await _service.EditTextTxtFileAsync(filePath, file);
-        return Ok(result);
-    }
-
 }

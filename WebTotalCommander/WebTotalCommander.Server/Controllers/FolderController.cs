@@ -19,13 +19,13 @@ public class FolderController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> FolderGetAllAsync([FromQuery] FolderGetAllQuery query)
     {
-        FolderGetAllViewModel folderGetAllView = await _service.FolderGetAllAsync(query);
+        var folderGetAllView = await _service.FolderGetAllAsync(query);
         return Ok(folderGetAllView);
     }
 
     [HttpGet("zip")]
     [DisableRequestSizeLimit]
-    public async Task<IActionResult> FolderDownloadZipAsync(string folderPath = "", string folderName = "")
+    public async Task<IActionResult> FolderDownloadZipAsync(string folderName, string folderPath = "")
     {
         var result = await _service.DownloadFolderZipAsync(folderPath, folderName);
         return File(result.memoryStream, "application/zip", result.fileName);
@@ -34,19 +34,21 @@ public class FolderController : ControllerBase
     [HttpPost]
     public IActionResult CreateFolder(FolderViewModel folderViewModel)
     {
-        bool result = _service.CreateFolder(folderViewModel);
+        var result = _service.CreateFolder(folderViewModel);
         return Ok(new { result });
     }
+
     [HttpDelete]
-    public IActionResult DeleteFolder(FolderViewModel folderViewModel)
+    public async Task<IActionResult> DeleteFolderAsync(FolderViewModel folderViewModel)
     {
-        bool result = _service.DeleteFolder(folderViewModel);
+        var result = await _service.DeleteFolderAsync(folderViewModel);
         return Ok(new { result });
     }
+
     [HttpPut]
-    public IActionResult RenameFolder(FolderRenameViewModel folderRenameViewModel)
+    public async Task<IActionResult> RenameFolderAsync(FolderRenameViewModel folderRenameViewModel)
     {
-        bool result = _service.RenameFolder(folderRenameViewModel);
+        var result = await _service.RenameFolderAsync(folderRenameViewModel);
         return Ok(new { result });
     }
 }
