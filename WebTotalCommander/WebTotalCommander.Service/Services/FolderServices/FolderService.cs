@@ -14,12 +14,14 @@ public class FolderService : IFolderService
 {
     private readonly IFolderRepository _repository;
     private readonly ISorter _sorter;
+    private readonly IFilter _filter;
     private readonly string _mainFolderName;
 
-    public FolderService(IFolderRepository folderRepository, ISorter sorter, IConfiguration config)
+    public FolderService(IFolderRepository folderRepository, ISorter sorter, IFilter filter, IConfiguration config)
     {
         this._repository = folderRepository;
         this._sorter = sorter;
+        this._filter = filter;
         this._mainFolderName = config["MainFolderName"];
     }
 
@@ -117,6 +119,7 @@ public class FolderService : IFolderService
 
         var paginator = new Paginator();
         var paginationMetaData = paginator.Paginate(result.FolderFile.Count, new PaginationParams(query.Offset, query.Limit));
+        result.PaginationMetaData = paginationMetaData;
 
         if (query.SortDir == "desc")
         {
@@ -129,60 +132,9 @@ public class FolderService : IFolderService
 
         if (query.Filter != null)
         {
-            foreach (var item in query.Filter.Filters)
-            {
-                var isName = item.Filters.Any(x => x.Field == "name");
-                if (isName)
-                {
-                    var containsFilter = item.Filters.FirstOrDefault(x => x.Operator == "contains");
-                    if (containsFilter != null)
-                    {
-                        result.FolderFile = result.FolderFile.Where(x => x.Name.Contains(containsFilter.Value)).ToList();
-                    }
-                }
-                var isExtension = item.Filters.Any(x => x.Field == "extension");
-                if (isExtension)
-                {
-                    var containsFilter = item.Filters.FirstOrDefault(x => x.Operator == "contains");
-                    if (containsFilter != null)
-                    {
-                        result.FolderFile = result.FolderFile.Where(x => x.Extension.Contains(containsFilter.Value)).ToList();
-                    }
-                }
-
-                var isCreateDate = item.Filters.Any(x => x.Field == "createdDate");
-                if (isCreateDate)
-                {
-                    var containsFilterEq = item.Filters.FirstOrDefault(x => x.Operator == "eq");
-                    if (containsFilterEq != null)
-                    {
-                        result.FolderFile = result.FolderFile.Where(x => x.CreatedDate == DateTime.Parse(containsFilterEq.Value)).ToList();
-                    }
-                    var containsFilterGte = item.Filters.FirstOrDefault(x => x.Operator == "gte");
-                    if (containsFilterGte != null)
-                    {
-                        result.FolderFile = result.FolderFile.Where(x => x.CreatedDate >= DateTime.Parse(containsFilterGte.Value)).ToList();
-                    }
-                    var containsFilterLte = item.Filters.FirstOrDefault(x => x.Operator == "lte");
-                    if (containsFilterLte != null)
-                    {
-                        result.FolderFile = result.FolderFile.Where(x => x.CreatedDate <= DateTime.Parse(containsFilterLte.Value)).ToList();
-                    }
-                    var containsFilterGt = item.Filters.FirstOrDefault(x => x.Operator == "gt");
-                    if (containsFilterGt != null)
-                    {
-                        result.FolderFile = result.FolderFile.Where(x => x.CreatedDate > DateTime.Parse(containsFilterGt.Value)).ToList();
-                    }
-                    var containsFilterLt = item.Filters.FirstOrDefault(x => x.Operator == "lt");
-                    if (containsFilterLt != null)
-                    {
-                        result.FolderFile = result.FolderFile.Where(x => x.CreatedDate < DateTime.Parse(containsFilterLt.Value)).ToList();
-                    }
-                }
-            }
+            result.FolderFile = _filter.FilterFolder(query, result.FolderFile);
         }
 
-        result.PaginationMetaData = paginationMetaData;
         result.FolderFile = result.FolderFile.Skip(query.Offset).Take(query.Limit).ToList();
 
         return result;

@@ -34,6 +34,7 @@ public class Program
 
         builder.Services.AddScoped<ISorter, Sorter>();
         builder.Services.AddScoped<IPaginator, Paginator>();
+        builder.Services.AddScoped<IFilter, Filter>();
 
         var app = builder.Build();
 
