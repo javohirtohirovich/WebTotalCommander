@@ -132,7 +132,7 @@ public class FolderService : IFolderService
 
         if (query.Filter != null)
         {
-            result.FolderFile = _filter.FilterFolder(query, result.FolderFile);
+            result.FolderFile = _filter.FilterFolder(query.Filter, result.FolderFile);
         }
 
         result.FolderFile = result.FolderFile.Skip(query.Offset).Take(query.Limit).ToList();

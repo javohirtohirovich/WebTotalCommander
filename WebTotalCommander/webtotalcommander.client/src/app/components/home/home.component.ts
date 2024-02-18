@@ -170,6 +170,7 @@ export class HomeComponent implements OnInit {
     }
 
     private convertFilters(filter: CompositeFilterDescriptor): SubFilter[] {
+        debugger;
         const result: SubFilter[] = [];
         for (let i = filter.filters.length - 1; i >= 0; i--) {
             const currentFilter: CompositeFilterDescriptor = <any>filter.filters[i];
