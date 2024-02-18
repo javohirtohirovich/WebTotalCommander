@@ -117,9 +117,7 @@ public class FolderService : IFolderService
             result.FolderFile.Add(fileView);
         }
 
-        var paginator = new Paginator();
-        var paginationMetaData = paginator.Paginate(result.FolderFile.Count, new PaginationParams(query.Offset, query.Limit));
-        result.PaginationMetaData = paginationMetaData;
+       
 
         if (query.SortDir == "desc")
         {
@@ -135,6 +133,9 @@ public class FolderService : IFolderService
             result.FolderFile = _filter.FilterFolder(query.Filter, result.FolderFile);
         }
 
+        var paginator = new Paginator();
+        var paginationMetaData = paginator.Paginate(result.FolderFile.Count, new PaginationParams(query.Offset, query.Limit));
+        result.PaginationMetaData = paginationMetaData;
         result.FolderFile = result.FolderFile.Skip(query.Offset).Take(query.Limit).ToList();
 
         return result;

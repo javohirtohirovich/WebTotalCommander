@@ -170,7 +170,6 @@ export class HomeComponent implements OnInit {
     }
 
     private convertFilters(filter: CompositeFilterDescriptor): SubFilter[] {
-        debugger;
         const result: SubFilter[] = [];
         for (let i = filter.filters.length - 1; i >= 0; i--) {
             const currentFilter: CompositeFilterDescriptor = <any>filter.filters[i];
@@ -217,7 +216,6 @@ export class HomeComponent implements OnInit {
     }
 
     public filterChange(ev: CompositeFilterDescriptor): void {
-        debugger;
         if (ev) {
             this.gridState.filter = ev;
         } else {
@@ -226,6 +224,7 @@ export class HomeComponent implements OnInit {
                 filters: [],
             };
         }
+        this.skip=0;
         this.getAll(this.skip, this.pageSize);
     }
 
