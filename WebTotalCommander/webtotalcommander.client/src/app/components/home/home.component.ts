@@ -114,13 +114,11 @@ export class HomeComponent implements OnInit {
     //Function (ngOnInit) GetAll Folders and Files
     public getAll(skip: number, take: number): void {
         this.isLoading = true;
-        //Filter
         const filter = {
             'Filter.Logic': 'and',
             'Filter.Filters': this.convertFilters(this.gridState.filter),
         };
 
-        //Sort
         const sortViewModel: SortViewModel = new SortViewModel();
         sortViewModel.dir = this.sort[0].dir;
         sortViewModel.field = this.sort[0].field;
@@ -156,7 +154,6 @@ export class HomeComponent implements OnInit {
         this.getAll(this.skip, this.pageSize)
     }
 
-    //Filter
     public gridState: GridState = this.creteInitialState();
 
     private creteInitialState(): GridState {
@@ -224,7 +221,7 @@ export class HomeComponent implements OnInit {
                 filters: [],
             };
         }
-        this.skip=0;
+        this.skip = 0;
         this.getAll(this.skip, this.pageSize);
     }
 

@@ -16,11 +16,11 @@ export class FolderService {
     private folderApiService: FolderApiService = inject(FolderApiService)
 
     //Function (request)
-    public getFolder(folderPath: string, skip: number, take: number,sort?:SortViewModel,
+    public getFolder(folderPath: string, skip: number, take: number, sort?: SortViewModel,
         filters?: { 'Filter.Logic': string; 'Filter.Filters': Array<SubFilter>; },
-        ): Observable<FolderGetAllViewModel> {
+    ): Observable<FolderGetAllViewModel> {
 
-        return this.folderApiService.getAllFolder(folderPath, skip, take,sort, filters).pipe(
+        return this.folderApiService.getAllFolder(folderPath, skip, take, sort, filters).pipe(
             map(apiModel => this.toModel(apiModel))
         );
 

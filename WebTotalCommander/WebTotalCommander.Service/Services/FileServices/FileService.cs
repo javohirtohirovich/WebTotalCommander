@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using WebTotalCommander.Core.Errors;
+﻿using WebTotalCommander.Core.Errors;
 using WebTotalCommander.FileAccess.Models.File;
 using WebTotalCommander.Repository.Files;
 using WebTotalCommander.Service.ViewModels.File;
@@ -9,21 +8,19 @@ namespace WebTotalCommander.Service.Services.FileServices;
 public class FileService : IFileService
 {
     private readonly IFileRepository _repository;
-    private readonly string _mainFolderName;
 
-    public FileService(IFileRepository fileRepository, IConfiguration config)
+    public FileService(IFileRepository fileRepository)
     {
         this._repository = fileRepository;
-        this._mainFolderName = config["MainFolderName"];
     }
 
-    public async Task<bool> CreateFileAsync(FileViewModel fileView)
+    public async Task<bool> CreateFileAsync(FileViewModel fileView, string mainFolderName)
     {
         if (String.IsNullOrEmpty(fileView.FilePath))
         {
             fileView.FilePath = "";
         }
-        var path = Path.Combine(_mainFolderName, fileView.FilePath, fileView.FileName);
+        var path = Path.Combine(mainFolderName, fileView.FilePath, fileView.FileName);
         if (File.Exists(path))
         {
             throw new AlreadeExsistException("File already exsist!");
@@ -38,18 +35,18 @@ public class FileService : IFileService
         return result;
     }
 
-    public async Task<bool> DeleteFileAsync(FileDeleteViewModel fileView)
+    public bool DeleteFile(FileDeleteViewModel fileView, string mainFolderName)
     {
-        var path = Path.Combine(_mainFolderName, fileView.FilePath, fileView.FileName);
+        var path = Path.Combine(mainFolderName, fileView.FilePath, fileView.FileName);
         if (!File.Exists(path)) { throw new EntryNotFoundException("File not found!"); }
 
-        var result = await _repository.DeleteFileAsync(path);
+        var result = _repository.DeleteFile(path);
         return result;
     }
 
-    public async Task<(MemoryStream memoryStream, string filePath)> DownloadFileAsync(string filePath)
+    public async Task<FileDownloadViewModel> DownloadFileAsync(string filePath, string mainFolderName)
     {
-        var path = Path.Combine(_mainFolderName, filePath);
+        var path = Path.Combine(mainFolderName, filePath);
         if (!File.Exists(path))
         {
             throw new EntryNotFoundException("File not found!");
@@ -57,12 +54,18 @@ public class FileService : IFileService
 
         var memory = await _repository.DownloadFileAsync(path);
 
-        return (memory, path);
+        var fileDownloadView = new FileDownloadViewModel()
+        {
+            File = memory,
+            FilePath = path,
+        };
+
+        return fileDownloadView;
     }
 
-    public async Task<bool> EditTextTxtFileAsync(string filePath, Stream file)
+    public async Task<bool> EditTextTxtFileAsync(string filePath, Stream file, string mainFolderName)
     {
-        var path = Path.Combine(_mainFolderName, filePath);
+        var path = Path.Combine(mainFolderName, filePath);
         var fileInfo = new FileInfo(path);
         if (fileInfo.Extension != ".txt")
         {
@@ -73,15 +76,15 @@ public class FileService : IFileService
             throw new EntryNotFoundException("File not found!");
         }
 
-        await _repository.DeleteFileAsync(path);
+        _repository.DeleteFile(path);
 
         var result = await _repository.EditTextTxtFileAsync(path, file);
         return result;
     }
 
-    public async Task<MemoryStream> GetTxtFileAsync(string filePath)
+    public async Task<Stream> GetTxtFileAsync(string filePath, string mainFolderName)
     {
-        var path = Path.Combine(_mainFolderName, filePath);
+        var path = Path.Combine(mainFolderName, filePath);
         var fileInfo = new FileInfo(path);
         if (fileInfo.Extension != ".txt")
         {

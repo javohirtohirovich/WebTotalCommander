@@ -7,22 +7,19 @@ namespace WebTotalCommander.Repository.Folders;
 
 public class FolderRepository : IFolderRepository
 {
-    public async Task<FolderGetAllModel> GetAllFolderAsync(string path)
+    public FolderGetAllModel GetAllFolder(string path)
     {
         try
         {
             var model = new FolderGetAllModel();
-            await Task.Run(() =>
-            {
-                model.Files = Directory.GetFiles(path);
-                model.FolderNames = Directory.GetDirectories(path);
-            });
+            model.Files = Directory.GetFiles(path);
+            model.FolderNames = Directory.GetDirectories(path);
 
             return model;
         }
         catch (Exception ex)
         {
-            throw new FolderUnexpectedException($"Folder Unexpected error: {ex.Message}");
+            throw new FolderUnexpectedException($"Folder Unexpected error!", ex);
         }
     }
 
@@ -36,49 +33,43 @@ public class FolderRepository : IFolderRepository
         }
         catch (Exception ex)
         {
-            throw new FolderUnexpectedException($"Folder Unexpected error: {ex.Message}");
+            throw new FolderUnexpectedException($"Folder Unexpected error!", ex);
         }
     }
 
-    public async Task<bool> DeleteFolderAsync(Folder folder)
+    public bool DeleteFolder(Folder folder)
     {
         try
         {
             var path = Path.Combine(folder.FolderMainName, folder.FolderPath, folder.FolderName);
-            await Task.Run(() =>
-            {
-                Directory.Delete(path, true);
-            });
+            Directory.Delete(path, true);
 
             return true;
         }
         catch (Exception ex)
         {
-            throw new FolderUnexpectedException($"Folder Unexpected error: {ex.Message}");
+            throw new FolderUnexpectedException($"Folder Unexpected error!", ex);
         }
     }
 
-    public async Task<bool> RenameFolderAsync(FolderRename folderRename)
+    public bool RenameFolder(FolderRename folderRename)
     {
         try
         {
             var oldPath = Path.Combine(folderRename.MainFolderName, folderRename.FolderPath, folderRename.FolderOldName);
             var newPath = Path.Combine(folderRename.MainFolderName, folderRename.FolderPath, folderRename.FolderNewName);
 
-            await Task.Run(() =>
-            {
-                Directory.Move(oldPath, newPath);
+            Directory.Move(oldPath, newPath);
 
-            });
             return true;
         }
         catch (Exception ex)
         {
-            throw new FolderUnexpectedException($"Folder Unexpected error: {ex.Message}");
+            throw new FolderUnexpectedException($"Folder Unexpected error!", ex);
         }
     }
 
-    public async Task<MemoryStream> DownloadFolderZipAsync(string folderPath)
+    public async Task<Stream> DownloadFolderZipAsync(string folderPath)
     {
         try
         {
@@ -92,16 +83,13 @@ public class FolderRepository : IFolderRepository
             }
             memory.Position = 0;
 
-            await Task.Run(() =>
-            {
-                File.Delete(zipPath);
-            });
+            File.Delete(zipPath);
 
             return memory;
         }
         catch (Exception ex)
         {
-            throw new FolderUnexpectedException($"Folder Unexpected error: {ex.Message}");
+            throw new FolderUnexpectedException($"Folder Unexpected error!", ex);
         }
     }
 }

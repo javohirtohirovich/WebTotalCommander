@@ -1,6 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable, inject } from "@angular/core";
-import { Observable, catchError } from "rxjs";
+import { Observable } from "rxjs";
 import { FolderCreateModel } from "./models/folder/folder.create-model";
 import { FolderDeleteModel } from "./models/folder/folder.delete-model";
 import { FolderGetAllModel } from "./models/common/folder.getall-model";
@@ -15,20 +15,17 @@ export class FolderApiService {
     private urlMain: string = "api/folder"
 
     //Function (request) GetAll Folders and Files
-    public getAllFolder(folderPath: string, skip: number, take: number,sort?:SortModel,
+    public getAllFolder(folderPath: string, skip: number, take: number, sort?: SortModel,
         filters?: { 'Filter.Logic': string; 'Filter.Filters': Array<SubFilter>; }): Observable<FolderGetAllModel> {
-        
-        let url: string = `${this.urlMain}?Offset=${skip}&Limit=${take}`; 
 
-        //If Folder Path
-        if(folderPath) {
-            url= `${this.urlMain}?Path=${folderPath}&Offset=${skip}&Limit=${take}`;
+        let url: string = `${this.urlMain}?Offset=${skip}&Limit=${take}`;
+
+        if (folderPath) {
+            url = `${this.urlMain}?Path=${folderPath}&Offset=${skip}&Limit=${take}`;
         }
-        //If Filter
         if (filters) {
             url = this.addFiltersToQuery(url, filters);
         }
-        //If Sort
         if (sort && sort.dir) {
             url = this.addSort(url, sort);
         }
@@ -64,7 +61,7 @@ export class FolderApiService {
     }
 
     //Function (helper) Add filter query in getAll request url
-    private addFiltersToQuery(url: string, params: {'Filter.Logic': string; 'Filter.Filters': Array<SubFilter>;}): string {
+    private addFiltersToQuery(url: string, params: { 'Filter.Logic': string; 'Filter.Filters': Array<SubFilter>; }): string {
         let resultUrl = url;
         if (params['Filter.Filters'].length > 0) {
             resultUrl += `&Filter.Logic=${params['Filter.Logic']}`;
@@ -85,7 +82,7 @@ export class FolderApiService {
     }
 
     //Function (helper) Add sort query in getAll request url
-    private addSort(url: string, sort:SortModel): string {        
+    private addSort(url: string, sort: SortModel): string {
         const resultUrl = url + `&SortDir=${sort.dir}&SortField=${sort.field}`;
         return resultUrl;
     }

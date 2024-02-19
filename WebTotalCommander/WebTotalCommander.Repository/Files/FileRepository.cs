@@ -18,27 +18,25 @@ public class FileRepository : IFileRepository
         }
         catch (Exception ex)
         {
-            throw new FileUnexpectedException($"File Unexpected error: {ex.Message}");
+            throw new FileUnexpectedException($"File Unexpected error!", ex);
         }
     }
 
-    public async Task<bool> DeleteFileAsync(string path)
+    public bool DeleteFile(string path)
     {
         try
         {
-            await Task.Run(() =>
-            {
-                File.Delete(path);
-            });
+            File.Delete(path);
+
             return true;
         }
         catch (Exception ex)
         {
-            throw new FileUnexpectedException($"File Unexpected error: {ex.Message}");
+            throw new FileUnexpectedException($"File Unexpected error!.", ex);
         }
     }
 
-    public async Task<MemoryStream> DownloadFileAsync(string path)
+    public async Task<Stream> DownloadFileAsync(string path)
     {
         try
         {
@@ -52,7 +50,7 @@ public class FileRepository : IFileRepository
         }
         catch (Exception ex)
         {
-            throw new FileUnexpectedException($"File Unexpected error: {ex.Message}");
+            throw new FileUnexpectedException($"File Unexpected error!", ex);
         }
     }
 
@@ -69,11 +67,11 @@ public class FileRepository : IFileRepository
         }
         catch (Exception ex)
         {
-            throw new FileUnexpectedException($"File Unexpected error: {ex.Message}");
+            throw new FileUnexpectedException($"File Unexpected error!", ex);
         }
     }
 
-    public async Task<MemoryStream> GetTxtFileAsync(string path)
+    public async Task<Stream> GetTxtFileAsync(string path)
     {
         try
         {
@@ -88,7 +86,7 @@ public class FileRepository : IFileRepository
         }
         catch (Exception ex)
         {
-            throw new FileUnexpectedException($"File Unexpected error: {ex.Message}");
+            throw new FileUnexpectedException($"File Unexpected error!", ex);
         }
     }
 }

@@ -9,10 +9,12 @@ namespace WebTotalCommander.Server.Controllers;
 public class FileController : ControllerBase
 {
     private readonly IFileService _service;
+    private readonly string _mainFolderName;
 
-    public FileController(IFileService fileService)
+    public FileController(IFileService fileService, IConfiguration configuration)
     {
         this._service = fileService;
+        this._mainFolderName = configuration["MainFolderName"];
     }
 
     [HttpPost]
@@ -25,15 +27,15 @@ public class FileController : ControllerBase
             fileViewModel.FileName = file.FileName;
             fileViewModel.FilePath = filePath;
             fileViewModel.File = stream;
-            var result = await _service.CreateFileAsync(fileViewModel);
+            var result = await _service.CreateFileAsync(fileViewModel, _mainFolderName);
             return Ok(new { result });
         }
     }
 
     [HttpDelete]
-    public async Task<IActionResult> DeleteFileAsync(FileDeleteViewModel fileDeleteView)
+    public ActionResult DeleteFile(FileDeleteViewModel fileDeleteView)
     {
-        var result = await _service.DeleteFileAsync(fileDeleteView);
+        var result = _service.DeleteFile(fileDeleteView, _mainFolderName);
         return Ok(new { result });
     }
 
@@ -41,8 +43,8 @@ public class FileController : ControllerBase
     [DisableRequestSizeLimit]
     public async Task<IActionResult> DownloadFileAsync([FromQuery] string filePath)
     {
-        var result = await _service.DownloadFileAsync(filePath);
-        return File(result.memoryStream, "application/octet-stream", result.filePath);
+        var result = await _service.DownloadFileAsync(filePath, _mainFolderName);
+        return File(result.File, "application/octet-stream", result.FilePath);
     }
 
 
@@ -51,7 +53,7 @@ public class FileController : ControllerBase
     {
         using (var stream = file.OpenReadStream())
         {
-            var result = await _service.EditTextTxtFileAsync(filePath, stream);
+            var result = await _service.EditTextTxtFileAsync(filePath, stream, _mainFolderName);
             return Ok(new { result });
         }
     }
@@ -59,7 +61,7 @@ public class FileController : ControllerBase
     [HttpGet("Text")]
     public async Task<IActionResult> GetTxtFileAsync(string filePath)
     {
-        MemoryStream result = await _service.GetTxtFileAsync(filePath);
+        var result = await _service.GetTxtFileAsync(filePath, _mainFolderName);
         return File(result, "application/txt");
     }
 }
