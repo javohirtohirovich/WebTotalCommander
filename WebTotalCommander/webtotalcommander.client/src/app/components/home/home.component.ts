@@ -120,10 +120,10 @@ export class HomeComponent implements OnInit {
             'Filter.Filters': this.convertFilters(this.gridState.filter),
         };
 
+        //Sort
         const sortViewModel: SortViewModel = new SortViewModel();
         sortViewModel.dir = this.sort[0].dir;
         sortViewModel.field = this.sort[0].field;
-
 
         const path: string = this.toCollectPath();
         this._serviceFolder.getFolder(path, skip, take, sortViewModel, filter).subscribe({

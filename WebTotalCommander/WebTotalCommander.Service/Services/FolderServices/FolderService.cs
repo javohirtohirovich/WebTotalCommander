@@ -117,7 +117,10 @@ public class FolderService : IFolderService
             result.FolderFile.Add(fileView);
         }
 
-       
+        if (query.Filter != null)
+        {
+            result.FolderFile = _filter.FilterFolder(query.Filter, result.FolderFile);
+        }
 
         if (query.SortDir == "desc")
         {
@@ -126,11 +129,6 @@ public class FolderService : IFolderService
         else if (query.SortDir == "asc")
         {
             result.FolderFile = _sorter.SortAsc(query, result.FolderFile);
-        }
-
-        if (query.Filter != null)
-        {
-            result.FolderFile = _filter.FilterFolder(query.Filter, result.FolderFile);
         }
 
         var paginator = new Paginator();
