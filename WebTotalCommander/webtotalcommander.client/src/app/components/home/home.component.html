@@ -8,8 +8,7 @@
         <div class="me-2">
             <div class="input-group input-group-lg">
                 <span class="input-group-text" id="inputGroup-sizing-lg">Folder Name</span>
-                <input [(ngModel)]="folderName" name="folderName" type="text" class="form-control"
-                    aria-label="Sizing example input" aria-describedby="inputGroup-sizing-lg">
+                <input [(ngModel)]="folderName" name="folderName" type="text" class="form-control">
             </div>
         </div>
         <!--end:: Add Folder-->
@@ -73,7 +72,7 @@
                             <kendo-filter-lte-operator></kendo-filter-lte-operator>
                             <kendo-filter-lt-operator></kendo-filter-lt-operator>
                         </kendo-grid-date-filter-menu>
-                        
+
                     </ng-template>
                     <ng-template kendoGridCellTemplate let-dataItem>
                         {{ dataItem.createdDate | kendoDate: 'yyyy/MM/dd hh:mm a' }}

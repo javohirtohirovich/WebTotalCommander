@@ -579,9 +579,9 @@ export class HomeComponent implements OnInit {
     //Function Forward (button)
     public forwardFolder(): void {
         if (this.forwardHistory.length > 0) {
-            let Value: BreadCrumbItem[] = this.forwardHistory.pop()!;
+            let value: BreadCrumbItem[] = this.forwardHistory.pop()!;
             this.backHistory.push(this.defaultItems.slice());
-            this.defaultItems = Value.slice();
+            this.defaultItems = value.slice();
             this.refreshBreadCrumb();
         }
     }
