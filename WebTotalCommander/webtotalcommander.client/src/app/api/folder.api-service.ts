@@ -12,7 +12,7 @@ export class FolderApiService {
     //Variable HttpClient Inject
     private client: HttpClient = inject(HttpClient);
     //Variable Backend URL
-    private urlMain: string = "https://localhost:7251/api/folder"
+    private urlMain: string = "api/folder"
 
     //Function (request) GetAll Folders and Files
     public getAllFolder(folderPath: string, skip: number, take: number,sort?:SortModel,

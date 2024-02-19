@@ -11,7 +11,7 @@ export class FileApiService {
     private client: HttpClient = inject(HttpClient);
 
     //Variable Backend URL
-    private url: string = 'https://localhost:7251/api/file';
+    private url: string = '/api/file';
 
     //Function (request) Upload File
     public addFile(file: FileCreateModel): Observable<any> {
