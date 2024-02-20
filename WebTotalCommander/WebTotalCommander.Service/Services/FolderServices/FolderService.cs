@@ -2,6 +2,7 @@
 using WebTotalCommander.FileAccess.Models.Folder;
 using WebTotalCommander.FileAccess.Utils;
 using WebTotalCommander.Repository.Folders;
+using WebTotalCommander.Repository.Settings;
 using WebTotalCommander.Service.Common.Interface;
 using WebTotalCommander.Service.Common.Service;
 using WebTotalCommander.Service.ViewModels.Common;
@@ -14,25 +15,27 @@ public class FolderService : IFolderService
     private readonly IFolderRepository _repository;
     private readonly ISorter _sorter;
     private readonly IFilter _filter;
+    private readonly string _mainFolderName;
 
-    public FolderService(IFolderRepository folderRepository, ISorter sorter, IFilter filter)
+    public FolderService(IFolderRepository folderRepository, ISorter sorter, IFilter filter, FolderSettings folderSettings)
     {
         this._repository = folderRepository;
         this._sorter = sorter;
         this._filter = filter;
+        this._mainFolderName = folderSettings.MainFolderName;
     }
 
-    public bool CreateFolder(FolderViewModel folderViewModel, string mainFolderName)
+    public bool CreateFolder(FolderViewModel folderViewModel)
     {
-        var path = Path.Combine(mainFolderName, folderViewModel.FolderPath, folderViewModel.FolderName);
+        var path = Path.Combine(_mainFolderName, folderViewModel.FolderPath, folderViewModel.FolderName);
         if (Directory.Exists(path))
         {
             throw new AlreadeExsistException("Folder alreade exsist!");
         }
 
-        Folder folder = new Folder()
+        var folder = new Folder()
         {
-            FolderMainName = mainFolderName,
+            FolderMainName = _mainFolderName,
             FolderName = folderViewModel.FolderName,
             FolderPath = folderViewModel.FolderPath,
         };
@@ -42,17 +45,17 @@ public class FolderService : IFolderService
         return result;
     }
 
-    public bool DeleteFolder(FolderViewModel folderViewModel, string mainFolderName)
+    public bool DeleteFolder(FolderViewModel folderViewModel)
     {
-        var path = Path.Combine(mainFolderName, folderViewModel.FolderPath, folderViewModel.FolderName);
+        var path = Path.Combine(_mainFolderName, folderViewModel.FolderPath, folderViewModel.FolderName);
         if (!Directory.Exists(path))
         {
             throw new EntryNotFoundException("Folder not found!");
         }
 
-        Folder folder = new Folder()
+        var folder = new Folder()
         {
-            FolderMainName = mainFolderName,
+            FolderMainName = _mainFolderName,
             FolderName = folderViewModel.FolderName,
             FolderPath = folderViewModel.FolderPath,
         };
@@ -62,9 +65,10 @@ public class FolderService : IFolderService
         return result;
     }
 
-    public async Task<(Stream memoryStream, string fileName)> DownloadFolderZipAsync(string folderPath, string folderName, string mainFolderName)
+    public async Task<(Stream memoryStream, string fileName)> DownloadFolderZipAsync(string folderPath, string folderName)
     {
-        var path = Path.Combine(mainFolderName, folderPath, folderName);
+        if (folderPath == null) { folderPath = ""; }
+        var path = Path.Combine(_mainFolderName, folderPath, folderName);
         if (!Directory.Exists(path))
         {
             throw new EntryNotFoundException("Folder not found!");
@@ -75,9 +79,10 @@ public class FolderService : IFolderService
         return (memory, folderName);
     }
 
-    public FolderGetAllViewModel FolderGetAll(FolderGetAllQuery query, string mainFolderName)
+    public FolderGetAllViewModel FolderGetAll(FolderGetAllQuery query)
     {
-        var path = Path.Combine(mainFolderName, query.Path);
+        if (query.Path == null) { query.Path = ""; }
+        var path = Path.Combine(_mainFolderName, query.Path);
 
         if (!Directory.Exists(path))
         {
@@ -136,9 +141,9 @@ public class FolderService : IFolderService
         return result;
     }
 
-    public bool RenameFolder(FolderRenameViewModel folderRenameViewModel, string mainFolderName)
+    public bool RenameFolder(FolderRenameViewModel folderRenameViewModel)
     {
-        var path = Path.Combine(mainFolderName, folderRenameViewModel.FolderPath, folderRenameViewModel.FolderOldName);
+        var path = Path.Combine(_mainFolderName, folderRenameViewModel.FolderPath, folderRenameViewModel.FolderOldName);
         if (!Directory.Exists(path))
         {
             throw new EntryNotFoundException("Folder not found!");
@@ -146,7 +151,7 @@ public class FolderService : IFolderService
 
         FolderRename folderRename = new FolderRename()
         {
-            MainFolderName = mainFolderName,
+            MainFolderName = _mainFolderName,
             FolderPath = folderRenameViewModel.FolderPath,
             FolderNewName = folderRenameViewModel.FolderNewName,
             FolderOldName = folderRenameViewModel.FolderOldName

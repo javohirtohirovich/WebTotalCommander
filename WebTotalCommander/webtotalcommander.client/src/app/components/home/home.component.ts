@@ -233,8 +233,6 @@ export class HomeComponent implements OnInit {
     ];
     public sortChange(sort: SortDescriptor[]): void {
         this.sort = sort;
-        console.log(sort);
-
         this.getAll(this.skip, this.pageSize)
     }
 
@@ -417,7 +415,7 @@ export class HomeComponent implements OnInit {
     public toCollectPath(): string {
         let result: string = "";
         if (this.defaultItems.length === 1) {
-            return result;
+            return result
         }
         else {
             for (let i = 1; i < this.defaultItems.length; i++) {

@@ -18,11 +18,7 @@ export class FolderApiService {
     public getAllFolder(folderPath: string, skip: number, take: number, sort?: SortModel,
         filters?: { 'Filter.Logic': string; 'Filter.Filters': Array<SubFilter>; }): Observable<FolderGetAllModel> {
 
-        let url: string = `${this.urlMain}?Offset=${skip}&Limit=${take}`;
-
-        if (folderPath) {
-            url = `${this.urlMain}?Path=${folderPath}&Offset=${skip}&Limit=${take}`;
-        }
+        let url: string = `${this.urlMain}?Path=${folderPath}&Offset=${skip}&Limit=${take}`;
         if (filters) {
             url = this.addFiltersToQuery(url, filters);
         }
@@ -40,19 +36,9 @@ export class FolderApiService {
 
     //Function (request) Download Folder Zip
     public downloadFolderZip(folderPath: string, folderName: string): Observable<any> {
-        //If Folder Path empty
-        if (folderPath.length === 0) {
-            return this.client.get(`${this.urlMain}/zip?folderName=${folderName}`, {
-                responseType: 'blob'
-            });
-        }
-        //If Folder Path full
-        else {
-            return this.client.get(`${this.urlMain}/zip?folderPath=${folderPath}&folderName=${folderName}`, {
-                responseType: 'blob'
-            });
-        }
-
+        return this.client.get(`${this.urlMain}/zip?folderPath=${folderPath}&folderName=${folderName}`, {
+            responseType: 'blob'
+        });
     }
 
     //Function (request) Delete Folder
@@ -62,7 +48,7 @@ export class FolderApiService {
 
     //Function (helper) Add filter query in getAll request url
     private addFiltersToQuery(url: string, params: { 'Filter.Logic': string; 'Filter.Filters': Array<SubFilter>; }): string {
-        let resultUrl = url;
+        let resultUrl:string = url;
         if (params['Filter.Filters'].length > 0) {
             resultUrl += `&Filter.Logic=${params['Filter.Logic']}`;
             for (let i = 0; i < params['Filter.Filters'].length; i++) {

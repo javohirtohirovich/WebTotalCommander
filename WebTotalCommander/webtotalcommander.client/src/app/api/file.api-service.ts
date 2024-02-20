@@ -17,11 +17,8 @@ export class FileApiService {
     public addFile(file: FileCreateModel): Observable<any> {
         const formData: FormData = new FormData();
         formData.append('File', file.file!);
-        if(file.filePath){
-            return this.client.post(`${this.url}?filePath=${file.filePath}`, formData);
-        }
-        else{return this.client.post(this.url,formData)}
-        
+
+        return this.client.post(`${this.url}?filePath=${file.filePath}`, formData);
     }
 
     //Function (request) Download File
@@ -42,8 +39,8 @@ export class FileApiService {
             .get(`${this.url}/Text?filePath=${filePath}`, {
                 responseType: 'blob',
             }).pipe(catchError((error) => {
-                    throw error;
-                })
+                throw error;
+            })
             );
     }
 

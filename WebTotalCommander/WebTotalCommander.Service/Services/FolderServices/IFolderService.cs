@@ -5,9 +5,9 @@ namespace WebTotalCommander.Service.Services.FolderServices;
 
 public interface IFolderService
 {
-    public FolderGetAllViewModel FolderGetAll(FolderGetAllQuery query, string mainFolderName);
-    public bool CreateFolder(FolderViewModel folderViewModel, string mainFolderName);
-    public bool DeleteFolder(FolderViewModel folderViewModel, string mainFolderName);
-    public bool RenameFolder(FolderRenameViewModel folderRenameViewModel, string mainFolderName);
-    public Task<(Stream memoryStream, string fileName)> DownloadFolderZipAsync(string folderPath, string folderName, string mainFolderName);
+    public FolderGetAllViewModel FolderGetAll(FolderGetAllQuery query);
+    public bool CreateFolder(FolderViewModel folderViewModel);
+    public bool DeleteFolder(FolderViewModel folderViewModel);
+    public bool RenameFolder(FolderRenameViewModel folderRenameViewModel);
+    public Task<(Stream memoryStream, string fileName)> DownloadFolderZipAsync(string folderPath, string folderName);
 }

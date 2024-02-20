@@ -10,47 +10,44 @@ namespace WebTotalCommander.Server.Controllers;
 public class FolderController : ControllerBase
 {
     private IFolderService _service;
-    private readonly string _mainFolderName;
-
-    public FolderController(IFolderService fileService, IConfiguration configuration)
+    public FolderController(IFolderService fileService)
     {
         this._service = fileService;
-        this._mainFolderName = configuration["MainFolderName"];
     }
 
     [HttpGet]
     public IActionResult FolderGetAll([FromQuery] FolderGetAllQuery query)
     {
-        var folderGetAllView = _service.FolderGetAll(query, _mainFolderName);
+        var folderGetAllView = _service.FolderGetAll(query);
         return Ok(folderGetAllView);
     }
 
     [HttpGet("zip")]
     [DisableRequestSizeLimit]
-    public async Task<IActionResult> FolderDownloadZipAsync(string folderName, string folderPath = "")
+    public async Task<IActionResult> FolderDownloadZipAsync(string folderName, string folderPath)
     {
-        var result = await _service.DownloadFolderZipAsync(folderPath, folderName, _mainFolderName);
+        var result = await _service.DownloadFolderZipAsync(folderPath, folderName);
         return File(result.memoryStream, "application/zip", result.fileName);
     }
 
     [HttpPost]
     public IActionResult CreateFolder(FolderViewModel folderViewModel)
     {
-        var result = _service.CreateFolder(folderViewModel, _mainFolderName);
+        var result = _service.CreateFolder(folderViewModel);
         return Ok(new { result });
     }
 
     [HttpDelete]
     public IActionResult DeleteFolderAsync(FolderViewModel folderViewModel)
     {
-        var result = _service.DeleteFolder(folderViewModel, _mainFolderName);
+        var result = _service.DeleteFolder(folderViewModel);
         return Ok(new { result });
     }
 
     [HttpPut]
     public IActionResult RenameFolder(FolderRenameViewModel folderRenameViewModel)
     {
-        var result = _service.RenameFolder(folderRenameViewModel, _mainFolderName);
+        var result = _service.RenameFolder(folderRenameViewModel);
         return Ok(new { result });
     }
 }

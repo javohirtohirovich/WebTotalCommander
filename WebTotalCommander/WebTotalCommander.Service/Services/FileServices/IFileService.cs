@@ -4,10 +4,10 @@ namespace WebTotalCommander.Service.Services.FileServices;
 
 public interface IFileService
 {
-    public Task<bool> CreateFileAsync(FileViewModel fileView, string mainFolderName);
-    public bool DeleteFile(FileDeleteViewModel fileView, string mainFolderName);
-    public Task<FileDownloadViewModel> DownloadFileAsync(string filePath, string mainFolderName);
-    public Task<Stream> GetTxtFileAsync(string filePath, string mainFolderName);
-    public Task<bool> EditTextTxtFileAsync(string filePath, Stream formFile, string mainFolderName);
+    public Task<bool> CreateFileAsync(FileViewModel fileView);
+    public bool DeleteFile(FileDeleteViewModel fileView);
+    public Task<FileDownloadViewModel> DownloadFileAsync(string filePath);
+    public Task<Stream> GetTxtFileAsync(string filePath);
+    public Task<bool> EditTextTxtFileAsync(string filePath, Stream formFile);
 
 }
