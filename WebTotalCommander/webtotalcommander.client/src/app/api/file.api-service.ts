@@ -11,14 +11,14 @@ export class FileApiService {
     private client: HttpClient = inject(HttpClient);
 
     //Variable Backend URL
-    private url: string = 'https://localhost:7251/api/file';
+    private url: string = '/api/file';
 
     //Function (request) Upload File
     public addFile(file: FileCreateModel): Observable<any> {
         const formData: FormData = new FormData();
-        formData.append('FilePath', file.filePath);
         formData.append('File', file.file!);
-        return this.client.post(this.url, formData);
+
+        return this.client.post(`${this.url}?filePath=${file.filePath}`, formData);
     }
 
     //Function (request) Download File
@@ -36,11 +36,11 @@ export class FileApiService {
     //Function (request) Get Txt File (for edit)
     public getTxtFile(filePath: string): Observable<any> {
         return this.client
-            .get(`${this.url}/text?file_path=${filePath}`, {
+            .get(`${this.url}/Text?filePath=${filePath}`, {
                 responseType: 'blob',
             }).pipe(catchError((error) => {
-                    throw error;
-                })
+                throw error;
+            })
             );
     }
 
@@ -49,7 +49,7 @@ export class FileApiService {
         const formData: FormData = new FormData();
         formData.append('file', fileEditModel.file!);
         return this.client.put(
-            `${this.url}/text?filePath=${fileEditModel.filePath}`,
+            `${this.url}/Text?filePath=${fileEditModel.filePath}`,
             formData
         );
     }

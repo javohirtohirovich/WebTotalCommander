@@ -1,5 +1,6 @@
-export class FolderFileViewModel{
-    name:string="";
-    extension:string="";
-    path:string="";
+export class FolderFileViewModel {
+    public name: string = "";
+    public extension: string = "";
+    public path: string = "";
+    public createdDate: Date | null = null;
 }

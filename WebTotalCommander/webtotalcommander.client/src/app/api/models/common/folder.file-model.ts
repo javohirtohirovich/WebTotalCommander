@@ -1,5 +1,6 @@
-export interface  FolderFileModel{
-    name:string;
-    extension:string;
-    path:string;
+export interface FolderFileModel {
+    name: string;
+    extension: string;
+    path: string;
+    createdDate: Date;
 }

@@ -17,38 +17,49 @@ public class FileController : ControllerBase
 
     [HttpPost]
     [DisableRequestSizeLimit]
+    public async Task<IActionResult> CreateFileAsync(IFormFile file, string filePath)
+    {
+        using (var stream = file.OpenReadStream())
+        {
+            FileViewModel fileViewModel = new FileViewModel();
+            fileViewModel.FileName = file.FileName;
+            fileViewModel.FilePath = filePath;
+            fileViewModel.File = stream;
+            var result = await _service.CreateFileAsync(fileViewModel);
+            return Ok(new { result });
+        }
+    }
 
-    public async Task<IActionResult> CreateFileAsync([FromForm] FileViewModel fileViewModel)
-    {
-        var result = await _service.CreateFile(fileViewModel);
-        return Ok(new { result });
-    }
     [HttpDelete]
-    public async Task<IActionResult> DeleteFileAsync(FileDeleteViewModel fileDeleteView)
+    public ActionResult DeleteFile(FileDeleteViewModel fileDeleteView)
     {
-        var result = await _service.DeleteFile(fileDeleteView);
+        var result = _service.DeleteFile(fileDeleteView);
         return Ok(new { result });
     }
+
     [HttpGet]
     [DisableRequestSizeLimit]
     public async Task<IActionResult> DownloadFileAsync([FromQuery] string filePath)
     {
         var result = await _service.DownloadFileAsync(filePath);
-        return File(result.memoryStream, "application/octet-stream", result.filePath);
+        return File(result.File, "application/octet-stream", result.FilePath);
     }
 
-    [HttpGet("text")]
-    public async Task<IActionResult> GetTxtFileAsync(string file_path)
-    {
-        MemoryStream result = await _service.GetTxtFileAsync(file_path);
-        return File(result, "application/txt");
-    }
 
-    [HttpPut("text")]
+    [HttpPut("Text")]
     public async Task<IActionResult> EditTxtFileAsync(string filePath, IFormFile file)
     {
-        var result = await _service.EditTextTxtFileAsync(filePath, file);
-        return Ok(result);
+        using (var stream = file.OpenReadStream())
+        {
+            var result = await _service.EditTextTxtFileAsync(filePath, stream);
+            return Ok(new { result });
+        }
     }
 
+    [HttpGet("Text")]
+    public async Task<IActionResult> GetTxtFileAsync(string filePath)
+    {
+        var result = await _service.GetTxtFileAsync(filePath);
+        return File(result, "application/txt");
+    }
 }

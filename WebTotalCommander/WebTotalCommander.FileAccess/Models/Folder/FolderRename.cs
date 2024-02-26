@@ -2,7 +2,8 @@
 
 public class FolderRename
 {
-    public string FolderNewName { get; set; } = string.Empty;
-    public string FolderOldName { get; set; } = string.Empty;
-    public string FolderPath { get; set; } = string.Empty;
+    public string MainFolderName { get; set; }
+    public string FolderNewName { get; set; }
+    public string FolderOldName { get; set; }
+    public string FolderPath { get; set; }
 }

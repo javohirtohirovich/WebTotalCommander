@@ -1,82 +1,95 @@
 ﻿using System.IO.Compression;
+using WebTotalCommander.Core.Errors;
 using WebTotalCommander.FileAccess.Models.Common;
 using WebTotalCommander.FileAccess.Models.Folder;
-using WebTotalCommander.FileAccess.Utils;
 
 namespace WebTotalCommander.Repository.Folders;
 
 public class FolderRepository : IFolderRepository
 {
-    private string ROOTPATH = "DataFolder";
-
-    public async Task<FolderGetAllModel> GetAllFolder(string folderPath)
+    public FolderGetAllModel GetAllFolder(string path)
     {
-        string path = Path.Combine(ROOTPATH, folderPath);
-        FolderGetAllModel model = new FolderGetAllModel();
-        await Task.Run(() =>
+        try
         {
+            var model = new FolderGetAllModel();
             model.Files = Directory.GetFiles(path);
             model.FolderNames = Directory.GetDirectories(path);
-        });
-       
-        return model;  
+
+            return model;
+        }
+        catch (Exception ex)
+        {
+            throw new FolderUnexpectedException($"Folder Unexpected error!", ex);
+        }
     }
-    
+
     public bool CreateFolder(Folder folder)
     {
         try
         {
-            string path = Path.Combine(ROOTPATH, folder.FolderPath, folder.FolderName);
-            var  result = Directory.CreateDirectory(path);
+            var path = Path.Combine(folder.FolderMainName, folder.FolderPath, folder.FolderName);
+            var result = Directory.CreateDirectory(path);
             return true;
         }
-        catch 
+        catch (Exception ex)
         {
-            return false;
-        }   
+            throw new FolderUnexpectedException($"Folder Unexpected error!", ex);
+        }
     }
 
     public bool DeleteFolder(Folder folder)
     {
         try
         {
-            string path = Path.Combine(ROOTPATH, folder.FolderPath, folder.FolderName);
-            Directory.Delete(path,true);
+            var path = Path.Combine(folder.FolderMainName, folder.FolderPath, folder.FolderName);
+            Directory.Delete(path, true);
+
             return true;
         }
-        catch { return false; }
+        catch (Exception ex)
+        {
+            throw new FolderUnexpectedException($"Folder Unexpected error!", ex);
+        }
     }
 
     public bool RenameFolder(FolderRename folderRename)
     {
         try
         {
-            string oldPath = Path.Combine(ROOTPATH, folderRename.FolderPath, folderRename.FolderOldName);
-            string newPath = Path.Combine(ROOTPATH, folderRename.FolderPath, folderRename.FolderNewName);
-            Directory.Move(oldPath,newPath);
-            
+            var oldPath = Path.Combine(folderRename.MainFolderName, folderRename.FolderPath, folderRename.FolderOldName);
+            var newPath = Path.Combine(folderRename.MainFolderName, folderRename.FolderPath, folderRename.FolderNewName);
+
+            Directory.Move(oldPath, newPath);
+
             return true;
         }
-        catch 
-        { return false; }
+        catch (Exception ex)
+        {
+            throw new FolderUnexpectedException($"Folder Unexpected error!", ex);
+        }
     }
 
-    public async Task<MemoryStream> DownloadFolderZipAsync(string folderPath,string folderName)
+    public async Task<Stream> DownloadFolderZipAsync(string folderPath)
     {
-        string zipPath =Path.Combine(ROOTPATH,folderPath,folderName+".zip");    
-        string path = Path.Combine(ROOTPATH, folderPath,folderName);
-        ZipFile.CreateFromDirectory(path, zipPath);
+        try
+        {
+            var zipPath = Path.Combine(folderPath + ".zip");
+            ZipFile.CreateFromDirectory(folderPath, zipPath);
 
-        var memory = new MemoryStream();
-        await using (var stream = new FileStream(zipPath, FileMode.Open))
-        {
-            await stream.CopyToAsync(memory);
-        }
-        memory.Position = 0;
-        await Task.Run(() =>
-        {
+            var memory = new MemoryStream();
+            await using (var stream = new FileStream(zipPath, FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+
             File.Delete(zipPath);
-        });
-        return memory;
+
+            return memory;
+        }
+        catch (Exception ex)
+        {
+            throw new FolderUnexpectedException($"Folder Unexpected error!", ex);
+        }
     }
 }

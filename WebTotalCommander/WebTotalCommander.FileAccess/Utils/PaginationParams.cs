@@ -7,7 +7,7 @@ public class PaginationParams
         Skip = skip;
         Take = take;
     }
-    public int Skip {  get; set; }
+    public int Skip { get; set; }
     public int Take { get; set; }
-  
+
 }

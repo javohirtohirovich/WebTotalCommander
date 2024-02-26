@@ -13,14 +13,15 @@ public class ApiExceptionFilterAttribute : ExceptionFilterAttribute
         {
             code = 404; // HTTP for Not Found
         }
-        if(actionExecutedContext.Exception is AlreadeExsistException)
+        if (actionExecutedContext.Exception is AlreadeExsistException)
         {
             code = 409;
         }
-        if(actionExecutedContext.Exception is ParameterInvalidException)
+        if (actionExecutedContext.Exception is ParameterInvalidException)
         {
             code = 422;
         }
+       
 
         actionExecutedContext.HttpContext.Response.StatusCode = code;
         actionExecutedContext.Result = new JsonResult(new
