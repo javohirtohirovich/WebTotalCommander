@@ -21,14 +21,7 @@ public class ApiExceptionFilterAttribute : ExceptionFilterAttribute
         {
             code = 422;
         }
-        if (actionExecutedContext.Exception is FileUnexpectedException)
-        {
-            code = 500;
-        }
-        if (actionExecutedContext.Exception is FolderUnexpectedException)
-        {
-            code = 500;
-        }
+       
 
         actionExecutedContext.HttpContext.Response.StatusCode = code;
         actionExecutedContext.Result = new JsonResult(new
