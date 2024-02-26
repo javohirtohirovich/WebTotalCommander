@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using WebTotalCommander.FileAccess.Utils;
 using WebTotalCommander.Service.Services.FolderServices;
 using WebTotalCommander.Service.ViewModels.Common;
 using WebTotalCommander.Service.ViewModels.Folder;
@@ -11,43 +10,44 @@ namespace WebTotalCommander.Server.Controllers;
 public class FolderController : ControllerBase
 {
     private IFolderService _service;
-
     public FolderController(IFolderService fileService)
     {
         this._service = fileService;
     }
 
     [HttpGet]
-    public async Task<IActionResult> FolderGetAllAsync(string folder_path = "", int skip= 0, int take = 5)
+    public IActionResult FolderGetAll([FromQuery] FolderGetAllQuery query)
     {
-        FolderGetAllViewModel folderGetAllView = await _service.FolderGetAllAsync(folder_path,new PaginationParams(skip,take));
+        var folderGetAllView = _service.FolderGetAll(query);
         return Ok(folderGetAllView);
     }
 
     [HttpGet("zip")]
     [DisableRequestSizeLimit]
-    public async Task<IActionResult> FolderDownloadZipAsync(string folderPath="",string folderName = "")
+    public async Task<IActionResult> FolderDownloadZipAsync(string folderName, string folderPath)
     {
-        var result=await _service.DownloadFolderZipAsync(folderPath, folderName);
+        var result = await _service.DownloadFolderZipAsync(folderPath, folderName);
         return File(result.memoryStream, "application/zip", result.fileName);
     }
 
     [HttpPost]
     public IActionResult CreateFolder(FolderViewModel folderViewModel)
     {
-        bool result = _service.CreateFolder(folderViewModel);
+        var result = _service.CreateFolder(folderViewModel);
         return Ok(new { result });
     }
+
     [HttpDelete]
-    public IActionResult DeleteFolder(FolderViewModel folderViewModel)
+    public IActionResult DeleteFolderAsync(FolderViewModel folderViewModel)
     {
-        bool result = _service.DeleteFolder(folderViewModel);
+        var result = _service.DeleteFolder(folderViewModel);
         return Ok(new { result });
     }
+
     [HttpPut]
     public IActionResult RenameFolder(FolderRenameViewModel folderRenameViewModel)
     {
-        bool result = _service.RenameFolder(folderRenameViewModel);
+        var result = _service.RenameFolder(folderRenameViewModel);
         return Ok(new { result });
     }
 }

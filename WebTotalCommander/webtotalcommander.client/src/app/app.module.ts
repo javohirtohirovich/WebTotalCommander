@@ -33,8 +33,7 @@ import { SVGIconModule } from '@progress/kendo-angular-icons';
 import { InputsModule } from "@progress/kendo-angular-inputs";
 import { PagerModule } from "@progress/kendo-angular-pager";
 import { LabelModule } from '@progress/kendo-angular-label';
-
-//Loader
+import { IntlModule } from "@progress/kendo-angular-intl";
 import { IndicatorsModule } from "@progress/kendo-angular-indicators";
 
 @NgModule({
@@ -68,6 +67,7 @@ import { IndicatorsModule } from "@progress/kendo-angular-indicators";
         InputsModule, 
         GridModule,
         IndicatorsModule,
+        IntlModule,
         //Toastr
         ToastrModule.forRoot({
             timeOut: 2000,

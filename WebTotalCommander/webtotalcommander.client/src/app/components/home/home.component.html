@@ -8,8 +8,7 @@
         <div class="me-2">
             <div class="input-group input-group-lg">
                 <span class="input-group-text" id="inputGroup-sizing-lg">Folder Name</span>
-                <input [(ngModel)]="folderName" type="text" class="form-control" aria-label="Sizing example input"
-                    aria-describedby="inputGroup-sizing-lg">
+                <input [(ngModel)]="folderName" name="folderName" type="text" class="form-control">
             </div>
         </div>
         <!--end:: Add Folder-->
@@ -24,13 +23,13 @@
 
         <!--begin::Third div-->
         <div class="mt-4">
-            <button kendoButton [svgIcon]="_iconsKendo.arrowLeft" (click)="backFolder()"  class="me-2">
+            <button kendoButton [svgIcon]="_iconsKendo.arrowLeft" (click)="backFolder()" class="me-2">
                 Back
             </button>
             <button kendoButton [svgIcon]="_iconsKendo.arrowRight" (click)="forwardFolder()" class="me-2">
                 Forward
             </button>
-            <button kendoButton [svgIcon]="_iconsKendo.arrowUp" (click)="upFolder()" >
+            <button kendoButton [svgIcon]="_iconsKendo.arrowUp" (click)="upFolder()">
                 Up
             </button>
             <!--begin:: BreadCrumb-->
@@ -40,24 +39,46 @@
 
             <!--begin:: Grid Table-->
             <kendo-grid (dblclick)="onDblClick()" (cellClick)="cellClickHandler($event)" [data]="gridView"
+                [loading]="isLoading" [filter]="gridState.filter" filterable="menu"
+                (filterChange)="filterChange($event)" [sortable]="true" [sort]="sort" (sortChange)="sortChange($event)"
                 [pageSize]="pageSize" [skip]="skip" (pageChange)="pageChange($event)" [pageable]="{
                     buttonCount: buttonCount,
                     info: info,
                     type: type,
                     pageSizes: pageSizes,
                     previousNext: previousNext,
-                    position: position,
-                    
+                    position: position,      
                 }">
 
                 <!--begin::Name Column-->
-                <kendo-grid-column title="Name">
+                <kendo-grid-column title="Name" field="name" [sortable]="true">
                     <ng-template kendoGridCellTemplate let-dataItem>
                         <kendo-svgicon [icon]="_iconsKendo.getIconForExtension(dataItem.extension)"></kendo-svgicon>
                         {{ dataItem.name }}
                     </ng-template>
                 </kendo-grid-column>
                 <!--end::Name Column-->
+
+                <!--begin::Created Date-->
+                <kendo-grid-column field="createdDate" title="Date modified">
+                    <ng-template kendoGridFilterMenuTemplate let-dataItem let-filter let-column="column"
+                        let-filterService="filterService">
+                        <kendo-grid-date-filter-menu [column]="column" [filter]="filter"
+                            [filterService]="filterService">
+                            <kendo-filter-eq-operator></kendo-filter-eq-operator>
+                            <kendo-filter-neq-operator></kendo-filter-neq-operator>
+                            <kendo-filter-gte-operator></kendo-filter-gte-operator>
+                            <kendo-filter-gt-operator></kendo-filter-gt-operator>
+                            <kendo-filter-lte-operator></kendo-filter-lte-operator>
+                            <kendo-filter-lt-operator></kendo-filter-lt-operator>
+                        </kendo-grid-date-filter-menu>
+                        
+                    </ng-template>
+                    <ng-template kendoGridCellTemplate let-dataItem>
+                        {{ dataItem.createdDate | kendoDate: 'yyyy/MM/dd hh:mm a' }}
+                    </ng-template>
+                </kendo-grid-column>
+                <!--end::Created Date-->
 
                 <!--begin::Type Column-->
                 <kendo-grid-column field="extension" title="Type"> </kendo-grid-column>
@@ -78,7 +99,8 @@
                             <button kendoGridEditCommand [svgIcon]="_iconsKendo.editIcon"
                                 (click)="openEditTxtModal(dataItem.name)" class="me-4">Edit</button>
                         </div>
-                        <div *ngIf="dataItem.extension!='folder' && dataItem.extension!='.txt' && dataItem.extension!=''">
+                        <div
+                            *ngIf="dataItem.extension!='folder' && dataItem.extension!='.txt' && dataItem.extension!=''">
                             <button kendoGridRemoveCommand [svgIcon]="_iconsKendo.deleteIcon"
                                 (click)="openDeleteModalFile(dataItem.name)" class="me-4">Delete</button>
                         </div>
@@ -91,27 +113,11 @@
 
         </div>
         <!--end::Third div-->
-        <div id="loading" *ngIf="isLoading">
-            <div class="example">
-              <div class="wrap">
-                <div class="example-item" *ngFor="let loader of loaders">
-                  <div class="example-item-title"></div>
-                  
-                    <kendo-loader
-                      [type]="loader.type"
-                      [themeColor]="loader.themeColor"
-                      [size]="loader.size"
-                    >
-                    </kendo-loader>
-                  
-                </div>
-              </div>
-            </div>
-          </div>    
+
     </div>
     <!--end:: Secondary div-->
 
-  
+
 
     <!--begin:: Modal Delete Folder-->
     <div>

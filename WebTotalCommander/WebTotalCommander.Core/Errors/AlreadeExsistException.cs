@@ -2,7 +2,7 @@
 
 namespace WebTotalCommander.Core.Errors;
 
-public class AlreadeExsistException:Exception
+public class AlreadeExsistException : Exception
 {
     public AlreadeExsistException() { }
     public AlreadeExsistException(string message) : base(message) { }
