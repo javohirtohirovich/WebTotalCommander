@@ -1,4 +1,5 @@
 
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.FileProviders;
 using WebTotalCommander.Repository.Files;
 using WebTotalCommander.Repository.Folders;
@@ -28,6 +29,12 @@ public class Program
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
         builder.ConfigureCORSPolice();
+
+        //Configure big file upload
+        builder.Services.Configure<FormOptions>(options =>
+        {
+            options.MultipartBodyLengthLimit = 1024 * 1024 * 1024;
+        });
 
         //====================
         builder.Services.AddSingleton<FolderSettings>(settings);
