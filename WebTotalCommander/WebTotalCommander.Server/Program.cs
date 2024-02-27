@@ -35,7 +35,6 @@ public class Program
         {
             options.MultipartBodyLengthLimit = 1024 * 1024 * 1024;
         });
-
         //====================
         builder.Services.AddSingleton<FolderSettings>(settings);
 
